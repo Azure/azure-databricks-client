@@ -217,6 +217,34 @@ namespace Microsoft.Azure.Databricks.Client
             return this;
         }
 
+        /// <summary>
+        /// When enabled:
+        ///     Allows users to run SQL, Python, and PySpark commands. Users are restricted to the SparkSQL API and DataFrame API, and therefore cannot use Scala, R, RDD APIs, or clients that directly read the data from cloud storage, such as DBUtils.
+        ///     Cannot acquire direct access to data in the cloud via DBFS or by reading credentials from the cloud provider’s metadata service.
+        ///     Requires that clusters run Databricks Runtime 3.5 or above.
+        ///     Must run their commands on cluster nodes as a low-privilege user forbidden from accessing sensitive parts of the filesystem or creating network connections to ports other than 80 and 443.
+        /// </summary>
+        public ClusterInfo WithTableAccessControl(bool enableTableAccessControl)
+        {
+            if (this.SparkConfiguration == null)
+            {
+                this.SparkConfiguration = new Dictionary<string, string>();
+            }
+
+            if (enableTableAccessControl)
+            {
+                this.SparkConfiguration["spark.databricks.acl.dfAclsEnabled"] = "true";
+                this.SparkConfiguration["spark.databricks.repl.allowedLanguages"] = "python,sql";
+            }
+            else
+            {
+                this.SparkConfiguration.Remove("spark.databricks.acl.dfAclsEnabled");
+                this.SparkConfiguration.Remove("spark.databricks.repl.allowedLanguages");
+            }
+
+            return this;
+        }
+
         public ClusterInfo WithAutoScale(int minWorkers, int maxWorkers)
         {
             this.AutoScale = new AutoScale(minWorkers, maxWorkers);
