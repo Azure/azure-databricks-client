@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -87,7 +88,9 @@ namespace Microsoft.Azure.Databricks.Client
         {
             var url = $"dbfs/list?path={path}";
             var result = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
-            return result.files.ToObject<IEnumerable<FileInfo>>();
+            return PropertyExists(result, "files")
+                ? result.files.ToObject<IEnumerable<FileInfo>>()
+                : Enumerable.Empty<FileInfo>();
         }
 
         public async Task Mkdirs(string path)

@@ -13,16 +13,27 @@ namespace Microsoft.Azure.Databricks.Client
 
         public async Task<IDictionary<string, IEnumerable<LibraryFullStatus>>> AllClusterStatuses()
         {
-            var result = await HttpGet<dynamic>(this.HttpClient, "libraries/all-cluster-statuses").ConfigureAwait(false);
-            return ((IEnumerable<dynamic>) result.statuses).ToDictionary(d => (string) d.cluster_id.ToObject<string>(),
-                d => (IEnumerable<LibraryFullStatus>) d.library_statuses.ToObject<IEnumerable<LibraryFullStatus>>());
+            var result = await HttpGet<dynamic>(this.HttpClient, "libraries/all-cluster-statuses")
+                .ConfigureAwait(false);
+
+            if (PropertyExists(result, "statuses"))
+            {
+                return ((IEnumerable<dynamic>) result.statuses).ToDictionary(
+                    d => (string) d.cluster_id.ToObject<string>(),
+                    d => (IEnumerable<LibraryFullStatus>) d.library_statuses.ToObject<IEnumerable<LibraryFullStatus>>()
+                );
+            }
+
+            return new Dictionary<string, IEnumerable<LibraryFullStatus>>();
         }
 
         public async Task<IEnumerable<LibraryFullStatus>> ClusterStatus(string clusterId)
         {
             var url = $"/libraries/cluster-status?cluster_id={clusterId}";
             var result = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
-            return result.library_statuses.ToObject<IEnumerable<LibraryFullStatus>>();
+            return PropertyExists(result, "library")
+                ? result.library_statuses.ToObject<IEnumerable<LibraryFullStatus>>()
+                : Enumerable.Empty<LibraryFullStatus>();
         }
 
         public async Task Install(string clusterId, IEnumerable<Library> libraries)

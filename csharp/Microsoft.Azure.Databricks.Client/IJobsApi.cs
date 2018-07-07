@@ -99,6 +99,6 @@ namespace Microsoft.Azure.Databricks.Client
         /// Runs are automatically removed after 60 days.If you to want to reference them beyond 60 days, you should save old run results before they expire.To export using the UI, see Export job run results.To export using the Job API, see Runs Export.
         /// </summary>
         /// <param name="runId">The canonical identifier for the run. This field is required.</param>
-        Task<Tuple<string, string, Run>> RunsGetOutput(long runId);
+        Task<(string, string, Run)> RunsGetOutput(long runId);
     }
 }

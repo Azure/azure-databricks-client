@@ -3,7 +3,7 @@
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public static class NodeType
+    public static class NodeTypes
     {
         public const string Standard_DS3_v2 = "Standard_DS3_v2";
         public const string Standard_DS4_v2 = "Standard_DS4_v2";

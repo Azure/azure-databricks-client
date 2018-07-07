@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -69,7 +70,9 @@ namespace Microsoft.Azure.Databricks.Client
         {
             const string requestUri = "clusters/list";
             var clusterList = await HttpGet<dynamic>(this.HttpClient, requestUri).ConfigureAwait(false);
-            return clusterList.clusters.ToObject<IEnumerable<ClusterInfo>>();
+            return PropertyExists(clusterList, "clusters")
+                ? clusterList.clusters.ToObject<IEnumerable<ClusterInfo>>()
+                : Enumerable.Empty<ClusterInfo>();
         }
 
         public async Task Pin(string clusterId)

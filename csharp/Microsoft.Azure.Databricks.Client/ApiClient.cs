@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Dynamic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -56,6 +58,14 @@ namespace Microsoft.Azure.Databricks.Client
 
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<TResult>(responseContent);
+        }
+
+        protected static bool PropertyExists(dynamic dynamicObject, string propertyName)
+        {
+            if (dynamicObject is ExpandoObject)
+                return ((IDictionary<string, object>) dynamicObject).ContainsKey(propertyName);
+
+            return dynamicObject.GetType().GetProperty(propertyName) != null;
         }
     }
 }

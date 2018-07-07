@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -29,13 +30,17 @@ namespace Microsoft.Azure.Databricks.Client
         {
             var url = $"groups/list-members?group_name={groupName}";
             var response = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
-            return response.members.ToObject<IEnumerable<PrincipalName>>();
+            return PropertyExists(response, "members")
+                ? response.members.ToObject<IEnumerable<PrincipalName>>()
+                : Enumerable.Empty<PrincipalName>();
         }
 
         public async Task<IEnumerable<string>> List()
         {
             var response = await HttpGet<dynamic>(this.HttpClient, "groups/list").ConfigureAwait(false);
-            return response.members.ToObject<IEnumerable<string>>();
+            return PropertyExists(response, "members")
+                ? response.members.ToObject<IEnumerable<string>>()
+                : Enumerable.Empty<string>();
         }
 
         public async Task<IEnumerable<string>> ListParent(PrincipalName principalName)
@@ -45,7 +50,9 @@ namespace Microsoft.Azure.Databricks.Client
                 : $"groups/list-parents?group_name={principalName.GroupName}";
 
             var response = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
-            return response.group_names.ToObject<IEnumerable<string>>();
+            return PropertyExists(response, "group_names")
+                ? response.group_names.ToObject<IEnumerable<string>>()
+                : Enumerable.Empty<string>();
         }
 
         public async Task RemoveMember(string parentGroupName, PrincipalName principalName)

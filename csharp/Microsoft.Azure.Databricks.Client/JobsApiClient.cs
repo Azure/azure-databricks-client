@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -23,7 +24,9 @@ namespace Microsoft.Azure.Databricks.Client
         {
             const string requestUri = "jobs/list";
             var jobList = await HttpGet<dynamic>(this.HttpClient, requestUri).ConfigureAwait(false);
-            return jobList.jobs.ToObject<IEnumerable<Job>>();
+            return PropertyExists(jobList, "jobs")
+                ? jobList.jobs.ToObject<IEnumerable<Job>>()
+                : Enumerable.Empty<Job>();
         }
 
         public async Task Delete(long jobId)
@@ -120,17 +123,23 @@ namespace Microsoft.Azure.Databricks.Client
         {
             var url = $"jobs/runs/export?run_id={runId}&views_to_export={viewsToExport}";
             var viewItemList = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
-            return viewItemList.views.ToObject<IEnumerable<ViewItem>>();
+
+            return PropertyExists(viewItemList, "views")
+                ? viewItemList.views.ToObject<IEnumerable<ViewItem>>()
+                : Enumerable.Empty<ViewItem>();
         }
 
-        public async Task<Tuple<string, string, Run>> RunsGetOutput(long runId)
+        public async Task<(string, string, Run)> RunsGetOutput(long runId)
         {
             var url = $"jobs/runs/get-output?run_id={runId}";
             var response = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
             Run run = response.metadata.ToObject<Run>();
-            string error = response.error;
-            string notebookOutput = response.notebook_output?.result;
-            return Tuple.Create(notebookOutput, error, run);
+
+            string error = PropertyExists(response, "error") ? response.error.ToObject<string>() : null;
+            string notebookOutput = PropertyExists(response, "notebook_output")
+                ? response.notebook_output.result.ToObject<string>()
+                : null;
+            return (notebookOutput, error, run);
         }
     }
 }

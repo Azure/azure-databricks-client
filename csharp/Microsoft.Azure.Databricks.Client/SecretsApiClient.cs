@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -30,7 +31,9 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<SecretScope>> ListScopes()
         {
             var scopeList = await HttpGet<dynamic>(this.HttpClient, "secrets/scopes/list").ConfigureAwait(false);
-            return scopeList.scopes.ToObject<IEnumerable<SecretScope>>();
+            return PropertyExists(scopeList, "scopes")
+                ? scopeList.scopes.ToObject<IEnumerable<SecretScope>>()
+                : Enumerable.Empty<SecretScope>();
         }
 
         public async Task PutSecret(string secretValue, string scope, string key)
@@ -55,7 +58,9 @@ namespace Microsoft.Azure.Databricks.Client
         {
             var url = $"secrets/list?scope={scope}";
             var secretList = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
-            return secretList.secrets.ToObject<IEnumerable<SecretMetadata>>();
+            return PropertyExists(secretList, "secrets")
+                ? secretList.secrets.ToObject<IEnumerable<SecretMetadata>>()
+                : Enumerable.Empty<SecretMetadata>();
         }
 
         public async Task PutSecretAcl(string scope, string principal, AclPermission permission)
@@ -80,7 +85,9 @@ namespace Microsoft.Azure.Databricks.Client
         {
             var url = $"secrets/acls/list?scope={scope}";
             var aclList = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
-            return aclList.items.ToObject<IEnumerable<AclItem>>();
+            return PropertyExists(aclList, "items")
+                ? aclList.items.ToObject<IEnumerable<AclItem>>()
+                : Enumerable.Empty<AclItem>();
         }
     }
 }

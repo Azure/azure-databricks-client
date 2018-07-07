@@ -29,6 +29,26 @@ namespace Microsoft.Azure.Databricks.Client
             return jobSettings;
         }
 
+        public static JobSettings GetNewNotebookJobSettings(string jobName, string notebookPath,
+            Dictionary<string, string> parameters)
+        {
+            var jobSettings = new JobSettings
+            {
+                Name = jobName,
+                NotebookTask = new NotebookTask
+                {
+                    NotebookPath = notebookPath,
+                    BaseParameters = parameters
+                },
+                SparkJarTask = null,
+                SparkPythonTask = null,
+                SparkSubmitTask = null,
+                Libraries = null
+            };
+
+            return jobSettings;
+        }
+
         /// <summary>
         /// An optional name for the job. The default value is Untitled.
         /// </summary>
