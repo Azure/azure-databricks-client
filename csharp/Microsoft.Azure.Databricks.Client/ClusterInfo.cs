@@ -65,15 +65,13 @@ namespace Microsoft.Azure.Databricks.Client
         /// This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads A list of available node types can be retrieved by using the List Node Types API call. This field is required.
         /// </summary>
         [JsonProperty(PropertyName = "node_type_id", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public NodeType? NodeTypeId { get; set; }
+        public string NodeTypeId { get; set; }
 
         /// <summary>
         /// The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as the same value as node_type_id defined above.
         /// </summary>
         [JsonProperty(PropertyName = "driver_node_type_id", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public NodeType? DriverNodeTypeId { get; set; }
+        public string DriverNodeTypeId { get; set; }
 
         /// <summary>
         /// SSH public key contents that will be added to each Spark node in this cluster. The corresponding private keys can be used to login with the user name ubuntu on port 2200. Up to 10 keys can be specified.
@@ -271,7 +269,7 @@ namespace Microsoft.Azure.Databricks.Client
             return this;
         }
 
-        public ClusterInfo WithNodeType(NodeType workerNodeType, NodeType? driverNodeType = null)
+        public ClusterInfo WithNodeType(string workerNodeType, string driverNodeType = null)
         {
             this.NodeTypeId = workerNodeType;
             this.DriverNodeTypeId = driverNodeType;

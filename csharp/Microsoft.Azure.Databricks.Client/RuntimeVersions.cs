@@ -52,12 +52,12 @@ namespace Microsoft.Azure.Databricks.Client
         public const string Runtime_4_1_ML_GPU_Scala_2_11 = "4.1.x-ml-gpu-scala2.11";
 
         /// <summary>
-        /// 4.2 beta (includes Apache Spark 2.3.1, Scala 2.11)
+        /// 4.2 (includes Apache Spark 2.3.1, Scala 2.11)
         /// </summary>
         public const string Runtime_4_2_Scala_2_11 = "4.2.x-scala2.11";
 
         /// <summary>
-        /// 4.2 beta (includes Apache Spark 2.3.1, GPU, Scala 2.11)
+        /// 4.2 (includes Apache Spark 2.3.1, GPU, Scala 2.11)
         /// </summary>
         public const string Runtime_4_2_GPU_Scala_2_11 = "4.2.x-gpu-scala2.11";
     }
