@@ -37,6 +37,7 @@ namespace Microsoft.Azure.Databricks.Client
             this.Dbfs = new DbfsApiClient(httpClient);
             this.Secrets = new SecretsApiClient(httpClient);
             this.Groups = new GroupsApiClient(httpClient);
+            this.Libraries = new LibrariesApiClient(httpClient);
         }
 
         /// <summary>
@@ -47,13 +48,15 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="dbfsApi">The dbfs API implementation.</param>
         /// <param name="secretsApi">The secrets API implementation.</param>
         /// <param name="groupsApi">The groups API implementation.</param>
-        private Client(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi, ISecretsApi secretsApi, IGroupsApi groupsApi)
+        /// <param name="librariesApi">The libraries API implementation.</param>
+        private Client(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi, ISecretsApi secretsApi, IGroupsApi groupsApi, ILibrariesApi librariesApi)
         {
             this.Clusters = clusterApi;
             this.Jobs = jobsApi;
             this.Dbfs = dbfsApi;
             this.Secrets = secretsApi;
             this.Groups = groupsApi;
+            this.Libraries = librariesApi;
         }
 
         /// <summary>
@@ -70,9 +73,9 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// Create client object with mock implementation. This is for unit testing purpose.
         /// </summary>
-        public static Client CreateClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi, ISecretsApi secretsApi, IGroupsApi groupsApi)
+        public static Client CreateClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi, ISecretsApi secretsApi, IGroupsApi groupsApi, ILibrariesApi librariesApi)
         {
-            return new Client(clusterApi, jobsApi, dbfsApi, secretsApi, groupsApi);
+            return new Client(clusterApi, jobsApi, dbfsApi, secretsApi, groupsApi, librariesApi);
         }
 
         public IClustersApi Clusters { get; }
@@ -84,5 +87,7 @@ namespace Microsoft.Azure.Databricks.Client
         public ISecretsApi Secrets { get; }
 
         public IGroupsApi Groups { get; }
+
+        public ILibrariesApi Libraries { get; }
     }
 }
