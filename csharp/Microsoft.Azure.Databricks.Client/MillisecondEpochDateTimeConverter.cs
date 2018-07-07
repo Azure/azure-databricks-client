@@ -25,11 +25,6 @@ namespace Microsoft.Azure.Databricks.Client
                     throw new JsonSerializationException("Expected date object value.");
             }
 
-            if (ms < 0)
-            {
-                throw new JsonSerializationException("Cannot convert date value that is before Unix epoch of 00:00:00 UTC on 1 January 1970.");
-            }
-
             writer.WriteValue(ms);
         }
 
