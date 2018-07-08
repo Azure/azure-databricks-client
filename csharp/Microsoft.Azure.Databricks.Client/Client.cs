@@ -39,6 +39,7 @@ namespace Microsoft.Azure.Databricks.Client
             this.Groups = new GroupsApiClient(httpClient);
             this.Libraries = new LibrariesApiClient(httpClient);
             this.Token = new TokenApiClient(httpClient);
+            this.Workspace = new WorkspaceApiClient(httpClient);
         }
 
         /// <summary>
@@ -51,8 +52,10 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="groupsApi">The groups API implementation.</param>
         /// <param name="librariesApi">The libraries API implementation.</param>
         /// <param name="tokenApi">The token API implementation.</param>
+        /// <param name="workspaceApi">The workspace API implementation.</param>
+        /// 
         private Client(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi, ISecretsApi secretsApi,
-            IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi)
+            IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi, IWorkspaceApi workspaceApi)
         {
             this.Clusters = clusterApi;
             this.Jobs = jobsApi;
@@ -61,6 +64,7 @@ namespace Microsoft.Azure.Databricks.Client
             this.Groups = groupsApi;
             this.Libraries = librariesApi;
             this.Token = tokenApi;
+            this.Workspace = workspaceApi;
         }
 
         /// <summary>
@@ -78,9 +82,11 @@ namespace Microsoft.Azure.Databricks.Client
         /// Create client object with mock implementation. This is for unit testing purpose.
         /// </summary>
         public static Client CreateClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi,
-            ISecretsApi secretsApi, IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi)
+            ISecretsApi secretsApi, IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi,
+            IWorkspaceApi workspaceApi)
         {
-            return new Client(clusterApi, jobsApi, dbfsApi, secretsApi, groupsApi, librariesApi, tokenApi);
+            return new Client(clusterApi, jobsApi, dbfsApi, secretsApi, groupsApi, librariesApi, tokenApi,
+                workspaceApi);
         }
 
         public IClustersApi Clusters { get; }
@@ -97,6 +103,8 @@ namespace Microsoft.Azure.Databricks.Client
 
         public ITokenApi Token { get; }
 
+        public IWorkspaceApi Workspace { get; }
+
         public void Dispose()
         {
             Clusters.Dispose();
@@ -106,6 +114,7 @@ namespace Microsoft.Azure.Databricks.Client
             Groups.Dispose();
             Libraries.Dispose();
             Token.Dispose();
+            Workspace.Dispose();
         }
     }
 }
