@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public interface IGroupsApi
+    public interface IGroupsApi : IDisposable
     {
         /// <summary>
         /// Adds a user or group to a group. This call returns an error RESOURCE_DOES_NOT_EXIST if a user or group with the given name does not exist, or if a group with the given parent name does not exist.

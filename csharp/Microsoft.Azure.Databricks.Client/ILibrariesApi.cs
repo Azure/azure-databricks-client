@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public interface ILibrariesApi
+    public interface ILibrariesApi : IDisposable
     {
         /// <summary>
         /// Get the status of all libraries on all clusters. A status will be available for all libraries installed on this cluster via the API or the libraries UI as well as libraries set to be installed on all clusters via the libraries UI. If a library has been set to be installed on all clusters, is_library_for_all_clusters will be true, even if the library was also installed on this specific cluster.

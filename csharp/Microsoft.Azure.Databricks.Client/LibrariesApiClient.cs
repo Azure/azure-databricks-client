@@ -29,9 +29,9 @@ namespace Microsoft.Azure.Databricks.Client
 
         public async Task<IEnumerable<LibraryFullStatus>> ClusterStatus(string clusterId)
         {
-            var url = $"/libraries/cluster-status?cluster_id={clusterId}";
+            var url = $"libraries/cluster-status?cluster_id={clusterId}";
             var result = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
-            return PropertyExists(result, "library")
+            return PropertyExists(result, "library_statuses")
                 ? result.library_statuses.ToObject<IEnumerable<LibraryFullStatus>>()
                 : Enumerable.Empty<LibraryFullStatus>();
         }

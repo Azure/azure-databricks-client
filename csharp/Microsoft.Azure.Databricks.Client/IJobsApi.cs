@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public interface IJobsApi
+    public interface IJobsApi : IDisposable
     {
         /// <summary>
         /// Creates a new job with the provided settings.

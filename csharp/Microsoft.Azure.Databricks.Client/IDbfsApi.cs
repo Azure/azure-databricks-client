@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public interface IDbfsApi
+    public interface IDbfsApi : IDisposable
     {
         /// <summary>
         /// Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle timeout on this handle. If a file or directory already exists on the given path and overwrite is set to false, this call will throw an exception with RESOURCE_ALREADY_EXISTS. A typical workflow for file upload would be:

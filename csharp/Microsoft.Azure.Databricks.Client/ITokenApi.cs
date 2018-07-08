@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public interface ITokenApi
+    public interface ITokenApi : IDisposable
     {
         /// <summary>
         /// Creates and returns a token for a user. This call returns the error QUOTA_EXCEEDED if the user exceeds their token quota.

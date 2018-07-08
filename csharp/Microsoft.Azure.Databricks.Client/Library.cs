@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.Databricks.Client
 {
@@ -32,6 +30,11 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "jar")]
         public string Jar { get; set; }
+
+        public override string ToString()
+        {
+            return "Jar://" + Jar;
+        }
     }
 
     public class EggLibrary : Library
@@ -41,12 +44,22 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "egg")]
         public string Egg { get; set; }
+
+        public override string ToString()
+        {
+            return "Egg://" + Egg;
+        }
     }
 
     public class PythonPyPiLibrary : Library
     {
         [JsonProperty(PropertyName = "pypi")]
         public PythonPyPiLibrarySpec PythonPyPiLibrarySpec { get; set; }
+
+        public override string ToString()
+        {
+            return "Python://" + PythonPyPiLibrarySpec.Repo + ":" + PythonPyPiLibrarySpec.Package;
+        }
     }
 
     /// <summary>
@@ -72,6 +85,11 @@ namespace Microsoft.Azure.Databricks.Client
     {
         [JsonProperty(PropertyName = "cran")]
         public RCranLibrarySpec RCranLibrarySpec { get; set; }
+
+        public override string ToString()
+        {
+            return "cran://" + RCranLibrarySpec.Repo + ":" + RCranLibrarySpec.Package;
+        }
     }
 
     /// <summary>
@@ -97,6 +115,11 @@ namespace Microsoft.Azure.Databricks.Client
     {
         [JsonProperty(PropertyName = "maven")]
         public MavenLibrarySpec MavenLibrarySpec { get; set; }
+
+        public override string ToString()
+        {
+            return "maven://" + MavenLibrarySpec.Repo + ":" + MavenLibrarySpec.Coordinates;
+        }
     }
 
     /// <summary>
@@ -124,57 +147,5 @@ namespace Microsoft.Azure.Databricks.Client
         /// </remarks>
         [JsonProperty(PropertyName = "exclusions", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public IEnumerable<string> Exclusions { get; set; }
-    }
-
-    public class LibraryConverter : JsonConverter
-    {
-        /// <inheritdoc />
-        public override bool CanWrite => false;
-
-
-        /// <inheritdoc />
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
-            JsonSerializer serializer)
-        {
-            JObject library = JObject.Load(reader);
-
-            if (library.ContainsKey("jar"))
-            {
-                return library.ToObject<JarLibrary>();
-            }
-
-            if (library.ContainsKey("egg"))
-            {
-                return library.ToObject<EggLibrary>();
-            }
-
-            if (library.ContainsKey("maven"))
-            {
-                return library.ToObject<MavenLibrary>();
-            }
-
-            if (library.ContainsKey("pypi"))
-            {
-                return library.ToObject<PythonPyPiLibrary>();
-            }
-
-            if (library.ContainsKey("cran"))
-            {
-                return library.ToObject<RCranLibrary>();
-            }
-
-            throw new NotSupportedException("Library not recognized");
-        }
-
-        public override bool CanConvert(Type objectType)
-        {
-            return typeof(Library).IsAssignableFrom(objectType);
-        }
     }
 }

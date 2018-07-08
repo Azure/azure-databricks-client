@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public class Client
+    public sealed class Client : IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class.
@@ -96,5 +96,16 @@ namespace Microsoft.Azure.Databricks.Client
         public ILibrariesApi Libraries { get; }
 
         public ITokenApi Token { get; }
+
+        public void Dispose()
+        {
+            Clusters.Dispose();
+            Jobs.Dispose();
+            Dbfs.Dispose();
+            Secrets.Dispose();
+            Groups.Dispose();
+            Libraries.Dispose();
+            Token.Dispose();
+        }
     }
 }

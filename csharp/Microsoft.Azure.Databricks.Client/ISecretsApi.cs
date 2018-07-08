@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public interface ISecretsApi
+    public interface ISecretsApi : IDisposable
     {
         /// <summary>
         /// Creates a new secret scope.

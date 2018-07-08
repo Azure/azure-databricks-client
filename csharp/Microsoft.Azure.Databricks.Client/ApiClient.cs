@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Dynamic;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public abstract class ApiClient
+    public abstract class ApiClient : IDisposable
     {
         protected readonly HttpClient HttpClient;
 
@@ -60,12 +60,23 @@ namespace Microsoft.Azure.Databricks.Client
             return JsonConvert.DeserializeObject<TResult>(responseContent);
         }
 
-        protected static bool PropertyExists(dynamic dynamicObject, string propertyName)
+        protected static bool PropertyExists(JObject obj, string propertyName)
         {
-            if (dynamicObject is ExpandoObject)
-                return ((IDictionary<string, object>) dynamicObject).ContainsKey(propertyName);
+            return obj.ContainsKey(propertyName);
+        }
 
-            return dynamicObject.GetType().GetProperty(propertyName) != null;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                HttpClient?.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

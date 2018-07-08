@@ -57,10 +57,10 @@ namespace Microsoft.Azure.Databricks.Client
                 {
                     var contents = new byte[bytesRead];
                     Array.Copy(buffer, contents, bytesRead);
-                    await this.AddBlock(handle, contents);
+                    await this.AddBlock(handle, contents).ConfigureAwait(false);
                 }
 
-                await this.Close(handle);
+                await this.Close(handle).ConfigureAwait(false);
             }
             finally
             {

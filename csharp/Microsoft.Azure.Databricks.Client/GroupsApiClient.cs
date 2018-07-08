@@ -38,8 +38,8 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<string>> List()
         {
             var response = await HttpGet<dynamic>(this.HttpClient, "groups/list").ConfigureAwait(false);
-            return PropertyExists(response, "members")
-                ? response.members.ToObject<IEnumerable<string>>()
+            return PropertyExists(response, "group_names")
+                ? response.group_names.ToObject<IEnumerable<string>>()
                 : Enumerable.Empty<string>();
         }
 

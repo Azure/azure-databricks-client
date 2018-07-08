@@ -12,6 +12,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// Unique identifier for the library.
         /// </summary>
         [JsonProperty(PropertyName = "library")]
+        [JsonConverter(typeof(LibraryConverter))]
         public Library Library { get; set; }
 
         /// <summary>
