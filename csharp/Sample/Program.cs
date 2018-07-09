@@ -10,6 +10,14 @@ namespace Sample
 {
     internal class Program
     {
+        /// <summary>
+        /// Must be an existing user in the databricks environment, otherwise you will get a "DIRECTORY_PROTECTED" error.
+        /// </summary>
+        private const string DatabricksUserName = "jasowang@microsoft.com"; 
+
+        private static readonly string SampleWorkspacePath = $"/Users/{DatabricksUserName}/SampleWorkspace";
+        private static readonly string SampleNotebookPath = $"{SampleWorkspacePath}/Quick Start Using Scala";
+
         public static async Task Main(string[] args)
         {
             if (args.Length < 2)
@@ -24,17 +32,67 @@ namespace Sample
             Console.WriteLine("Creating client");
             using (var client = Client.CreateClient(baseUrl, token))
             {
+                // await WorkspaceApi(client);
                 // await LibrariesApi(client);
-                await SecretsApi(client);
+                // await SecretsApi(client);
                 // await TokenApi(client);
                 // await GroupsApi(client);
                 // await DbfsApi(client);
-                // await JobsApi(client);
+                await JobsApi(client);
                 // await ClustersApi(client);
             }
 
             Console.WriteLine("Press enter to exit");
             Console.ReadLine();
+        }
+
+        private static async Task WorkspaceApi(Client client)
+        {
+            Console.WriteLine($"Creating workspace {SampleWorkspacePath}");
+            await client.Workspace.Mkdirs(SampleWorkspacePath);
+
+            Console.WriteLine("Dowloading sample notebook");
+            var content = await DownloadSampleNotebook();
+
+            Console.WriteLine($"Importing sample HTML notebook to {SampleNotebookPath}");
+            await client.Workspace.Import(SampleNotebookPath, ExportFormat.HTML, null,
+                content, true);
+
+            Console.WriteLine($"Getting status of sample notebook {SampleNotebookPath}");
+            var objectInfo = await client.Workspace.GetStatus(SampleNotebookPath);
+            Console.WriteLine($"Object type: {objectInfo.ObjectType}\tObject language: {objectInfo.Language}");
+
+            Console.WriteLine("Listing sample workspace");
+            var list = await client.Workspace.List(SampleWorkspacePath);
+            foreach (var obj in list)
+            {
+                Console.WriteLine($"\tPath: {obj.Path}\tType: {obj.ObjectType}\tLanguage: {obj.Language}");
+            }
+
+            Console.WriteLine($"Exporting sample notebook in SOURCE format from {SampleNotebookPath}");
+            var exported = await client.Workspace.Export(SampleNotebookPath, ExportFormat.SOURCE);
+            var exportedString = System.Text.Encoding.ASCII.GetString(exported);
+            Console.WriteLine("Exported notebook:");
+            Console.WriteLine("====================");
+            Console.WriteLine(exportedString.Substring(0, 100) + "...");
+            Console.WriteLine("====================");
+
+            Console.WriteLine("Deleting sample workspace");
+            await client.Workspace.Delete(SampleWorkspacePath, true);
+        }
+
+        private static async Task<byte[]> DownloadSampleNotebook()
+        {
+            byte[] content;
+
+            using (var httpClient = new HttpClient())
+            {
+                content = await httpClient.GetByteArrayAsync(
+                    "https://cdn2.hubspot.net/hubfs/438089/notebooks/Quick_Start/Quick_Start_Using_Scala.html"
+                );
+            }
+
+            return content;
         }
 
         private static async Task LibrariesApi(Client client)
@@ -254,9 +312,19 @@ namespace Sample
                 .WithNodeType(NodeTypes.Standard_D3_v2)
                 .WithRuntimeVersion(RuntimeVersions.Runtime_4_2_Scala_2_11);
 
+            Console.WriteLine($"Creating workspace {SampleWorkspacePath}");
+            await client.Workspace.Mkdirs(SampleWorkspacePath);
+
+            Console.WriteLine($"Dowloading sample notebook");
+            var content = await DownloadSampleNotebook();
+
+            Console.WriteLine($"Importing sample HTML notebook to {SampleNotebookPath}");
+            await client.Workspace.Import(SampleNotebookPath, ExportFormat.HTML, null,
+                content, true);
+
             var jobSettings = JobSettings.GetNewNotebookJobSettings(
                     "Sample Job",
-                    "/Users/jasowang@microsoft.com/Quick Start Using Scala",
+                    SampleNotebookPath,
                     null)
                 .WithNewCluster(newCluster);
 
@@ -272,18 +340,18 @@ namespace Sample
             while (true)
             {
                 var run = await client.Jobs.RunsGet(runId);
+
+                Console.WriteLine("[{0:s}] Run Id: {1}\tLifeCycleState: {2}\tStateMessage: {3}", DateTime.UtcNow, runId,
+                    run.State.LifeCycleState, run.State.StateMessage);
+
                 if (run.State.LifeCycleState == RunLifeCycleState.PENDING ||
                     run.State.LifeCycleState == RunLifeCycleState.RUNNING ||
                     run.State.LifeCycleState == RunLifeCycleState.TERMINATING)
                 {
-                    Console.WriteLine("[{0:s}] Run Id: {1}; LifeCycleState: {2}", DateTime.UtcNow, runId,
-                        run.State.LifeCycleState);
-                    await Task.Delay(TimeSpan.FromSeconds(30));
+                    await Task.Delay(TimeSpan.FromSeconds(15));
                 }
                 else
                 {
-                    Console.WriteLine("[{0:s}] Run Id: {1}; LifeCycleState: {2}", DateTime.UtcNow, runId,
-                        run.State.LifeCycleState);
                     break;
                 }
             }
@@ -292,8 +360,14 @@ namespace Sample
 
             foreach (var viewItem in viewItems)
             {
-                Console.WriteLine(viewItem.Name + ": " + viewItem.Content.Substring(0, 200));
+                Console.WriteLine("Exported view item from run: " + viewItem.Name);
+                Console.WriteLine("====================");
+                Console.WriteLine(viewItem.Content.Substring(0, 100) + "...");
+                Console.WriteLine("====================");
             }
+
+            Console.WriteLine("Deleting sample workspace");
+            await client.Workspace.Delete(SampleWorkspacePath, true);
         }
 
         private static async Task DbfsApi(Client client)

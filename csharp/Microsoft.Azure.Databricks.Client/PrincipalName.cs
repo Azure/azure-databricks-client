@@ -7,13 +7,13 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// The user name.
         /// </summary>
-        [JsonProperty(PropertyName = "user_name", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "user_name")]
         public string UserName { get; set; }
 
         /// <summary>
         /// The group name.
         /// </summary>
-        [JsonProperty(PropertyName = "group_name", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "group_name")]
         public string GroupName { get; set; }
     }
 }

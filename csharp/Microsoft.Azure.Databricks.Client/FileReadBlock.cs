@@ -13,7 +13,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// The base64-encoded contents of the file read.
         /// </summary>
-        [JsonProperty(PropertyName = "data", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "data")]
         public byte[] Data { get; set; }
     }
 }

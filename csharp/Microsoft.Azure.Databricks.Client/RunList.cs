@@ -14,7 +14,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// If true, additional runs matching the provided filter are available for listing.
         /// </summary>
-        [JsonProperty(PropertyName = "has_more", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "has_more")]
         public bool HasMore { get; set; }
     }
 }

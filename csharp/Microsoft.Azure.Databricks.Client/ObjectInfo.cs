@@ -24,7 +24,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// The language of the object. This value is set only if the object type is NOTEBOOK.
         /// </summary>
-        [JsonProperty(PropertyName = "language", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "language")]
         [JsonConverter(typeof(StringEnumConverter))]
         public Language? Language { get; set; }
     }

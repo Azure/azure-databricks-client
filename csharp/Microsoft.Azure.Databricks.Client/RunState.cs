@@ -15,14 +15,14 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// The result state of a run. If it is not available, the response won’t include this field. <see cref="RunResultState"/> for details about the availability of result_state.
         /// </summary>
-        [JsonProperty(PropertyName = "result_state", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "result_state")]
         [JsonConverter(typeof(StringEnumConverter))]
         public RunResultState? ResultState { get; set; }
 
         /// <summary>
         /// A descriptive message for the current state.
         /// </summary>
-        [JsonProperty(PropertyName = "state_message", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "state_message")]
         public string StateMessage { get; set; }
     }
 }

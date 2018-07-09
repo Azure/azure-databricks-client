@@ -70,7 +70,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// The repository where the package can be found. If not specified, the default pip index is used.
         /// </summary>
-        [JsonProperty(PropertyName = "repo", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "repo")]
         public string Repo { get; set; }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// The repository where the package can be found. If not specified, the default CRAN repo is used.
         /// </summary>
-        [JsonProperty(PropertyName = "repo", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "repo")]
         public string Repo { get; set; }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// Maven repo to install the Maven package from. If omitted, both Maven Central Repository and Spark Packages are searched.
         /// </summary>
-        [JsonProperty(PropertyName = "repo", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "repo")]
         public string Repo { get; set; }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <remarks>
         /// Maven dependency exclusions: https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
         /// </remarks>
-        [JsonProperty(PropertyName = "exclusions", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "exclusions")]
         public IEnumerable<string> Exclusions { get; set; }
     }
 }

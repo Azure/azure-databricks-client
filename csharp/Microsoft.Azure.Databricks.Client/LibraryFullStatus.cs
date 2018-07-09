@@ -24,13 +24,13 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// All the info and warning messages that have occurred so far for this library.
         /// </summary>
-        [JsonProperty(PropertyName = "messages", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "messages")]
         public IEnumerable<string> Messages { get; set; }
 
         /// <summary>
         /// Whether the library was set to be installed on all clusters via the libraries UI.
         /// </summary>
-        [JsonProperty(PropertyName = "is_library_for_all_clusters", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "is_library_for_all_clusters")]
         public bool IsLibraryForAllClusters { get; set; }
     }
 }

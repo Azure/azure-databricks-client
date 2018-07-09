@@ -10,6 +10,9 @@ namespace Microsoft.Azure.Databricks.Client
     {
         protected readonly HttpClient HttpClient;
 
+        private static readonly JsonSerializerSettings JsonSerializerSettings =
+            new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Ignore};
+
         protected ApiClient(HttpClient httpClient)
         {
             HttpClient = httpClient;
@@ -37,7 +40,8 @@ namespace Microsoft.Azure.Databricks.Client
 
         protected static async Task HttpPost<TBody>(HttpClient httpClient, string requestUri, TBody body)
         {
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(body));
+            
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
             var response = await httpClient.PostAsync(requestUri, content).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
@@ -48,7 +52,7 @@ namespace Microsoft.Azure.Databricks.Client
 
         protected static async Task<TResult> HttpPost<TBody, TResult>(HttpClient httpClient, string requestUri, TBody body)
         {
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(body));
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
             var response = await httpClient.PostAsync(requestUri, content).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)

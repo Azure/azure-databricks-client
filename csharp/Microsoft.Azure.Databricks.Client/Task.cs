@@ -16,7 +16,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// If the notebook takes a parameter that is not specified in the job’s base_parameters or the run-now override parameters, the default value from the notebook will be used.
         /// These parameters can be retrieved in a notebook by using dbutils.widgets.get().
         /// </summary>
-        [JsonProperty(PropertyName = "base_parameters", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "base_parameters")]
         public Dictionary<string, string> BaseParameters { get; set; }
     }
 
@@ -32,7 +32,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// Parameters that will be passed to the main method.
         /// </summary>
-        [JsonProperty(PropertyName = "parameters", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "parameters")]
         public List<string> Parameters { get; set; }
     }
 
@@ -47,7 +47,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// Command line parameters that will be passed to the Python file.
         /// </summary>
-        [JsonProperty(PropertyName = "parameters", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "parameters")]
         public List<string> Parameters { get; set; }
     }
 
@@ -77,7 +77,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// Command line parameters that will be passed to spark submit.
         /// </summary>
-        [JsonProperty(PropertyName = "parameters", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "parameters")]
         public List<string> Parameters { get; set; }
     }
 }

@@ -20,7 +20,8 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<byte[]> Export(string path, ExportFormat format)
         {
             var url = $"workspace/export?path={path}&format={format}";
-            return await HttpGet<byte[]>(this.HttpClient, url).ConfigureAwait(false);
+            var result = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
+            return result.content.ToObject<byte[]>();
         }
 
         public async Task<ObjectInfo> GetStatus(string path)
@@ -31,7 +32,7 @@ namespace Microsoft.Azure.Databricks.Client
 
         public async Task Import(string path, ExportFormat format, Language? language, byte[] content, bool overwrite)
         {
-            var request = new { path, format, language, content, overwrite};
+            var request = new { path, format = format.ToString(), language = language?.ToString(), content, overwrite};
             await HttpPost<dynamic>(this.HttpClient, "workspace/import", request).ConfigureAwait(false);
         }
 

@@ -13,13 +13,13 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// True if the path is a directory.
         /// </summary>
-        [JsonProperty(PropertyName = "is_dir", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "is_dir")]
         public bool IsDirectory { get; set; }
 
         /// <summary>
         /// The length of the file in bytes or zero if the path is a directory.
         /// </summary>
-        [JsonProperty(PropertyName = "file_size", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "file_size")]
         public long FileSize { get; set; }
     }
 }

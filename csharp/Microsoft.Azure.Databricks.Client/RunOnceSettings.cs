@@ -29,7 +29,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// An optional name for the run. The default value is Untitled.
         /// </summary>
-        [JsonProperty(PropertyName = "run_name", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "run_name")]
         public string RunName { get; set; }
     }
 }

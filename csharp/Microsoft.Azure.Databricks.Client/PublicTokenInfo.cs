@@ -26,14 +26,14 @@ namespace Microsoft.Azure.Databricks.Client
         /// Server time (in epoch milliseconds) when the token will expire, or -1 if not applicable.
         /// </summary>
         [DefaultValue(-1)]
-        [JsonProperty(PropertyName = "expiry_time", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "expiry_time")]
         [JsonConverter(typeof(MillisecondEpochDateTimeConverter))]
         public DateTimeOffset? ExpiryTime { get; set; }
 
         /// <summary>
         /// Comment the token was created with, if applicable.
         /// </summary>
-        [JsonProperty(PropertyName = "comment", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "comment")]
         public string Comment { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// A cron expression using quartz syntax that describes the schedule for a job. See Quartz for details. This field is required.
         /// </summary>
-        [JsonProperty(PropertyName = "quartz_cron_expression", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "quartz_cron_expression")]
         public string QuartzCronExpression { get; set; }
 
         /// <summary>

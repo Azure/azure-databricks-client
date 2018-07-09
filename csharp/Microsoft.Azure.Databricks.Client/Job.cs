@@ -8,7 +8,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// The creator user name. This field won’t be included in the response if the user has already been deleted.
         /// </summary>
-        [JsonProperty(PropertyName = "creator_user_name", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "creator_user_name")]
         public string CreatorUserName { get; set; }
 
         /// <summary>
