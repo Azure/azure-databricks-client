@@ -74,5 +74,16 @@ namespace Microsoft.Azure.Databricks.Client
         /// Unpinning a cluster will allow the cluster to eventually be removed from the list returned by the List API. Unpinning a cluster that is not pinned has no effect.
         /// </summary>
         Task Unpin(string clusterId);
+
+        /// <summary>
+        /// Returns a list of supported Spark node types. These node types can be used to launch a cluster.
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<NodeType>> ListNodeTypes();
+
+        /// <summary>
+        /// Returns the list of available Spark versions. These versions can be used to launch a cluster.
+        /// </summary>
+        Task<IDictionary<string, string>> ListSparkVersions();
     }
 }

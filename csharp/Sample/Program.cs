@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Azure.Databricks.Client;
 using Newtonsoft.Json;
@@ -38,8 +40,8 @@ namespace Sample
                 // await TokenApi(client);
                 // await GroupsApi(client);
                 // await DbfsApi(client);
-                await JobsApi(client);
-                // await ClustersApi(client);
+                // await JobsApi(client);
+                await ClustersApi(client);
             }
 
             Console.WriteLine("Press enter to exit");
@@ -231,6 +233,20 @@ namespace Sample
 
         private static async Task ClustersApi(Client client)
         {
+            Console.WriteLine("Listing node types (take 10)");
+            var nodeTypes = await client.Clusters.ListNodeTypes();
+            foreach (var nodeType in nodeTypes.Take(10))
+            {
+                Console.WriteLine($"\t{nodeType.NodeTypeId}\tMemory: {nodeType.MemoryMb} MB\tCores: {nodeType.NumCores}\tAvailable Quota: {nodeType.NodeInfo.AvailableCoreQuota}");
+            }
+
+            Console.WriteLine("Listing spark versions (take 10)");
+            var sparkVersions = await client.Clusters.ListSparkVersions();
+            foreach (var (key, name) in sparkVersions.Take(10))
+            {
+                Console.WriteLine($"\t{key}\t\t{name}");
+            }
+
             var clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
                 .WithRuntimeVersion(RuntimeVersions.Runtime_4_2_Scala_2_11)
                 .WithAutoScale(3, 7)
@@ -251,24 +267,39 @@ namespace Sample
             while (true)
             {
                 var state = await client.Clusters.Get(clusterId);
-                if (state.State == ClusterState.RUNNING)
-                {
-                    Console.WriteLine("[{0:s}] Cluster {1} is running", DateTime.UtcNow, clusterId);
-                    break;
-                }
 
-                Console.WriteLine("[{0:s}] Cluster {1} state {2}", DateTime.UtcNow, clusterId, state.State);
+                Console.WriteLine("[{0:s}] Cluster {1}\tState {2}\tMessage {3}", DateTime.UtcNow, clusterId,
+                    state.State, state.StateMessage);
 
-                if (state.State == ClusterState.ERROR || state.State == ClusterState.TERMINATED)
+                if (state.State == ClusterState.RUNNING || state.State == ClusterState.ERROR || state.State == ClusterState.TERMINATED)
                 {
                     break;
                 }
-                
-                await Task.Delay(TimeSpan.FromSeconds(30));
+
+                await Task.Delay(TimeSpan.FromSeconds(15));
             }
-
+            
             Console.WriteLine("Deleting cluster {0}", clusterId);
             await client.Clusters.Delete(clusterId);
+
+
+
+            //var handler = new HttpClientHandler
+            //{
+            //    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            //};
+
+            //var httpClient = new HttpClient(handler)
+            //{
+            //    BaseAddress = new Uri("https://southcentralus.azuredatabricks.net/api/2.0/")
+            //};
+
+            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "dapi739aab42c120dbe8c9d83c530d1e9a47");
+            //httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+
+            //var httpContent = new StringContent("{\"cluster_id\": \"0530-210517-viced348\"}");
+            //var result = await httpClient.PostAsync("clusters/events", httpContent);
         }
 
         private static async Task GroupsApi(Client client)

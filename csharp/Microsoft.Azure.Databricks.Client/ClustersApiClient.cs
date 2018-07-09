@@ -84,5 +84,20 @@ namespace Microsoft.Azure.Databricks.Client
         {
             await HttpPost(this.HttpClient, "clusters/unpin", new { cluster_id = clusterId }).ConfigureAwait(false);
         }
+
+        public async Task<IEnumerable<NodeType>> ListNodeTypes()
+        {
+            var result = await HttpGet<dynamic>(this.HttpClient, "clusters/list-node-types").ConfigureAwait(false);
+            return result.node_types.ToObject<IEnumerable<NodeType>>();
+        }
+
+        public async Task<IDictionary<string, string>> ListSparkVersions()
+        {
+            var result = await HttpGet<dynamic>(this.HttpClient, "clusters/spark-versions").ConfigureAwait(false);
+            return ((IEnumerable<dynamic>) result.versions).ToDictionary(
+                sv => (string) sv.key.ToObject<string>(),
+                sv => (string) sv.name.ToObject<string>()
+            );
+        }
     }
 }

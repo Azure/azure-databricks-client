@@ -5,12 +5,11 @@ using Newtonsoft.Json.Converters;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    /// <inheritdoc />
     /// <summary>
     /// Describes all of the metadata about a single Spark cluster in Databricks.
     /// </summary>
     /// <seealso cref="T:Microsoft.Azure.Databricks.Client.ClusterInstance" />
-    public class ClusterInfo : ClusterInstance
+    public class ClusterInfo : ClusterAttributes
     {
         public static ClusterInfo GetNewClusterConfiguration(string clusterName = null)
         {
@@ -19,6 +18,20 @@ namespace Microsoft.Azure.Databricks.Client
                 ClusterName = clusterName
             };
         }
+
+        /// <summary>
+        /// The canonical identifier for the cluster used by a run. This field is always available for runs on existing clusters. For runs on new clusters, it becomes available once the cluster is created. This value can be used to view logs by browsing to /#setting/sparkui/$cluster_id/driver-logs. The logs will continue to be available after the run completes.
+        /// If this identifier is not yet available, the response won’t include this field.
+        /// </summary>
+        [JsonProperty(PropertyName = "cluster_id")]
+        public string ClusterId { get; set; }
+
+        /// <summary>
+        /// The canonical identifier for the Spark context used by a run. This field will be filled in once the run begins execution. This value can be used to view the Spark UI by browsing to /#setting/sparkui/$cluster_id/$spark_context_id. The Spark UI will continue to be available after the run has completed.
+        /// If this identifier is not yet available, the response won’t include this field.
+        /// </summary>
+        [JsonProperty(PropertyName = "spark_context_id")]
+        public string SparkContextId { get; set; }
 
         /// <summary>
         /// If num_workers, number of worker nodes that this cluster should have. A cluster has one Spark Driver and num_workers Executors for a total of num_workers + 1 Spark nodes.
@@ -43,76 +56,28 @@ namespace Microsoft.Azure.Databricks.Client
         public AutoScale AutoScale { get; set; }
 
         /// <summary>
-        /// Cluster name requested by the user. This doesn’t have to be unique. If not specified at creation, the cluster name will be an empty string.
+        /// Creator user name. The field won’t be included in the response if the user has already been deleted.
         /// </summary>
-        [JsonProperty(PropertyName = "cluster_name")]
-        public string ClusterName { get; set; }
+        [JsonProperty(PropertyName = "creator_user_name")]
+        public string CreatorUserName { get; set; }
 
         /// <summary>
-        /// The Spark version of the cluster. A list of available Spark versions can be retrieved by using the Spark Versions API call.
+        /// Node on which the Spark driver resides. The driver node contains the Spark master and the Databricks application that manages the per-notebook Spark REPLs.
         /// </summary>
-        [JsonProperty(PropertyName = "spark_version")]
-        public string RuntimeVersion { get; set; }
+        [JsonProperty(PropertyName = "driver")]
+        public SparkNode Driver { get; set; }
 
         /// <summary>
-        /// An object containing a set of optional, user-specified Spark configuration key-value pairs. Users can also pass in a string of extra JVM options to the driver and the executors via spark.driver.extraJavaOptions and spark.executor.extraJavaOptions respectively.
-        ///Example Spark confs: {"spark.speculation": true, "spark.streaming.ui.retainedBatches": 5} or {"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}
+        /// Nodes on which the Spark executors reside.
         /// </summary>
-        [JsonProperty(PropertyName = "spark_conf")]
-        public Dictionary<string, string> SparkConfiguration { get; set; }
+        [JsonProperty(PropertyName = "executors")]
+        public IEnumerable<SparkNode> Executors { get; set; }
 
         /// <summary>
-        /// This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads A list of available node types can be retrieved by using the List Node Types API call. This field is required.
+        /// Port on which Spark JDBC server is listening, in the driver nod. No service will be listening on on this port in executor nodes.
         /// </summary>
-        [JsonProperty(PropertyName = "node_type_id")]
-        public string NodeTypeId { get; set; }
-
-        /// <summary>
-        /// The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as the same value as node_type_id defined above.
-        /// </summary>
-        [JsonProperty(PropertyName = "driver_node_type_id")]
-        public string DriverNodeTypeId { get; set; }
-
-        /// <summary>
-        /// SSH public key contents that will be added to each Spark node in this cluster. The corresponding private keys can be used to login with the user name ubuntu on port 2200. Up to 10 keys can be specified.
-        /// </summary>
-        [JsonProperty(PropertyName = "ssh_public_keys")]
-        public IEnumerable<string> SshPublicKeys { get; set; }
-
-        /// <summary>
-        /// Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., VMs disk volumes) with these tags in addition to default_tags.
-        ///Currently Databricks allows up to 9 custom tags.
-        /// </summary>
-        [JsonProperty(PropertyName = "custom_tags")]
-        public Dictionary<string, string> CustomTags { get; set; }
-
-        /// <summary>
-        /// The configuration for delivering spark logs to a long-term storage destination. Only one destination can be specified for one cluster. If the conf is given, the logs will be delivered to the destination every 5 mins. The destination of driver logs is $destination/$clusterId/driver, while the destination of executor logs is $destination/$clusterId/executor.
-        /// </summary>
-        [JsonProperty(PropertyName = "cluster_log_conf")]
-        public ClusterLogConf ClusterLogConfiguration { get; set; }
-
-        /// <summary>
-        /// An object containing a set of optional, user-specified environment variable key-value pairs. Please note that key-value pair of the form (X,Y) will be exported as is (i.e., export X='Y') while launching the driver and workers.
-        ///In order to specify an additional set of SPARK_DAEMON_JAVA_OPTS, we recommend appending them to $SPARK_DAEMON_JAVA_OPTS as shown in the example below.This ensures that all default databricks managed environmental variables are included as well.
-        ///Example Spark environment variables: {"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}
-        ///or {"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}
-        /// </summary>
-        [JsonProperty(PropertyName = "spark_env_vars")]
-        public Dictionary<string, string> SparkEnvironmentVariables { get; set; }
-
-        /// <summary>
-        /// Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this cluster will not be automatically terminated. If specified, the threshold must be between 10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination.
-        /// </summary>
-        [JsonProperty(PropertyName = "autotermination_minutes")]
-        public int AutoTerminationMinutes { get; set; }
-
-        /// <summary>
-        /// Determines whether the cluster was created by a user through the UI, by the Databricks Jobs Scheduler, or through an API request.
-        /// </summary>
-        [JsonProperty(PropertyName = "cluster_source")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public ClusterSource? ClusterSource { get; set; }
+        [JsonProperty(PropertyName = "jdbc_port")]
+        public int JdbcPort { get; set; }
 
         /// <summary>
         /// Current state of the cluster.
@@ -193,6 +158,20 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonProperty(PropertyName = "pinned_by_user_name")]
         public string PinnedByUserName { get; set; }
 
+        public ClusterInfo WithAutoScale(int minWorkers, int maxWorkers)
+        {
+            this.AutoScale = new AutoScale(minWorkers, maxWorkers);
+            this.NumberOfWorkers = null;
+            return this;
+        }
+
+        public ClusterInfo WithNumberOfWorkers(int numWorkers)
+        {
+            this.NumberOfWorkers = numWorkers;
+            this.AutoScale = null;
+            return this;
+        }
+
         /// <summary>
         /// Specifies whether the cluster supports Python version 3.
         /// </summary>
@@ -240,20 +219,6 @@ namespace Microsoft.Azure.Databricks.Client
                 this.SparkConfiguration.Remove("spark.databricks.repl.allowedLanguages");
             }
 
-            return this;
-        }
-
-        public ClusterInfo WithAutoScale(int minWorkers, int maxWorkers)
-        {
-            this.AutoScale = new AutoScale(minWorkers, maxWorkers);
-            this.NumberOfWorkers = null;
-            return this;
-        }
-
-        public ClusterInfo WithNumberOfWorkers(int numWorkers)
-        {
-            this.NumberOfWorkers = numWorkers;
-            this.AutoScale = null;
             return this;
         }
 
