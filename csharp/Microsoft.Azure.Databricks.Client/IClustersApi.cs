@@ -85,5 +85,17 @@ namespace Microsoft.Azure.Databricks.Client
         /// Returns the list of available Spark versions. These versions can be used to launch a cluster.
         /// </summary>
         Task<IDictionary<string, string>> ListSparkVersions();
+
+        /// <summary>
+        /// Retrieves events pertaining to a specific cluster.
+        /// </summary>
+        /// <param name="clusterId">The ID of the cluster to retrieve events about. This field is required.</param>
+        /// <param name="startTime">The start time in epoch milliseconds. If empty, returns events starting from the beginning of time.</param>
+        /// <param name="endTime">The end time in epoch milliseconds. If empty, returns events up to the current time.</param>
+        /// <param name="order">The order to list events in; either ASC or DESC. Defaults to DESC.</param>
+        /// <param name="eventTypes">An optional set of event types to filter on. If empty, all event types are returned.</param>
+        /// <param name="offset">The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the results are requested in descending order, the end_time field is required.</param>
+        /// <param name="limit">The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed value is 500.</param>
+        Task<EventsResponse> Events(string clusterId, DateTimeOffset? startTime = null, DateTimeOffset? endTime = null, ListOrder? order = null, IEnumerable<ClusterEventType> eventTypes = null, long? offset = null, long? limit = null);
     }
 }

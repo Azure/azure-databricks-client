@@ -34,8 +34,7 @@ namespace Microsoft.Azure.Databricks.Client
         public string SparkContextId { get; set; }
 
         /// <summary>
-        /// If num_workers, number of worker nodes that this cluster should have. A cluster has one Spark Driver and num_workers Executors for a total of num_workers + 1 Spark nodes.
-        /// If autoscale, parameters needed in order to automatically scale clusters up and down based on load.Note: autoscaling works best with DB runtime versions 3.0 or later.
+        /// Number of worker nodes that this cluster should have. A cluster has one Spark Driver and num_workers Executors for a total of num_workers + 1 Spark nodes.
         /// </summary>
         /// <remarks>
         /// Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the actual current number of workers.
@@ -45,13 +44,8 @@ namespace Microsoft.Azure.Databricks.Client
         public int? NumberOfWorkers { get; set; }
 
         /// <summary>
-        /// If num_workers, number of worker nodes that this cluster should have. A cluster has one Spark Driver and num_workers Executors for a total of num_workers + 1 Spark nodes.
-        /// If autoscale, parameters needed in order to automatically scale clusters up and down based on load.Note: autoscaling works best with DB runtime versions 3.0 or later.
+        /// Parameters needed in order to automatically scale clusters up and down based on load.Note: autoscaling works best with DB runtime versions 3.0 or later.
         /// </summary>
-        /// <remarks>
-        /// Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the actual current number of workers.
-        /// For instance, if a cluster is resized from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10 workers, whereas the workers listed in spark_info will gradually increase from 5 to 10 as the new nodes are provisioned.
-        /// </remarks>
         [JsonProperty(PropertyName = "autoscale")]
         public AutoScale AutoScale { get; set; }
 
@@ -201,8 +195,11 @@ namespace Microsoft.Azure.Databricks.Client
         ///     Requires that clusters run Databricks Runtime 3.5 or above.
         ///     Must run their commands on cluster nodes as a low-privilege user forbidden from accessing sensitive parts of the filesystem or creating network connections to ports other than 80 and 443.
         /// </summary>
+        private bool _enableTableAccessControl;
         public ClusterInfo WithTableAccessControl(bool enableTableAccessControl)
         {
+            _enableTableAccessControl = enableTableAccessControl;
+
             if (this.SparkConfiguration == null)
             {
                 this.SparkConfiguration = new Dictionary<string, string>();
@@ -211,15 +208,73 @@ namespace Microsoft.Azure.Databricks.Client
             if (enableTableAccessControl)
             {
                 this.SparkConfiguration["spark.databricks.acl.dfAclsEnabled"] = "true";
-                this.SparkConfiguration["spark.databricks.repl.allowedLanguages"] = "python,sql";
             }
             else
             {
                 this.SparkConfiguration.Remove("spark.databricks.acl.dfAclsEnabled");
+            }
+
+            var allowedReplLang = DatabricksAllowedReplLang(_enableTableAccessControl, _serverlessPool);
+
+            if (string.IsNullOrEmpty(allowedReplLang))
+            {
                 this.SparkConfiguration.Remove("spark.databricks.repl.allowedLanguages");
+            }
+            else
+            {
+                this.SparkConfiguration["spark.databricks.repl.allowedLanguages"] = allowedReplLang;
             }
 
             return this;
+        }
+
+        private bool _serverlessPool;
+
+        /// <summary>
+        /// Set cluster mode to serverless pool when parameter set to true.
+        /// </summary>
+        public ClusterInfo WithServerlessPool(bool useServerlessPool)
+        {
+            _serverlessPool = useServerlessPool;
+
+            if (this.CustomTags == null)
+            {
+                this.CustomTags = new Dictionary<string, string>();
+            }
+
+            if (this.SparkConfiguration == null)
+            {
+                this.SparkConfiguration = new Dictionary<string, string>();
+            }
+
+            if (this._serverlessPool)
+            {
+                this.CustomTags["ResourceClass"] = "Serverless";
+                this.SparkConfiguration["spark.databricks.cluster.profile"] = "serverless";
+            }
+            else
+            {
+                this.CustomTags.Remove("ResourceClass");
+                this.SparkConfiguration.Remove("spark.databricks.cluster.profile");
+            }
+
+            var allowedReplLang = DatabricksAllowedReplLang(_enableTableAccessControl, _serverlessPool);
+
+            if (string.IsNullOrEmpty(allowedReplLang))
+            {
+                this.SparkConfiguration.Remove("spark.databricks.repl.allowedLanguages");
+            }
+            else
+            {
+                this.SparkConfiguration["spark.databricks.repl.allowedLanguages"] = allowedReplLang;
+            }
+
+            return this;
+        }
+
+        private static string DatabricksAllowedReplLang(bool enableTableAccessControl, bool serverlessPool)
+        {
+            return enableTableAccessControl ? "python,sql" : (serverlessPool ? "sql,python,r" : null);
         }
 
         public ClusterInfo WithAutoTermination(int? autoTerminationMinutes)

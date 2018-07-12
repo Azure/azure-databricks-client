@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -247,6 +248,8 @@ namespace Sample
                 Console.WriteLine($"\t{key}\t\t{name}");
             }
 
+            Console.WriteLine("Creating standard cluster");
+
             var clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
                 .WithRuntimeVersion(RuntimeVersions.Runtime_4_2_Scala_2_11)
                 .WithAutoScale(3, 7)
@@ -254,8 +257,7 @@ namespace Sample
                 .WithClusterLogConf("dbfs:/logs/")
                 .WithNodeType(NodeTypes.Standard_D3_v2)
                 .WithPython3(true);
-
-            Console.WriteLine("Creating cluster");
+            
             var clusterId = await client.Clusters.Create(clusterConfig);
 
             var createdCluster = await client.Clusters.Get(clusterId);
@@ -282,24 +284,71 @@ namespace Sample
             Console.WriteLine("Deleting cluster {0}", clusterId);
             await client.Clusters.Delete(clusterId);
 
+            Console.WriteLine("Creating serverless pool cluster");
 
+            clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
+                .WithRuntimeVersion(RuntimeVersions.Runtime_4_2_Scala_2_11)
+                .WithAutoScale(3, 7)
+                .WithAutoTermination(30)
+                .WithClusterLogConf("dbfs:/logs/")
+                .WithNodeType(NodeTypes.Standard_D3_v2)
+                .WithPython3(true)
+                .WithServerlessPool(true)
+                .WithTableAccessControl(true);
 
-            //var handler = new HttpClientHandler
-            //{
-            //    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            //};
+            clusterId = await client.Clusters.Create(clusterConfig);
 
-            //var httpClient = new HttpClient(handler)
-            //{
-            //    BaseAddress = new Uri("https://southcentralus.azuredatabricks.net/api/2.0/")
-            //};
+            createdCluster = await client.Clusters.Get(clusterId);
+            createdClusterConfig = JsonConvert.SerializeObject(createdCluster, Formatting.Indented);
 
-            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "dapi739aab42c120dbe8c9d83c530d1e9a47");
-            //httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            //httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+            Console.WriteLine("Created cluster config: ");
+            Console.WriteLine(createdClusterConfig);
 
-            //var httpContent = new StringContent("{\"cluster_id\": \"0530-210517-viced348\"}");
-            //var result = await httpClient.PostAsync("clusters/events", httpContent);
+            while (true)
+            {
+                var state = await client.Clusters.Get(clusterId);
+
+                Console.WriteLine("[{0:s}] Cluster {1}\tState {2}\tMessage {3}", DateTime.UtcNow, clusterId,
+                    state.State, state.StateMessage);
+
+                if (state.State == ClusterState.RUNNING || state.State == ClusterState.ERROR || state.State == ClusterState.TERMINATED)
+                {
+                    break;
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(15));
+            }
+
+            Console.WriteLine("Deleting cluster {0}", clusterId);
+            await client.Clusters.Delete(clusterId);
+            
+            Console.WriteLine("Getting all events from a test cluster");
+            const string testClusterId = "0530-210517-viced348";
+            
+            EventsResponse eventsResponse = null;
+            var events = new List<ClusterEvent>();
+            do
+            {
+                var nextPage = eventsResponse?.NextPage;
+                eventsResponse = await client.Clusters.Events(
+                    testClusterId, 
+                    nextPage?.StartTime, 
+                    nextPage?.EndTime,
+                    nextPage?.Order, 
+                    nextPage?.EventTypes, 
+                    nextPage?.Offset, 
+                    nextPage?.Limit
+                    );
+                events.AddRange(eventsResponse.Events);
+
+            } while (eventsResponse.HasNextPage);
+
+            Console.WriteLine("{0} events retrieved from cluster {1}.", events.Count, testClusterId);
+            Console.WriteLine("Top 10 events: ");
+            foreach (var e in events.Take(10))
+            {
+                Console.WriteLine("\t[{0:s}] {1}\t{2}", e.Timestamp, e.Type, e.Details.User);
+            }
         }
 
         private static async Task GroupsApi(Client client)

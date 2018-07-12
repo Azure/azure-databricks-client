@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -98,6 +99,26 @@ namespace Microsoft.Azure.Databricks.Client
                 sv => (string) sv.key.ToObject<string>(),
                 sv => (string) sv.name.ToObject<string>()
             );
+        }
+
+        public async Task<EventsResponse> Events(string clusterId, DateTimeOffset? startTime, DateTimeOffset? endTime, ListOrder? order,
+            IEnumerable<ClusterEventType> eventTypes, long? offset, long? limit)
+        {
+            var request = new EventsRequest
+            {
+                ClusterId = clusterId,
+                EndTime = endTime,
+                StartTime = startTime,
+                Order = order,
+                EventTypes = eventTypes,
+                Limit = limit,
+                Offset = offset
+            };
+
+            var response = await HttpPost<EventsRequest, EventsResponse>(this.HttpClient, "clusters/events", request)
+                .ConfigureAwait(false);
+
+            return response;
         }
     }
 }
