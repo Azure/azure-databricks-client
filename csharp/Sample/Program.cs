@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Azure.Databricks.Client;
 using Newtonsoft.Json;
@@ -35,13 +33,13 @@ namespace Sample
             Console.WriteLine("Creating client");
             using (var client = Client.CreateClient(baseUrl, token))
             {
-                // await WorkspaceApi(client);
-                // await LibrariesApi(client);
-                // await SecretsApi(client);
-                // await TokenApi(client);
-                // await GroupsApi(client);
-                // await DbfsApi(client);
-                // await JobsApi(client);
+                await WorkspaceApi(client);
+                await LibrariesApi(client);
+                await SecretsApi(client);
+                await TokenApi(client);
+                await GroupsApi(client);
+                await DbfsApi(client);
+                await JobsApi(client);
                 await ClustersApi(client);
             }
 
@@ -395,7 +393,7 @@ namespace Sample
             Console.WriteLine($"Creating workspace {SampleWorkspacePath}");
             await client.Workspace.Mkdirs(SampleWorkspacePath);
 
-            Console.WriteLine($"Dowloading sample notebook");
+            Console.WriteLine("Dowloading sample notebook");
             var content = await DownloadSampleNotebook();
 
             Console.WriteLine($"Importing sample HTML notebook to {SampleNotebookPath}");
