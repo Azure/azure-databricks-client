@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.Databricks.Client", "Microsoft.Azure.Databricks.Client\Microsoft.Azure.Databricks.Client.csproj", "{73B074F0-B34E-44F7-8AE4-A6B83BF29725}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{B2136A19-FB2D-4AB5-BA72-DCF2F36E410E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample", "Sample\Sample.csproj", "{B2136A19-FB2D-4AB5-BA72-DCF2F36E410E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Azure.Databricks.Cli", "Microsoft.Azure.Databricks.Cli\Microsoft.Azure.Databricks.Cli.csproj", "{6475A9E8-77E2-4015-B025-AC1BA08D0FD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{B2136A19-FB2D-4AB5-BA72-DCF2F36E410E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2136A19-FB2D-4AB5-BA72-DCF2F36E410E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2136A19-FB2D-4AB5-BA72-DCF2F36E410E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6475A9E8-77E2-4015-B025-AC1BA08D0FD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6475A9E8-77E2-4015-B025-AC1BA08D0FD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6475A9E8-77E2-4015-B025-AC1BA08D0FD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6475A9E8-77E2-4015-B025-AC1BA08D0FD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
