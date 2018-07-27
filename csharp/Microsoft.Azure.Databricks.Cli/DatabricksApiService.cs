@@ -15,6 +15,7 @@ namespace Microsoft.Azure.Databricks.Cli
             var options = app.GetOptions().ToArray();
             var clusterUrlOption = options.Single(o => o.LongName == "cluster-base-url");
             var accessTokenOption = options.Single(o => o.LongName == "access-token");
+            var requestTimeoutOption = options.Single(o => o.LongName == "request-timeout");
 
             var baseUrl = clusterUrlOption.HasValue() ? clusterUrlOption.Value() : null;
             if (baseUrl == null)
@@ -30,7 +31,8 @@ namespace Microsoft.Azure.Databricks.Cli
                 throw new ApplicationException("access token not specified");
             }
 
-            this._client = DatabricksClient.CreateClient(baseUrl, accessToken);
+            var requestTimeout = requestTimeoutOption.HasValue() ? int.Parse(requestTimeoutOption.Value()) : 30;
+            this._client = DatabricksClient.CreateClient(baseUrl, accessToken, requestTimeout);
         }
 
         public async Task<long> CreateJob(JobSettings jobSettings)

@@ -21,6 +21,7 @@ namespace Microsoft.Azure.Databricks.Cli
 
             app.Option("-u|--cluster-base-url", "Cluster base URL (e.g. https://southcentralus.azuredatabricks.net)", CommandOptionType.SingleValue, true);
             app.Option("-t|--access-token", "Cluster access token", CommandOptionType.SingleValue, true);
+            app.Option("-rto|--request-timeout", "Request timeout in seconds", CommandOptionType.SingleValue, true);
 
             ICommandLineApplicationBuilder jobsCommandBuilder = new JobsCommandBuilder(app);
             app.Commands.Add(jobsCommandBuilder.Build());
