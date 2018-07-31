@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -52,7 +53,7 @@ namespace Microsoft.Azure.Databricks.Client
 
         public override bool CanConvert(Type objectType)
         {
-            return typeof(Library).IsAssignableFrom(objectType);
+            return typeof(Library).GetTypeInfo().IsAssignableFrom(objectType);
         }
     }
 }
