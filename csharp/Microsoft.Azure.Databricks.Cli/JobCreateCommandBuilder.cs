@@ -42,7 +42,8 @@ namespace Microsoft.Azure.Databricks.Cli
             var notebookPathOption = cmdJobCreate.Option("-npath|--notebook-path", "Path to notebook", CommandOptionType.SingleValue);
 
             var waitOption = cmdJobCreate.Option("-w|--wait", "Wait for job to complete", CommandOptionType.NoValue);
-
+            var deleteOption = cmdJobCreate.Option("-d|--delete", "Delete successful job", CommandOptionType.NoValue);
+            
             cmdJobCreate.OnExecute(async () =>
             {
                 var jobSettings = GetJobSettings(jarMainClassOption, jobNameOption, cmdJobCreate,
@@ -101,6 +102,11 @@ namespace Microsoft.Azure.Databricks.Cli
                 }
 
                 ConsoleLogger.WriteLineInfo("Job run succeeded.");
+
+                if (deleteOption.HasValue())
+                {
+                    await service.DeleteJob(jobId);
+                }
 
                 return await Task.FromResult(0);
             });

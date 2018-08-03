@@ -79,5 +79,12 @@ namespace Microsoft.Azure.Databricks.Cli
                 }
             }
         }
+
+        public async Task DeleteJob(long jobId)
+        {
+            ConsoleLogger.WriteLineVerbose($"[{DateTime.UtcNow:s}] Deleting job {jobId}...");
+            await _client.Jobs.Delete(jobId);
+            ConsoleLogger.WriteLineVerbose($"[{DateTime.UtcNow:s}] Job {jobId} deleted.");
+        }
     }
 }
