@@ -1,8 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <SignAssembly>false</SignAssembly>
+    <TargetFrameworks>netstandard2.0;netstandard1.5;net45</TargetFrameworks>
+    <SignAssembly>true</SignAssembly>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Company>Microsoft</Company>
+    <Authors>Microsoft</Authors>
+    <Description>Client library for managing Azure Databricks clusters and submitting jobs.</Description>
+    <RepositoryUrl>https://github.com/Azure/azure-databricks-client</RepositoryUrl>
+    <PackageTags>Databricks,Client</PackageTags>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Azure/azure-databricks-client/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Azure/azure-databricks-client</PackageProjectUrl>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <Copyright>Copyright (c) Microsoft Corporation. All rights reserved.</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,4 +23,8 @@
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45' or '$(TargetFramework)' == 'netstandard1.5' ">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  
 </Project>
