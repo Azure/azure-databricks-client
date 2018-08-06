@@ -4,7 +4,6 @@
     <TargetFrameworks>netstandard2.0;netstandard1.5;net45</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Deterministic>False</Deterministic>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Company>Microsoft</Company>
     <Authors>Microsoft</Authors>
