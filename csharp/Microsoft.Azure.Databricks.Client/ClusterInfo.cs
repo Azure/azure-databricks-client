@@ -214,7 +214,7 @@ namespace Microsoft.Azure.Databricks.Client
                 this.SparkConfiguration.Remove("spark.databricks.acl.dfAclsEnabled");
             }
 
-            var allowedReplLang = DatabricksAllowedReplLang(_enableTableAccessControl, _serverlessPool);
+            var allowedReplLang = DatabricksAllowedReplLang(_enableTableAccessControl, _highConcurrencyMode);
 
             if (string.IsNullOrEmpty(allowedReplLang))
             {
@@ -228,14 +228,14 @@ namespace Microsoft.Azure.Databricks.Client
             return this;
         }
 
-        private bool _serverlessPool;
+        private bool _highConcurrencyMode;
 
         /// <summary>
-        /// Set cluster mode to serverless pool when parameter set to true.
+        /// Set cluster mode to high concurrency when parameter set to true.
         /// </summary>
-        public ClusterInfo WithServerlessPool(bool useServerlessPool)
+        public ClusterInfo WithHighConcurrencyMode(bool highConcurrencyMode)
         {
-            _serverlessPool = useServerlessPool;
+            _highConcurrencyMode = highConcurrencyMode;
 
             if (this.CustomTags == null)
             {
@@ -247,7 +247,7 @@ namespace Microsoft.Azure.Databricks.Client
                 this.SparkConfiguration = new Dictionary<string, string>();
             }
 
-            if (this._serverlessPool)
+            if (this._highConcurrencyMode)
             {
                 this.CustomTags["ResourceClass"] = "Serverless";
                 this.SparkConfiguration["spark.databricks.cluster.profile"] = "serverless";
@@ -258,7 +258,7 @@ namespace Microsoft.Azure.Databricks.Client
                 this.SparkConfiguration.Remove("spark.databricks.cluster.profile");
             }
 
-            var allowedReplLang = DatabricksAllowedReplLang(_enableTableAccessControl, _serverlessPool);
+            var allowedReplLang = DatabricksAllowedReplLang(_enableTableAccessControl, _highConcurrencyMode);
 
             if (string.IsNullOrEmpty(allowedReplLang))
             {
@@ -272,9 +272,9 @@ namespace Microsoft.Azure.Databricks.Client
             return this;
         }
 
-        private static string DatabricksAllowedReplLang(bool enableTableAccessControl, bool serverlessPool)
+        private static string DatabricksAllowedReplLang(bool enableTableAccessControl, bool highConcurrencyMode)
         {
-            return enableTableAccessControl ? "python,sql" : (serverlessPool ? "sql,python,r" : null);
+            return enableTableAccessControl ? "python,sql" : (highConcurrencyMode ? "sql,python,r" : null);
         }
 
         public ClusterInfo WithAutoTermination(int? autoTerminationMinutes)

@@ -291,7 +291,7 @@ namespace Sample
                 .WithClusterLogConf("dbfs:/logs/")
                 .WithNodeType(NodeTypes.Standard_D3_v2)
                 .WithPython3(true)
-                .WithServerlessPool(true)
+                .WithHighConcurrencyMode(true)
                 .WithTableAccessControl(true);
 
             clusterId = await client.Clusters.Create(clusterConfig);
