@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard1.5;net45</TargetFrameworks>
@@ -14,7 +14,8 @@
     <PackageProjectUrl>https://github.com/Azure/azure-databricks-client</PackageProjectUrl>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-    <Copyright>Copyright (c) Microsoft Corporation. All rights reserved.</Copyright>
+    <Copyright>© Microsoft Corporation. All right reserved.</Copyright>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
