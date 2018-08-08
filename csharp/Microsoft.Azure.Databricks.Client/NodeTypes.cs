@@ -29,6 +29,10 @@ namespace Microsoft.Azure.Databricks.Client
         public const string Standard_E16s_v3 = "Standard_E16s_v3";
         public const string Standard_E32s_v3 = "Standard_E32s_v3";
         public const string Standard_E64s_v3 = "Standard_E64s_v3";
+        public const string Standard_L4s = "Standard_L4s";
+        public const string Standard_L8s = "Standard_L8s";
+        public const string Standard_L16s = "Standard_L16s";
+        public const string Standard_L32s = "Standard_L32s";
         public const string Standard_F4s = "Standard_F4s";
         public const string Standard_F8s = "Standard_F8s";
         public const string Standard_F16s = "Standard_F16s";
