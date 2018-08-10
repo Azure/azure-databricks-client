@@ -31,7 +31,7 @@ namespace Sample
             var token = args[1];
 
             Console.WriteLine("Creating client");
-            using (var client = Client.CreateClient(baseUrl, token))
+            using (var client = DatabricksClient.CreateClient(baseUrl, token))
             {
                 await WorkspaceApi(client);
                 await LibrariesApi(client);
@@ -47,7 +47,7 @@ namespace Sample
             Console.ReadLine();
         }
 
-        private static async Task WorkspaceApi(Client client)
+        private static async Task WorkspaceApi(DatabricksClient client)
         {
             Console.WriteLine($"Creating workspace {SampleWorkspacePath}");
             await client.Workspace.Mkdirs(SampleWorkspacePath);
@@ -96,7 +96,7 @@ namespace Sample
             return content;
         }
 
-        private static async Task LibrariesApi(Client client)
+        private static async Task LibrariesApi(DatabricksClient client)
         {
             Console.WriteLine("All cluster statuses");
             var libraries = await client.Libraries.AllClusterStatuses();
@@ -174,7 +174,7 @@ namespace Sample
 
         }
 
-        private static async Task SecretsApi(Client client)
+        private static async Task SecretsApi(DatabricksClient client)
         {
             const string scope = "SampleScope";
             Console.WriteLine("Creating secrets scope");
@@ -201,7 +201,7 @@ namespace Sample
             await client.Secrets.DeleteScope(scope);
         }
 
-        private static async Task TokenApi(Client client)
+        private static async Task TokenApi(DatabricksClient client)
         {
             Console.WriteLine("Creating token without expiry");
             var (tokenValue, tokenInfo) = await client.Token.Create(null, "Sample token");
@@ -230,7 +230,7 @@ namespace Sample
             }
         }
 
-        private static async Task ClustersApi(Client client)
+        private static async Task ClustersApi(DatabricksClient client)
         {
             Console.WriteLine("Listing node types (take 10)");
             var nodeTypes = await client.Clusters.ListNodeTypes();
@@ -349,7 +349,7 @@ namespace Sample
             }
         }
 
-        private static async Task GroupsApi(Client client)
+        private static async Task GroupsApi(DatabricksClient client)
         {
             Console.WriteLine("Listing groups");
             var groupsList = await client.Groups.List();
@@ -381,7 +381,7 @@ namespace Sample
             }
         }
 
-        private static async Task JobsApi(Client client)
+        private static async Task JobsApi(DatabricksClient client)
         {
             Console.WriteLine("Creating new job");
             var newCluster = ClusterInfo.GetNewClusterConfiguration()
@@ -448,7 +448,7 @@ namespace Sample
             await client.Workspace.Delete(SampleWorkspacePath, true);
         }
 
-        private static async Task DbfsApi(Client client)
+        private static async Task DbfsApi(DatabricksClient client)
         {
             Console.WriteLine("Listing directories under dbfs:/");
             var result = await client.Dbfs.List("/");

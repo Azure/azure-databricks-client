@@ -18,9 +18,9 @@ namespace Microsoft.Azure.Databricks.Client
                 SparkJarTask = new SparkJarTask
                 {
                     MainClassName = mainClass,
-                    Parameters = parameters.ToList()
+                    Parameters = parameters?.ToList()
                 },
-                Libraries = jarLibs.Select(jarLib => new JarLibrary(jarLib)).Cast<Library>().ToList(),
+                Libraries = jarLibs?.Select(jarLib => new JarLibrary(jarLib)).Cast<Library>().ToList(),
                 SparkPythonTask = null,
                 SparkSubmitTask = null,
                 NotebookTask = null

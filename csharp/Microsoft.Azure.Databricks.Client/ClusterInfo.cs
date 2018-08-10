@@ -8,7 +8,7 @@ namespace Microsoft.Azure.Databricks.Client
     /// <summary>
     /// Describes all of the metadata about a single Spark cluster in Databricks.
     /// </summary>
-    /// <seealso cref="T:Microsoft.Azure.Databricks.Client.ClusterInstance" />
+    /// <seealso cref="T:Microsoft.Azure.Databricks.DatabricksClient.ClusterInstance" />
     public class ClusterInfo : ClusterAttributes
     {
         public static ClusterInfo GetNewClusterConfiguration(string clusterName = null)

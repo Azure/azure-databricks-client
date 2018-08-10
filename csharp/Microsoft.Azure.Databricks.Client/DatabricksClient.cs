@@ -5,21 +5,24 @@ using System.Net.Http.Headers;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public sealed class Client : IDisposable
+    public sealed class DatabricksClient : IDisposable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Client"/> class.
+        /// Initializes a new instance of the <see cref="DatabricksClient"/> class.
         /// </summary>
         /// <param name="baseUrl">The base URL of the databricks portal. ex. https://southcentralus.azuredatabricks.net</param>
         /// <param name="token">The access token.</param>
         /// <param name="timeoutSeconds">The timeout in seconds for the http requests.</param>
-        private Client(string baseUrl, string token, long timeoutSeconds = 30)
+        private DatabricksClient(string baseUrl, string token, long timeoutSeconds = 30)
         {
             var apiUrl = new Uri(new Uri(baseUrl), "api/2.0/");
-
-            var handler = new HttpClientHandler
+            
+            var handler = new TimeoutHandler
             {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                InnerHandler = new HttpClientHandler
+                {
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                }
             };
 
             var httpClient = new HttpClient(handler)
@@ -43,7 +46,7 @@ namespace Microsoft.Azure.Databricks.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Client"/> class.
+        /// Initializes a new instance of the <see cref="DatabricksClient"/> class.
         /// </summary>
         /// <param name="clusterApi">The cluster API implementation.</param>
         /// <param name="jobsApi">The jobs API implementation.</param>
@@ -54,7 +57,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="tokenApi">The token API implementation.</param>
         /// <param name="workspaceApi">The workspace API implementation.</param>
         /// 
-        private Client(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi, ISecretsApi secretsApi,
+        private DatabricksClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi, ISecretsApi secretsApi,
             IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi, IWorkspaceApi workspaceApi)
         {
             this.Clusters = clusterApi;
@@ -73,19 +76,19 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="baseUrl">Base URL for the databricks resource. For example: https://southcentralus.azuredatabricks.net</param>
         /// <param name="token">The access token. To generate a token, refer to this document: https://docs.databricks.com/api/latest/authentication.html#generate-a-token </param>
         /// <param name="timeoutSeconds">Web request time out in seconds</param>
-        public static Client CreateClient(string baseUrl, string token, long timeoutSeconds = 30)
+        public static DatabricksClient CreateClient(string baseUrl, string token, long timeoutSeconds = 30)
         {
-            return new Client(baseUrl, token, timeoutSeconds);
+            return new DatabricksClient(baseUrl, token, timeoutSeconds);
         }
 
         /// <summary>
         /// Create client object with mock implementation. This is for unit testing purpose.
         /// </summary>
-        public static Client CreateClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi,
+        public static DatabricksClient CreateClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi,
             ISecretsApi secretsApi, IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi,
             IWorkspaceApi workspaceApi)
         {
-            return new Client(clusterApi, jobsApi, dbfsApi, secretsApi, groupsApi, librariesApi, tokenApi,
+            return new DatabricksClient(clusterApi, jobsApi, dbfsApi, secretsApi, groupsApi, librariesApi, tokenApi,
                 workspaceApi);
         }
 
