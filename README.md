@@ -77,7 +77,7 @@ Creating secret scope
 
 ```cs
 const string scope = "SampleScope";
-await client.Secrets.CreateScop(scope, null);
+await client.Secrets.CreateScope(scope, null);
 ```
 
 Create text secret
