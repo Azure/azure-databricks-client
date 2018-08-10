@@ -1,5 +1,100 @@
+# Azure Databricks Client Library
 
-# Contributing
+----------
+
+[![NuGet version ()](https://img.shields.io/badge/nuget-1.0.809.2-blue.svg)](https://www.nuget.org/packages/Microsoft.Azure.Databricks.Client/)
+
+The Azure Databricks Client Library allows you to automate your Azure Databricks environment through Azure Databricks REST Api.
+
+The implementation of this library is based on [REST Api version 2.0](https://docs.azuredatabricks.net/api/latest/index.html#).  
+
+## Usage
+
+Check out the Sample project for more detailed usages.
+
+### Creating client
+
+```cs
+using (var client = DatabricksClient.CreateClient(baseUrl, token))
+    {
+        // ...
+    }
+
+```
+
+### Cluster API
+
+Create a standard cluster
+
+```cs
+var clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
+    .WithRuntimeVersion(RuntimeVersions.Runtime_4_2_Scala_2_11)
+    .WithAutoScale(3, 7)
+    .WithAutoTermination(30)
+    .WithClusterLogConf("dbfs:/logs/")
+    .WithNodeType(NodeTypes.Standard_D3_v2)
+    .WithPython3(true);
+
+var clusterId = await client.Clusters.Create(clusterConfig);
+```
+
+Delete a cluster
+
+```cs
+await client.Clusters.Delete(clusterId);
+```
+
+### Jobs API
+
+```cs
+// New cluster config
+var newCluster = ClusterInfo.GetNewClusterConfiguration()
+    .WithNumberOfWorkers(3)
+    .WithPython3(true)
+    .WithNodeType(NodeTypes.Standard_D3_v2)
+    .WithRuntimeVersion(RuntimeVersions.Runtime_4_2_Scala_2_11);
+
+// Create job settings
+var jobSettings = JobSettings.GetNewNotebookJobSettings(
+        "Sample Job",
+        SampleNotebookPath,
+        null)
+    .WithNewCluster(newCluster);
+
+// Create new job
+var jobId = await client.Jobs.Create(jobSettings);
+
+// Start the job and retrieve the run id.
+var runId = (await client.Jobs.RunNow(jobId, null)).RunId;
+
+// Keep polling the run by calling RunsGet until run terminates:
+//  var run = await client.Jobs.RunsGet(runId);
+```
+
+### Secrets API
+
+Creating secret scope
+
+```cs
+const string scope = "SampleScope";
+await client.Secrets.CreateScop(scope, null);
+```
+
+Create text secret
+
+```cs
+var secretName = "secretkey.text";
+await client.Secrets.PutSecret("secret text", scope, secretName);
+```
+
+Create binary secret
+
+```cs
+var secretName = "secretkey.bin";
+await client.Secrets.PutSecret(new byte[]{0x01, 0x02, 0x03, 0x04}, scope, secretName);
+```
+
+## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
