@@ -14,7 +14,7 @@ namespace Sample
         /// <summary>
         /// Must be an existing user in the databricks environment, otherwise you will get a "DIRECTORY_PROTECTED" error.
         /// </summary>
-        private const string DatabricksUserName = "jasowang@microsoft.com"; 
+        private const string DatabricksUserName = "username@company.com"; 
 
         private static readonly string SampleWorkspacePath = $"/Users/{DatabricksUserName}/SampleWorkspace";
         private static readonly string SampleNotebookPath = $"{SampleWorkspacePath}/Quick Start Using Scala";
