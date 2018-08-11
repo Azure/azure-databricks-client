@@ -1,0 +1,17 @@
+[branch "master"]
+	rebase = true
+[pull]
+	rebase = true
+[push]
+	default = simple
+[alias]
+	a = add --all
+	b = branch --all
+	s = status --short --branch
+	ci = commit
+	co = checkout
+	df = diff
+	dc = diff --cached
+	lg = log -p
+	who = shortlog -s --
+	f = fetch -p
