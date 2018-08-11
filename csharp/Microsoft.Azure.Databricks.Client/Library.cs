@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
+// ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace Microsoft.Azure.Databricks.Client
 {
     public abstract class Library
     {
+        
     }
 
     public class JarLibrary : Library
@@ -31,6 +34,17 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonProperty(PropertyName = "jar")]
         public string Jar { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            return obj is JarLibrary library &&
+                   Jar == library.Jar;
+        }
+
+        public override int GetHashCode()
+        {
+            return 581150978 + EqualityComparer<string>.Default.GetHashCode(Jar);
+        }
+
         public override string ToString()
         {
             return "Jar://" + Jar;
@@ -45,9 +59,45 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonProperty(PropertyName = "egg")]
         public string Egg { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            return obj is EggLibrary library &&
+                   Egg == library.Egg;
+        }
+
+        public override int GetHashCode()
+        {
+            return -1932603306 + EqualityComparer<string>.Default.GetHashCode(Egg);
+        }
+
         public override string ToString()
         {
             return "Egg://" + Egg;
+        }
+    }
+
+    public class WheelLibrary : Library
+    {
+        /// <summary>
+        /// URI of the wheel or zipped wheels to be installed. Only DBFS URIs are supported. For example: { "whl": "dbfs:/my/whl" }.
+        /// </summary>
+        [JsonProperty(PropertyName = "whl")]
+        public string Wheel { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is WheelLibrary library &&
+                   Wheel == library.Wheel;
+        }
+
+        public override int GetHashCode()
+        {
+            return -1948851972 + EqualityComparer<string>.Default.GetHashCode(Wheel);
+        }
+
+        public override string ToString()
+        {
+            return "Whl://" + Wheel;
         }
     }
 
@@ -55,6 +105,18 @@ namespace Microsoft.Azure.Databricks.Client
     {
         [JsonProperty(PropertyName = "pypi")]
         public PythonPyPiLibrarySpec PythonPyPiLibrarySpec { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PythonPyPiLibrary library &&
+                   EqualityComparer<PythonPyPiLibrarySpec>.Default.Equals(PythonPyPiLibrarySpec,
+                       library.PythonPyPiLibrarySpec);
+        }
+
+        public override int GetHashCode()
+        {
+            return -657381907 + EqualityComparer<PythonPyPiLibrarySpec>.Default.GetHashCode(PythonPyPiLibrarySpec);
+        }
 
         public override string ToString()
         {
@@ -78,6 +140,21 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "package")]
         public string Package { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PythonPyPiLibrarySpec spec &&
+                   Repo == spec.Repo &&
+                   Package == spec.Package;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -587645984;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Repo);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Package);
+            return hashCode;
+        }
     }
 
 
@@ -85,6 +162,17 @@ namespace Microsoft.Azure.Databricks.Client
     {
         [JsonProperty(PropertyName = "cran")]
         public RCranLibrarySpec RCranLibrarySpec { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is RCranLibrary library &&
+                   EqualityComparer<RCranLibrarySpec>.Default.Equals(RCranLibrarySpec, library.RCranLibrarySpec);
+        }
+
+        public override int GetHashCode()
+        {
+            return 167115749 + EqualityComparer<RCranLibrarySpec>.Default.GetHashCode(RCranLibrarySpec);
+        }
 
         public override string ToString()
         {
@@ -108,6 +196,21 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "package")]
         public string Package { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is RCranLibrarySpec spec &&
+                   Repo == spec.Repo &&
+                   Package == spec.Package;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -587645984;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Repo);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Package);
+            return hashCode;
+        }
     }
 
 
@@ -116,6 +219,17 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonProperty(PropertyName = "maven")]
         public MavenLibrarySpec MavenLibrarySpec { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            return obj is MavenLibrary library &&
+                   EqualityComparer<MavenLibrarySpec>.Default.Equals(MavenLibrarySpec, library.MavenLibrarySpec);
+        }
+
+        public override int GetHashCode()
+        {
+            return -2067436108 + EqualityComparer<MavenLibrarySpec>.Default.GetHashCode(MavenLibrarySpec);
+        }
+        
         public override string ToString()
         {
             return "maven://" + MavenLibrarySpec.Repo + ":" + MavenLibrarySpec.Coordinates;
@@ -147,5 +261,22 @@ namespace Microsoft.Azure.Databricks.Client
         /// </remarks>
         [JsonProperty(PropertyName = "exclusions")]
         public IEnumerable<string> Exclusions { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is MavenLibrarySpec spec &&
+                   Repo == spec.Repo &&
+                   Coordinates == spec.Coordinates &&
+                   Exclusions.SequenceEqual(spec.Exclusions);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -2091977555;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Repo);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Coordinates);
+            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<string>>.Default.GetHashCode(Exclusions);
+            return hashCode;
+        }
     }
 }

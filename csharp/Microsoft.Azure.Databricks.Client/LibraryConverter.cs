@@ -33,6 +33,11 @@ namespace Microsoft.Azure.Databricks.Client
                 return library.ToObject<EggLibrary>();
             }
 
+            if (library.ContainsKey("whl"))
+            {
+                return library.ToObject<WheelLibrary>();
+            }
+
             if (library.ContainsKey("maven"))
             {
                 return library.ToObject<MavenLibrary>();

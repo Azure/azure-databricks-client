@@ -5,6 +5,19 @@ using Newtonsoft.Json.Converters;
 
 namespace Microsoft.Azure.Databricks.Client
 {
+    public enum ClusterMode
+    {
+        /// <summary>
+        /// The standard cluster mode. Recommended for single-user clusters. Can run SQL, Python, R, and Scala workloads.
+        /// </summary>
+        Standard,
+
+        /// <summary>
+        /// High concurrency cluster mode. Optimized to run concurrent SQL, Python, and R workloads. Does not support Scala. Previously known as Serverless.
+        /// </summary>
+        HighConcurrency
+    }
+
     /// <summary>
     /// Describes all of the metadata about a single Spark cluster in Databricks.
     /// </summary>
@@ -214,7 +227,7 @@ namespace Microsoft.Azure.Databricks.Client
                 this.SparkConfiguration.Remove("spark.databricks.acl.dfAclsEnabled");
             }
 
-            var allowedReplLang = DatabricksAllowedReplLang(_enableTableAccessControl, _highConcurrencyMode);
+            var allowedReplLang = DatabricksAllowedReplLang(enableTableAccessControl, _clusterMode);
 
             if (string.IsNullOrEmpty(allowedReplLang))
             {
@@ -228,14 +241,11 @@ namespace Microsoft.Azure.Databricks.Client
             return this;
         }
 
-        private bool _highConcurrencyMode;
+        private ClusterMode _clusterMode = ClusterMode.Standard;
 
-        /// <summary>
-        /// Set cluster mode to high concurrency when parameter set to true.
-        /// </summary>
-        public ClusterInfo WithHighConcurrencyMode(bool highConcurrencyMode)
+        public ClusterInfo WithClusterMode(ClusterMode clusterMode)
         {
-            _highConcurrencyMode = highConcurrencyMode;
+            this._clusterMode = clusterMode;
 
             if (this.CustomTags == null)
             {
@@ -247,7 +257,7 @@ namespace Microsoft.Azure.Databricks.Client
                 this.SparkConfiguration = new Dictionary<string, string>();
             }
 
-            if (this._highConcurrencyMode)
+            if (clusterMode == ClusterMode.HighConcurrency)
             {
                 this.CustomTags["ResourceClass"] = "Serverless";
                 this.SparkConfiguration["spark.databricks.cluster.profile"] = "serverless";
@@ -258,7 +268,7 @@ namespace Microsoft.Azure.Databricks.Client
                 this.SparkConfiguration.Remove("spark.databricks.cluster.profile");
             }
 
-            var allowedReplLang = DatabricksAllowedReplLang(_enableTableAccessControl, _highConcurrencyMode);
+            var allowedReplLang = DatabricksAllowedReplLang(_enableTableAccessControl, clusterMode);
 
             if (string.IsNullOrEmpty(allowedReplLang))
             {
@@ -272,10 +282,8 @@ namespace Microsoft.Azure.Databricks.Client
             return this;
         }
 
-        private static string DatabricksAllowedReplLang(bool enableTableAccessControl, bool highConcurrencyMode)
-        {
-            return enableTableAccessControl ? "python,sql" : (highConcurrencyMode ? "sql,python,r" : null);
-        }
+        private static string DatabricksAllowedReplLang(bool enableTableAccessControl, ClusterMode clusterMode) => 
+            enableTableAccessControl ? "python,sql" : (clusterMode == ClusterMode.HighConcurrency ? "sql,python,r" : null);
 
         public ClusterInfo WithAutoTermination(int? autoTerminationMinutes)
         {

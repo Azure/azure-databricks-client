@@ -38,13 +38,37 @@ namespace Microsoft.Azure.Databricks.Client
 
         public async Task Install(string clusterId, IEnumerable<Library> libraries)
         {
-            var request = new {cluster_id = clusterId, libraries};
+            if (libraries == null)
+            {
+                return;
+            }
+
+            var array = libraries as Library[] ?? libraries.ToArray();
+
+            if (!array.Any())
+            {
+                return;
+            }
+
+            var request = new {cluster_id = clusterId, array };
             await HttpPost(this.HttpClient, "libraries/install", request).ConfigureAwait(false);
         }
 
         public async Task Uninstall(string clusterId, IEnumerable<Library> libraries)
         {
-            var request = new { cluster_id = clusterId, libraries };
+            if (libraries == null)
+            {
+                return;
+            }
+
+            var array = libraries as Library[] ?? libraries.ToArray();
+
+            if (!array.Any())
+            {
+                return;
+            }
+
+            var request = new { cluster_id = clusterId, libraries = array };
             await HttpPost(this.HttpClient, "libraries/uninstall", request).ConfigureAwait(false);
         }
     }
