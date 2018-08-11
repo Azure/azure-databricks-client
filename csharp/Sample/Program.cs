@@ -33,14 +33,14 @@ namespace Sample
             Console.WriteLine("Creating client");
             using (var client = DatabricksClient.CreateClient(baseUrl, token))
             {
-                await WorkspaceApi(client);
-                await LibrariesApi(client);
+                // await WorkspaceApi(client);
+                // await LibrariesApi(client);
                 await SecretsApi(client);
-                await TokenApi(client);
-                await GroupsApi(client);
-                await DbfsApi(client);
-                await JobsApi(client);
-                await ClustersApi(client);
+                // await TokenApi(client);
+                // await GroupsApi(client);
+                // await DbfsApi(client);
+                // await JobsApi(client);
+                // await ClustersApi(client);
             }
 
             Console.WriteLine("Press enter to exit");
@@ -182,29 +182,36 @@ namespace Sample
 
         private static async Task SecretsApi(DatabricksClient client)
         {
-            const string scope = "SampleScope";
+            Console.WriteLine("Listing secrets scope");
+            var scopes = await client.Secrets.ListScopes();
+            foreach (var scope in scopes)
+            {
+                Console.WriteLine("Secret scope: {0}, backend type: {1}", scope.Name, scope.BackendType);
+            }
+
+            const string scopeName = "SampleScope";
             Console.WriteLine("Creating secrets scope");
-            await client.Secrets.CreateScope(scope, null);
+            await client.Secrets.CreateScope(scopeName, null);
 
             Console.WriteLine("Creating text secret");
-            await client.Secrets.PutSecret("textvalue", scope, "secretkey.text");
+            await client.Secrets.PutSecret("textvalue", scopeName, "secretkey.text");
 
             Console.WriteLine("Creating binary secret");
-            await client.Secrets.PutSecret(new byte[]{0x01, 0x02, 0x03, 0x04}, scope, "secretkey.bin");
+            await client.Secrets.PutSecret(new byte[]{0x01, 0x02, 0x03, 0x04}, scopeName, "secretkey.bin");
 
             Console.WriteLine("Listing secrets");
-            var secrets = await client.Secrets.ListSecrets(scope);
+            var secrets = await client.Secrets.ListSecrets(scopeName);
             foreach (var secret in secrets)
             {
                 Console.WriteLine("Secret key {0}, last updated: {1:s}", secret.Key, secret.LastUpdatedTimestamp);
             }
 
             Console.WriteLine("Deleting secrets");
-            await client.Secrets.DeleteSecret(scope, "secretkey.text");
-            await client.Secrets.DeleteSecret(scope, "secretkey.bin");
+            await client.Secrets.DeleteSecret(scopeName, "secretkey.text");
+            await client.Secrets.DeleteSecret(scopeName, "secretkey.bin");
 
             Console.WriteLine("Deleting secrets scope");
-            await client.Secrets.DeleteScope(scope);
+            await client.Secrets.DeleteScope(scopeName);
         }
 
         private static async Task TokenApi(DatabricksClient client)
