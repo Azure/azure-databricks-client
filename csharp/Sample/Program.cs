@@ -109,50 +109,59 @@ namespace Sample
                     Console.WriteLine("\t{0}\t{1}", status.Status, status.Library);
                 }
             }
-
+            
             const string testClusterId = "0530-210517-viced348";
 
             Console.WriteLine("Getting cluster statuses for {0}", testClusterId);
             var statuses = await client.Libraries.ClusterStatus(testClusterId);
+            
             foreach (var status in statuses)
             {
                 Console.WriteLine("\t{0}\t{1}", status.Status, status.Library);
             }
 
-            const string libName = "org.jsoup:jsoup:1.7.2";
-
-            var libraryToInstall = new MavenLibrary
+            var mvnlibraryToInstall = new MavenLibrary
             {
                 MavenLibrarySpec = new MavenLibrarySpec
                 {
-                    Coordinates = libName,
+                    Coordinates = "org.jsoup:jsoup:1.7.2",
                     Exclusions = new[] {"slf4j:slf4j"}
                 }
             };
 
-            Console.WriteLine("Installing library {0}", libraryToInstall);
-            await client.Libraries.Install(testClusterId, new Library[] { libraryToInstall });
+            await TestInstallUninstallLibrary(client, mvnlibraryToInstall, testClusterId);
+
+            var whlLibraryToInstall = new WheelLibrary
+            {
+                Wheel = "dbfs:/mnt/dbfsmount1/temp/docutils-0.14-py3-none-any.whl"
+            };
+
+            await TestInstallUninstallLibrary(client, whlLibraryToInstall, testClusterId);
+        }
+
+        private static async Task TestInstallUninstallLibrary(DatabricksClient client, Library library, string clusterId)
+        {
+            Console.WriteLine("Installing library {0}", library);
+            await client.Libraries.Install(clusterId, new [] { library });
 
             while (true)
             {
-                statuses = await client.Libraries.ClusterStatus(testClusterId);
-                var targetLib = statuses.SingleOrDefault(status =>
-                    status.Library is MavenLibrary library && library.MavenLibrarySpec.Coordinates == libName
-                    );
+                var statuses = await client.Libraries.ClusterStatus(clusterId);
+                var targetLib = statuses.SingleOrDefault(status => status.Library.Equals(library));
 
                 if (targetLib == null)
                 {
-                    Console.WriteLine("[{0:s}] Library {1} not found", DateTime.UtcNow, libName);
+                    Console.WriteLine("[{0:s}] Library {1} not found", DateTime.UtcNow, library);
                     break;
                 }
 
                 if (targetLib.Status == LibraryInstallStatus.INSTALLED)
                 {
-                    Console.WriteLine("[{0:s}] Library {1} INSTALLED", DateTime.UtcNow, libName);
+                    Console.WriteLine("[{0:s}] Library {1} INSTALLED", DateTime.UtcNow, library);
                     break;
                 }
 
-                Console.WriteLine("[{0:s}] Library {1} status {2}", DateTime.UtcNow, libName, targetLib.Status);
+                Console.WriteLine("[{0:s}] Library {1} status {2}", DateTime.UtcNow, library, targetLib.Status);
 
                 if (targetLib.Status == LibraryInstallStatus.FAILED)
                 {
@@ -162,16 +171,13 @@ namespace Sample
                 await Task.Delay(TimeSpan.FromSeconds(5));
             }
 
-            Console.WriteLine("Uninstalling library {0}", libraryToInstall);
-            await client.Libraries.Uninstall(testClusterId, new Library[] { libraryToInstall });
+            Console.WriteLine("Uninstalling library {0}", library);
+            await client.Libraries.Uninstall(clusterId, new [] { library });
 
-            statuses = await client.Libraries.ClusterStatus(testClusterId);
-            var uninstalledLib = statuses.Single(status =>
-                status.Library is MavenLibrary library && library.MavenLibrarySpec.Coordinates == libName
-            );
+            var s = await client.Libraries.ClusterStatus(clusterId);
+            var uninstalledLib = s.Single(status => status.Library.Equals(library));
 
-            Console.WriteLine("[{0:s}] Library {1} status {2}", DateTime.UtcNow, libName, uninstalledLib.Status);
-
+            Console.WriteLine("[{0:s}] Library {1} status {2}", DateTime.UtcNow, library, uninstalledLib.Status);
         }
 
         private static async Task SecretsApi(DatabricksClient client)
@@ -291,7 +297,7 @@ namespace Sample
                 .WithClusterLogConf("dbfs:/logs/")
                 .WithNodeType(NodeTypes.Standard_D3_v2)
                 .WithPython3(true)
-                .WithHighConcurrencyMode(true)
+                .WithClusterMode(ClusterMode.HighConcurrency)
                 .WithTableAccessControl(true);
 
             clusterId = await client.Clusters.Create(clusterConfig);
