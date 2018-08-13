@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Microsoft.Azure.Databricks.Client
 {
@@ -28,11 +29,17 @@ namespace Microsoft.Azure.Databricks.Client
             await HttpPost(this.HttpClient, "secrets/scopes/delete", request).ConfigureAwait(false);
         }
 
+        private static readonly JsonSerializer SecretScopeConverter = new JsonSerializer
+        {
+            Converters = { new SecretScopeConverter() }
+        };
+
         public async Task<IEnumerable<SecretScope>> ListScopes()
         {
             var scopeList = await HttpGet<dynamic>(this.HttpClient, "secrets/scopes/list").ConfigureAwait(false);
+
             return PropertyExists(scopeList, "scopes")
-                ? scopeList.scopes.ToObject<IEnumerable<SecretScope>>()
+                ? scopeList.scopes.ToObject<IEnumerable<SecretScope>>(SecretScopeConverter)
                 : Enumerable.Empty<SecretScope>();
         }
 
