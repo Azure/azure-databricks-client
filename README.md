@@ -2,15 +2,22 @@
 
 ----------
 
-[![NuGet version ()](https://img.shields.io/badge/nuget-1.0.810.3-blue.svg)](https://www.nuget.org/packages/Microsoft.Azure.Databricks.Client/)
+[![NuGet version ()](https://img.shields.io/badge/nuget-1.0.813.2-blue.svg)](https://www.nuget.org/packages/Microsoft.Azure.Databricks.Client/)
 
 The Azure Databricks Client Library allows you to automate your Azure Databricks environment through Azure Databricks REST Api.
 
 The implementation of this library is based on [REST Api version 2.0](https://docs.azuredatabricks.net/api/latest/index.html#).  
 
+## Requirements
+You must have a personal access token to access the databricks REST API.
+
+To generate a token, follow the steps listed in [this document](https://docs.azuredatabricks.net/api/latest/authentication.html).
+
 ## Usage
 
 Check out the Sample project for more detailed usages.
+
+In the following examples, the ```baseUrl``` variable should be set to "https://<REGION>.azuredatabricks.net", and ```token``` variable should be set to your Databricks personal access token.
 
 ### Creating client
 
