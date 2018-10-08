@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.CommandLineUtils;
+using Polly;
 
 namespace Microsoft.Azure.Databricks.Cli
 {
@@ -59,25 +61,34 @@ namespace Microsoft.Azure.Databricks.Cli
             var runId = (await _client.Jobs.RunNow(jobId, null)).RunId;
 
             ConsoleLogger.WriteLineVerbose($"[{DateTime.UtcNow:s}] Run Id: {runId}");
-            
-            while (true)
+
+            var retryPolicy = Policy.Handle<WebException>()
+                .Or<ClientApiException>(e => e.StatusCode == HttpStatusCode.BadGateway)
+                .Or<ClientApiException>(e => e.StatusCode == HttpStatusCode.InternalServerError)
+                .OrResult<RunState>(runState => runState.LifeCycleState == RunLifeCycleState.PENDING)
+                .OrResult(runState => runState.LifeCycleState == RunLifeCycleState.RUNNING)
+                .OrResult(runState => runState.LifeCycleState == RunLifeCycleState.TERMINATING)
+                .WaitAndRetryForeverAsync(
+                    retryAttempt => TimeSpan.FromSeconds(pollIntervalSeconds),
+                    (delegateResult, timespan) =>
+                    {
+                        if (delegateResult.Exception != null)
+                        {
+                            ConsoleLogger.WriteLineError(
+                                $"[{DateTime.UtcNow:s}] Failed to query run status - {delegateResult.Exception}");
+                        }
+                    });
+
+            var result = await retryPolicy.ExecuteAsync(async () =>
             {
                 var run = await _client.Jobs.RunsGet(runId);
-
                 ConsoleLogger.WriteLineVerbose(
                     $"[{DateTime.UtcNow:s}] \tLifeCycleState: {run.State.LifeCycleState}\tStateMessage: {run.State.StateMessage}");
 
-                if (run.State.LifeCycleState == RunLifeCycleState.PENDING ||
-                    run.State.LifeCycleState == RunLifeCycleState.RUNNING ||
-                    run.State.LifeCycleState == RunLifeCycleState.TERMINATING)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(pollIntervalSeconds));
-                }
-                else
-                {
-                    return run.State;
-                }
-            }
+                return run.State;
+            });
+
+            return result;
         }
 
         public async Task DeleteJob(long jobId)
