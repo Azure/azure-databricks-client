@@ -37,6 +37,12 @@ namespace Microsoft.Azure.Databricks.Client
         public const string Standard_F8s = "Standard_F8s";
         public const string Standard_F16s = "Standard_F16s";
         public const string Standard_H16 = "Standard_H16";
+        public const string Standard_F4s_v2 = "Standard_F4s_v2";
+        public const string Standard_F8s_v2 = "Standard_F8s_v2";
+        public const string Standard_F16s_v2 = "Standard_F16s_v2";
+        public const string Standard_F32s_v2 = "Standard_F32s_v2";
+        public const string Standard_F64s_v2 = "Standard_F64s_v2";
+        public const string Standard_F72s_v2 = "Standard_F72s_v2";
         public const string Standard_NC12 = "Standard_NC12";
         public const string Standard_NC24 = "Standard_NC24";
         public const string Standard_NC6s_v3 = "Standard_NC6s_v3";

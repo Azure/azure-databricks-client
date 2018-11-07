@@ -60,5 +60,15 @@ namespace Microsoft.Azure.Databricks.Client
         /// 4.3 (includes Apache Spark 2.3.1, Scala 2.11)
         /// </summary>
         public const string Runtime_4_3_Scala_2_11 = "4.3.x-scala2.11";
+
+        /// <summary>
+        /// 5.0 beta (Scala 2.11)
+        /// </summary>
+        public const string Runtime_5_0_Scala_2_11 = "5.0.x-scala2.11";
+
+        /// <summary>
+        /// 5.0 ML Beta (Scala 2.11)
+        /// </summary>
+        public const string Runtime_5_0_ML_Scala_2_11 = "5.0.x-ml-scala2.11";
     }
 }

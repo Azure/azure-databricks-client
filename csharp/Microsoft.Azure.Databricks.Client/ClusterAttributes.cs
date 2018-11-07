@@ -57,6 +57,16 @@ namespace Microsoft.Azure.Databricks.Client
         public ClusterLogConf ClusterLogConfiguration { get; set; }
 
         /// <summary>
+        /// The configuration for storing init scripts. 
+        /// </summary>
+        /// <remarks>
+        /// Any number of destinations can be specified. The scripts are executed sequentially in the order provided.
+        /// If cluster_log_conf is specified, init script logs are sent to &lt;destination&gt;/&lt;cluster-id&gt;/init_scripts.
+        /// </remarks>
+        [JsonProperty(PropertyName = "init_scripts")]
+        public IEnumerable<InitScriptInfo> InitScripts { get; set; }
+
+        /// <summary>
         /// An object containing a set of optional, user-specified environment variable key-value pairs. Please note that key-value pair of the form (X,Y) will be exported as is (i.e., export X='Y') while launching the driver and workers.
         ///In order to specify an additional set of SPARK_DAEMON_JAVA_OPTS, we recommend appending them to $SPARK_DAEMON_JAVA_OPTS as shown in the example below.This ensures that all default databricks managed environmental variables are included as well.
         ///Example Spark environment variables: {"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}
