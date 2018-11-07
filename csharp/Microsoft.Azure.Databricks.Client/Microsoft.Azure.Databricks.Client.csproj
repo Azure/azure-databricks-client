@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://github.com/Azure/azure-databricks-client</PackageProjectUrl>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-    <Copyright>© Microsoft Corporation. All right reserved.</Copyright>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
