@@ -6,6 +6,12 @@ namespace Microsoft.Azure.Databricks.Client
     public class Job
     {
         /// <summary>
+        /// The canonical identifier for this job.
+        /// </summary>
+        [JsonProperty(PropertyName = "job_id")]
+        public long JobId { get; set; }
+
+        /// <summary>
         /// The creator user name. This field won’t be included in the response if the user has already been deleted.
         /// </summary>
         [JsonProperty(PropertyName = "creator_user_name")]
