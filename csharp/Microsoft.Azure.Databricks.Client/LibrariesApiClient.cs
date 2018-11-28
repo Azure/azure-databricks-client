@@ -50,7 +50,7 @@ namespace Microsoft.Azure.Databricks.Client
                 return;
             }
 
-            var request = new {cluster_id = clusterId, array };
+            var request = new {cluster_id = clusterId, libraries = array };
             await HttpPost(this.HttpClient, "libraries/install", request).ConfigureAwait(false);
         }
 
