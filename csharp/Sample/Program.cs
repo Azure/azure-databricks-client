@@ -33,14 +33,14 @@ namespace Sample
             Console.WriteLine("Creating client");
             using (var client = DatabricksClient.CreateClient(baseUrl, token))
             {
-                // await WorkspaceApi(client);
-                // await LibrariesApi(client);
+                await WorkspaceApi(client);
+                await LibrariesApi(client);
                 await SecretsApi(client);
-                // await TokenApi(client);
-                // await GroupsApi(client);
-                // await DbfsApi(client);
-                // await JobsApi(client);
-                // await ClustersApi(client);
+                await TokenApi(client);
+                await GroupsApi(client);
+                await DbfsApi(client);
+                await JobsApi(client);
+                await ClustersApi(client);
             }
 
             Console.WriteLine("Press enter to exit");
@@ -376,11 +376,11 @@ namespace Sample
             Console.WriteLine("Creating new group \"{0}\"", newGroupName);
             await client.Groups.Create(newGroupName);
 
-            Console.WriteLine("Deleting group \"{0}\"", newGroupName);
-            await client.Groups.Delete(newGroupName);
+            Console.WriteLine($"Adding members in {newGroupName} group");
+            await client.Groups.AddMember(newGroupName, new PrincipalName {UserName = DatabricksUserName });
 
-            Console.WriteLine("Listing members in admins group");
-            var members = await client.Groups.ListMembers("admins");
+            Console.WriteLine($"Listing members in {newGroupName} group");
+            var members = await client.Groups.ListMembers(newGroupName);
             foreach (var member in members)
             {
                 if (!string.IsNullOrEmpty(member.UserName))
@@ -392,6 +392,13 @@ namespace Sample
                     Console.WriteLine("Member (Group): {0}", member.GroupName);
                 }
             }
+
+            Console.WriteLine($"Removing members in {newGroupName} group");
+            await client.Groups.RemoveMember(newGroupName, new PrincipalName {UserName = DatabricksUserName });
+
+
+            Console.WriteLine("Deleting group \"{0}\"", newGroupName);
+            await client.Groups.Delete(newGroupName);
         }
 
         private static async Task JobsApi(DatabricksClient client)
