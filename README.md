@@ -2,7 +2,7 @@
 
 ----------
 
-[![NuGet version ()](https://img.shields.io/badge/nuget-1.0.1128.1-blue.svg)](https://www.nuget.org/packages/Microsoft.Azure.Databricks.Client/)
+[![NuGet version ()](https://img.shields.io/badge/nuget-1.1.103.1-blue.svg)](https://www.nuget.org/packages/Microsoft.Azure.Databricks.Client/)
 
 The Azure Databricks Client Library allows you to automate your Azure Databricks environment through Azure Databricks REST Api.
 
