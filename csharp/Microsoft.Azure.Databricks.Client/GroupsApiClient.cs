@@ -13,10 +13,14 @@ namespace Microsoft.Azure.Databricks.Client
 
         public async Task AddMember(string parentGroupName, PrincipalName principalName)
         {
-            dynamic request = principalName;
-            request.parent_name = parentGroupName;
+            var groupMembership = new GroupMembership
+            {
+                UserName = principalName.UserName,
+                GroupName = principalName.GroupName,
+                ParentName = parentGroupName
+            };
 
-            await HttpPost(this.HttpClient, "groups/add-member", request).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "groups/add-member", groupMembership).ConfigureAwait(false);
         }
 
         public async Task<string> Create(string groupName)
@@ -57,10 +61,14 @@ namespace Microsoft.Azure.Databricks.Client
 
         public async Task RemoveMember(string parentGroupName, PrincipalName principalName)
         {
-            dynamic request = principalName;
-            request.parent_name = parentGroupName;
+            var groupMembership = new GroupMembership
+            {
+                UserName = principalName.UserName,
+                GroupName = principalName.GroupName,
+                ParentName = parentGroupName
+            };
 
-            await HttpPost(this.HttpClient, "groups/remove-member", request).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "groups/remove-member", groupMembership).ConfigureAwait(false);
         }
 
         public async Task Delete(string groupName)
