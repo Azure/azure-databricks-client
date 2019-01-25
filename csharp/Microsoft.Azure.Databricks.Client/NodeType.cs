@@ -40,7 +40,10 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonProperty(PropertyName = "is_deprecated")]
         public bool IsDeprecated { get; set; }
 
+        /// <summary>
+        /// Node type info reported by the cloud provider.
+        /// </summary>
         [JsonProperty(PropertyName = "node_info")]
-        public NodeInfo NodeInfo { get; set; }
+        public ClusterCloudProviderNodeInfo ClusterCloudProviderNodeInfo { get; set; }
     }
 }

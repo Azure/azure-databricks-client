@@ -22,5 +22,11 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "on_failure")]
         public IEnumerable<string> OnFailure { get; set; }
+
+        /// <summary>
+        /// If true, do not send email to recipients specified in on_failure if the run is skipped.
+        /// </summary>
+        [JsonProperty(PropertyName = "no_alert_for_skipped_runs")]
+        public bool NoAlertForSkippedRuns { get; set; }
     }
 }

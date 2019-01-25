@@ -82,6 +82,12 @@ namespace Microsoft.Azure.Databricks.Client
         public int AutoTerminationMinutes { get; set; }
 
         /// <summary>
+        /// Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space when its Spark workers are running low on disk space.
+        /// </summary>
+        [JsonProperty(PropertyName = "enable_elastic_disk")]
+        public bool EnableElasticDisk { get; set; }
+
+        /// <summary>
         /// Determines whether the cluster was created by a user through the UI, by the Databricks Jobs Scheduler, or through an API request.
         /// </summary>
         [JsonProperty(PropertyName = "cluster_source")]

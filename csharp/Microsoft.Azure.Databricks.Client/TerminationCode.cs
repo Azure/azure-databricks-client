@@ -61,6 +61,16 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// Databricks cannot handle the request at this moment. Try again later and contact Databricks if the problem persists.
         /// </summary>
-        REQUEST_REJECTED
+        REQUEST_REJECTED,
+
+        /// <summary>
+        /// The init script for the driver container failed, causing cluster creation to fail.
+        /// </summary>
+        INIT_SCRIPT_FAILURE,
+
+        /// <summary>
+        /// The Azure Databricks trial subscription expired.
+        /// </summary>
+        TRIAL_EXPIRED
     }
 }
