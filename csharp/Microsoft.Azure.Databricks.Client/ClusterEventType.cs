@@ -9,6 +9,31 @@ namespace Microsoft.Azure.Databricks.Client
         CREATING,
 
         /// <summary>
+        /// Indicates that a disk is low on space, but adding disks would put it over the max capacity.
+        /// </summary>
+        DID_NOT_EXPAND_DISK,
+
+        /// <summary>
+        /// Indicates that a disk was low on space and the disks were expanded.
+        /// </summary>
+        EXPANDED_DISK,
+
+        /// <summary>
+        /// Indicates that a disk was low on space and disk space could not be expanded.
+        /// </summary>
+        FAILED_TO_EXPAND_DISK,
+
+        /// <summary>
+        /// The initialize scripts startingIndicates that the cluster scoped init script has started.
+        /// </summary>
+        INIT_SCRIPTS_STARTING,
+
+        /// <summary>
+        /// Indicates that the cluster scoped init script has finished.
+        /// </summary>
+        INIT_SCRIPTS_FINISHED,
+
+        /// <summary>
         /// Indicates that the cluster is being started by someone.
         /// </summary>
         STARTING,
@@ -46,6 +71,36 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// Indicates that some nodes were lost from the cluster.
         /// </summary>
-        NODES_LOST
+        NODES_LOST,
+
+        /// <summary>
+        /// Indicates that the driver is healthy.
+        /// </summary>
+        DRIVER_HEALTHY,
+
+        /// <summary>
+        /// Indicates that the driver is unavailable.
+        /// </summary>
+        DRIVER_UNAVAILABLE,
+
+        /// <summary>
+        /// Indicates that a Spark exception was thrown from the driver.
+        /// </summary>
+        SPARK_EXCEPTION,
+
+        /// <summary>
+        /// Indicates that the driver is up but is not responsive, likely due to GC.
+        /// </summary>
+        DRIVER_NOT_RESPONDING,
+
+        /// <summary>
+        /// Indicates that the driver is up but DBFS is down.
+        /// </summary>
+        DBFS_DOWN,
+
+        /// <summary>
+        /// Indicates that the driver is up but the metastore is down.
+        /// </summary>
+        METASTORE_DOWN
     }
 }

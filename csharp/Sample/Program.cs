@@ -249,7 +249,7 @@ namespace Sample
             var nodeTypes = await client.Clusters.ListNodeTypes();
             foreach (var nodeType in nodeTypes.Take(10))
             {
-                Console.WriteLine($"\t{nodeType.NodeTypeId}\tMemory: {nodeType.MemoryMb} MB\tCores: {nodeType.NumCores}\tAvailable Quota: {nodeType.NodeInfo.AvailableCoreQuota}");
+                Console.WriteLine($"\t{nodeType.NodeTypeId}\tMemory: {nodeType.MemoryMb} MB\tCores: {nodeType.NumCores}\tAvailable Quota: {nodeType.ClusterCloudProviderNodeInfo.AvailableCoreQuota}");
             }
 
             Console.WriteLine("Listing spark versions (take 10)");
