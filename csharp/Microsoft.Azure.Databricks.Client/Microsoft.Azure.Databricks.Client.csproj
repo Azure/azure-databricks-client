@@ -10,7 +10,7 @@
     <Description>Client library for managing Azure Databricks clusters and submitting jobs.</Description>
     <RepositoryUrl>https://github.com/Azure/azure-databricks-client</RepositoryUrl>
     <PackageTags>Databricks,Client</PackageTags>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/Azure/azure-databricks-client/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Azure/azure-databricks-client</PackageProjectUrl>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
