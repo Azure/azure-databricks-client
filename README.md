@@ -17,7 +17,7 @@ To generate a token, follow the steps listed in [this document](https://docs.azu
 
 Check out the Sample project for more detailed usages.
 
-In the following examples, the ```baseUrl``` variable should be set to "https://<REGION>.azuredatabricks.net", and ```token``` variable should be set to your Databricks personal access token.
+In the following examples, the ```baseUrl``` variable should be set to "https://\<REGION\>.azuredatabricks.net", and ```token``` variable should be set to your Databricks personal access token.
 
 ### Creating client
 
