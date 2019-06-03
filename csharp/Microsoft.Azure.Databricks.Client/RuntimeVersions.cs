@@ -15,36 +15,6 @@ namespace Microsoft.Azure.Databricks.Client
         public const string Runtime_3_5_Scala_2_11 = "3.5.x-scala2.11";
 
         /// <summary>
-        /// 4.1 ML Beta (includes Apache Spark 2.3.0, Scala 2.11)
-        /// </summary>
-        public const string Runtime_4_1_ML_Scala_2_11 = "4.1.x-ml-scala2.11";
-
-        /// <summary>
-        /// 4.1 ML Beta (includes Apache Spark 2.3.0, GPU, Scala 2.11)
-        /// </summary>
-        public const string Runtime_4_1_ML_GPU_Scala_2_11 = "4.1.x-ml-gpu-scala2.11";
-
-        /// <summary>
-        /// 4.2 (includes Apache Spark 2.3.1, Scala 2.11)
-        /// </summary>
-        public const string Runtime_4_2_Scala_2_11 = "4.2.x-scala2.11";
-
-        /// <summary>
-        /// 4.2 (includes Apache Spark 2.3.1, GPU, Scala 2.11)
-        /// </summary>
-        public const string Runtime_4_2_GPU_Scala_2_11 = "4.2.x-gpu-scala2.11";
-
-        /// <summary>
-        /// 4.3 (includes Apache Spark 2.3.1, GPU, Scala 2.11)
-        /// </summary>
-        public const string Runtime_4_3_GPU_Scala_2_11 = "4.3.x-gpu-scala2.11";
-
-        /// <summary>
-        /// 4.3 (includes Apache Spark 2.3.1, Scala 2.11)
-        /// </summary>
-        public const string Runtime_4_3_Scala_2_11 = "4.3.x-scala2.11";
-
-        /// <summary>
         /// 5.0 (includes Apache Spark 2.4.0, Scala 2.11)
         /// </summary>
         public const string Runtime_5_0 = "5.0.x-scala2.11";
@@ -103,5 +73,50 @@ namespace Microsoft.Azure.Databricks.Client
         /// 5.2 ML Beta (includes Apache Spark 2.4.0, GPU, Scala 2.11)
         /// </summary>
         public const string Runtime_5_2_GPU_ML = "5.2.x-gpu-ml-scala2.11";
+
+        /// <summary>
+        /// 5.3 (includes Apache Spark 2.4.0, Scala 2.11)
+        /// </summary>
+        public const string Runtime_5_3 = "5.3.x-scala2.11";
+
+        /// <summary>
+        /// 5.3 (includes Apache Spark 2.4.0, GPU, Scala 2.11)
+        /// </summary>
+        public const string Runtime_5_3_GPU = "5.3.x-gpu-scala2.11";
+
+        /// <summary>
+        /// 5.3 ML (includes Apache Spark 2.4.0, GPU, Scala 2.11)
+        /// </summary>
+        public const string Runtime_5_3_GPU_ML = "5.3.x-gpu-ml-scala2.11";
+
+        /// <summary>
+        /// 5.3 ML (includes Apache Spark 2.4.0, Scala 2.11)
+        /// </summary>
+        public const string Runtime_5_3_CPU_ML = "5.3.x-cpu-ml-scala2.11";
+
+        /// <summary>
+        /// 5.4 Beta (includes Apache Spark 2.4.0, Scala 2.11)
+        /// </summary>
+        public const string Runtime_5_4 = "5.4.x-scala2.11";
+
+        /// <summary>
+        /// 5.4 Beta (includes Apache Spark 2.4.0, GPU, Scala 2.11)
+        /// </summary>
+        public const string Runtime_5_4_GPU = "5.4.x-gpu-scala2.11";
+
+        /// <summary>
+        /// 5.4 ML Beta (includes Apache Spark 2.4.0, GPU, Scala 2.11)
+        /// </summary>
+        public const string Runtime_5_4_GPU_ML = "5.4.x-gpu-ml-scala2.11";
+
+        /// <summary>
+        /// 5.4 ML Beta (includes Apache Spark 2.4.0, Scala 2.11)
+        /// </summary>
+        public const string Runtime_5_4_CPU_ML = "5.4.x-cpu-ml-scala2.11";
+
+        /// <summary>
+        /// Light 2.4 (includes Apache Spark 2.4, Scala 2.11)
+        /// </summary>
+        public const string Runtime_Light_2_4 = "apache-spark-2.4.x-scala2.11";
     }
 }

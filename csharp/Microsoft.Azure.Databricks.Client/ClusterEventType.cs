@@ -101,6 +101,11 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// Indicates that the driver is up but the metastore is down.
         /// </summary>
-        METASTORE_DOWN
+        METASTORE_DOWN,
+
+        /// <summary>
+        /// Usage report containing the total and unused instance minutes of the autoscaling cluster over the last hour.
+        /// </summary>
+        AUTOSCALING_STATS_REPORT
     }
 }
