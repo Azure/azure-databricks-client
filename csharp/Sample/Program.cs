@@ -262,7 +262,7 @@ namespace Sample
             Console.WriteLine("Creating standard cluster");
 
             var clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
-                .WithRuntimeVersion(RuntimeVersions.Runtime_4_2_Scala_2_11)
+                .WithRuntimeVersion(RuntimeVersions.Runtime_5_4)
                 .WithAutoScale(3, 7)
                 .WithAutoTermination(30)
                 .WithClusterLogConf("dbfs:/logs/")
@@ -298,7 +298,7 @@ namespace Sample
             Console.WriteLine("Creating serverless pool cluster");
 
             clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
-                .WithRuntimeVersion(RuntimeVersions.Runtime_4_2_Scala_2_11)
+                .WithRuntimeVersion(RuntimeVersions.Runtime_5_4)
                 .WithAutoScale(3, 7)
                 .WithAutoTermination(30)
                 .WithClusterLogConf("dbfs:/logs/")
@@ -408,7 +408,7 @@ namespace Sample
                 .WithNumberOfWorkers(3)
                 .WithPython3(true)
                 .WithNodeType(NodeTypes.Standard_D3_v2)
-                .WithRuntimeVersion(RuntimeVersions.Runtime_4_2_Scala_2_11);
+                .WithRuntimeVersion(RuntimeVersions.Runtime_5_4);
 
             Console.WriteLine($"Creating workspace {SampleWorkspacePath}");
             await client.Workspace.Mkdirs(SampleWorkspacePath);
