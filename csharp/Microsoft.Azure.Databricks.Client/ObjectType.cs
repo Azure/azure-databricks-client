@@ -19,6 +19,11 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// Library
         /// </summary>
-        LIBRARY
+        LIBRARY,
+        
+        /// <summary>
+        /// MLflow Experiment
+        /// </summary>
+        MLFLOW_EXPERIMENT
     }
 }
