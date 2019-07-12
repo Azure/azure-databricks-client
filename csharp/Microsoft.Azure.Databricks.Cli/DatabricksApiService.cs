@@ -65,6 +65,7 @@ namespace Microsoft.Azure.Databricks.Cli
             var retryPolicy = Policy.Handle<WebException>()
                 .Or<ClientApiException>(e => e.StatusCode == HttpStatusCode.BadGateway)
                 .Or<ClientApiException>(e => e.StatusCode == HttpStatusCode.InternalServerError)
+                .Or<ClientApiException>(e => e.Message.Contains("\"error_code\":\"TEMPORARILY_UNAVAILABLE\""))
                 .OrResult<RunState>(runState => runState.LifeCycleState == RunLifeCycleState.PENDING)
                 .OrResult(runState => runState.LifeCycleState == RunLifeCycleState.RUNNING)
                 .OrResult(runState => runState.LifeCycleState == RunLifeCycleState.TERMINATING)
