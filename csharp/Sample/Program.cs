@@ -41,6 +41,7 @@ namespace Sample
                 await DbfsApi(client);
                 await JobsApi(client);
                 await ClustersApi(client);
+                await InstancePoolApi(client);
             }
 
             Console.WriteLine("Press enter to exit");
@@ -52,7 +53,7 @@ namespace Sample
             Console.WriteLine($"Creating workspace {SampleWorkspacePath}");
             await client.Workspace.Mkdirs(SampleWorkspacePath);
 
-            Console.WriteLine("Dowloading sample notebook");
+            Console.WriteLine("Downloading sample notebook");
             var content = await DownloadSampleNotebook();
 
             Console.WriteLine($"Importing sample HTML notebook to {SampleNotebookPath}");
@@ -243,6 +244,63 @@ namespace Sample
             }
         }
 
+        private static async Task InstancePoolApi(DatabricksClient client)
+        {
+            Console.WriteLine("Creating Testing Instance Pool");
+            var poolAttributes = new InstancePoolAttributes
+            {
+                PoolName = "TestInstancePool",
+                PreloadedSparkVersions = new[] {RuntimeVersions.Runtime_5_4},
+                MinIdleInstances = 2,
+                MaxCapacity = 100,
+                IdleInstanceAutoTerminationMinutes = 15,
+                NodeTypeId = NodeTypes.Standard_D3_v2,
+                EnableElasticDisk = true,
+                DiskSpec = new DiskSpec
+                    {DiskCount = 2, DiskSize = 64, DiskType = DiskType.FromAzureDisk(AzureDiskVolumeType.STANDARD_LRS)}
+            };
+
+            var poolId = await client.InstancePool.Create(poolAttributes).ConfigureAwait(false);
+
+            Console.WriteLine("Listing pools");
+            var pools = await client.InstancePool.List().ConfigureAwait(false);
+            foreach (var pool in pools)
+            {
+                Console.WriteLine($"\t{pool.PoolId}\t{pool.PoolName}\t{pool.State}");
+            }
+
+            Console.WriteLine("Getting created pool by poolId");
+            var targetPoolInfo = await client.InstancePool.Get(poolId).ConfigureAwait(false);
+
+            Console.WriteLine("Editing pool");
+            targetPoolInfo.MinIdleInstances = 3;
+            await client.InstancePool.Edit(poolId, targetPoolInfo).ConfigureAwait(false);
+
+            Console.WriteLine("Getting edited pool by poolId");
+            targetPoolInfo = await client.InstancePool.Get(poolId).ConfigureAwait(false);
+            Console.WriteLine($"MinIdleInstances: {targetPoolInfo.MinIdleInstances}");
+
+            Console.WriteLine("Creating a sample cluster in the pool.");
+            var clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
+                .WithRuntimeVersion(RuntimeVersions.Runtime_5_4)
+                .WithAutoScale(3, 7)
+                .WithAutoTermination(30)
+                .WithClusterLogConf("dbfs:/logs/");
+            clusterConfig.InstancePoolId = poolId;
+
+            var clusterId = await client.Clusters.Create(clusterConfig);
+
+            var createdCluster = await client.Clusters.Get(clusterId);
+
+            Console.WriteLine($"Created cluster pool Id: {createdCluster.InstancePoolId}");
+
+            Console.WriteLine("Deleting pool");
+            await client.InstancePool.Delete(poolId);
+
+            Console.WriteLine("Deleting cluster");
+            await client.Clusters.Delete(clusterId);
+        }
+
         private static async Task ClustersApi(DatabricksClient client)
         {
             Console.WriteLine("Listing node types (take 10)");
@@ -252,9 +310,9 @@ namespace Sample
                 Console.WriteLine($"\t{nodeType.NodeTypeId}\tMemory: {nodeType.MemoryMb} MB\tCores: {nodeType.NumCores}\tAvailable Quota: {nodeType.ClusterCloudProviderNodeInfo.AvailableCoreQuota}");
             }
 
-            Console.WriteLine("Listing spark versions (take 10)");
+            Console.WriteLine("Listing Databricks runtime versions");
             var sparkVersions = await client.Clusters.ListSparkVersions();
-            foreach (var (key, name) in sparkVersions.Take(10))
+            foreach (var (key, name) in sparkVersions)
             {
                 Console.WriteLine($"\t{key}\t\t{name}");
             }
@@ -295,7 +353,7 @@ namespace Sample
             Console.WriteLine("Deleting cluster {0}", clusterId);
             await client.Clusters.Delete(clusterId);
 
-            Console.WriteLine("Creating serverless pool cluster");
+            Console.WriteLine("Creating HighConcurrency cluster");
 
             clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
                 .WithRuntimeVersion(RuntimeVersions.Runtime_5_4)

@@ -59,6 +59,11 @@ namespace Microsoft.Azure.Databricks.Client
         INSTANCE_UNREACHABLE,
 
         /// <summary>
+        /// Instance pool backed cluster specific failure Refer to Pools for details.
+        /// </summary>
+        INSTANCE_POOL_CLUSTER_FAILURE,
+
+        /// <summary>
         /// Databricks cannot handle the request at this moment. Try again later and contact Databricks if the problem persists.
         /// </summary>
         REQUEST_REJECTED,
