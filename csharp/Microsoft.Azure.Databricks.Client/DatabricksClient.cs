@@ -43,6 +43,7 @@ namespace Microsoft.Azure.Databricks.Client
             this.Libraries = new LibrariesApiClient(httpClient);
             this.Token = new TokenApiClient(httpClient);
             this.Workspace = new WorkspaceApiClient(httpClient);
+            this.InstancePool = new InstancePoolApiClient(httpClient);
         }
 
         /// <summary>
@@ -56,9 +57,9 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="librariesApi">The libraries API implementation.</param>
         /// <param name="tokenApi">The token API implementation.</param>
         /// <param name="workspaceApi">The workspace API implementation.</param>
-        /// 
+        /// <param name="instancePoolApi">The instance pool API implementation.</param>
         private DatabricksClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi, ISecretsApi secretsApi,
-            IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi, IWorkspaceApi workspaceApi)
+            IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi, IWorkspaceApi workspaceApi, IInstancePoolApi instancePoolApi)
         {
             this.Clusters = clusterApi;
             this.Jobs = jobsApi;
@@ -68,6 +69,7 @@ namespace Microsoft.Azure.Databricks.Client
             this.Libraries = librariesApi;
             this.Token = tokenApi;
             this.Workspace = workspaceApi;
+            this.InstancePool = instancePoolApi;
         }
 
         /// <summary>
@@ -86,10 +88,10 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         public static DatabricksClient CreateClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi,
             ISecretsApi secretsApi, IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi,
-            IWorkspaceApi workspaceApi)
+            IWorkspaceApi workspaceApi, IInstancePoolApi instancePoolApi)
         {
             return new DatabricksClient(clusterApi, jobsApi, dbfsApi, secretsApi, groupsApi, librariesApi, tokenApi,
-                workspaceApi);
+                workspaceApi, instancePoolApi);
         }
 
         public IClustersApi Clusters { get; }
@@ -108,6 +110,8 @@ namespace Microsoft.Azure.Databricks.Client
 
         public IWorkspaceApi Workspace { get; }
 
+        public IInstancePoolApi InstancePool { get; }
+
         public void Dispose()
         {
             Clusters.Dispose();
@@ -118,6 +122,7 @@ namespace Microsoft.Azure.Databricks.Client
             Libraries.Dispose();
             Token.Dispose();
             Workspace.Dispose();
+            InstancePool.Dispose();
         }
     }
 }

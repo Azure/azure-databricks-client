@@ -45,7 +45,7 @@ namespace Microsoft.Azure.Databricks.Client
 
         /// <summary>
         /// Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., VMs disk volumes) with these tags in addition to default_tags.
-        ///Currently Databricks allows up to 9 custom tags.
+        /// Azure Databricks allows at most 8 custom tags.
         /// </summary>
         [JsonProperty(PropertyName = "custom_tags")]
         public Dictionary<string, string> CustomTags { get; set; }
@@ -93,5 +93,8 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonProperty(PropertyName = "cluster_source")]
         [JsonConverter(typeof(StringEnumConverter))]
         public ClusterSource? ClusterSource { get; set; }
+
+        [JsonProperty(PropertyName = "instance_pool_id")]
+        public string InstancePoolId { get; set; }
     }
 }
