@@ -29,8 +29,9 @@ namespace Microsoft.Azure.Databricks.Cli
             var clusterIdOption = cmdJobCreate.Option("-ecid|--existing-cluster-id", "Existing cluster id", CommandOptionType.SingleValue);
             var autoScaleOption = cmdJobCreate.Option("-as|--auto-scale", "New cluster auto scale (min-max)", CommandOptionType.SingleValue);
             var numOfWorkersOption = cmdJobCreate.Option("-nw|--num-workers", "New cluster number of workers", CommandOptionType.SingleValue);
+            var instancePoolOption = cmdJobCreate.Option("-ipid|--instance-pool-id", "Instance pool Id", CommandOptionType.SingleValue);
             var python3Option = cmdJobCreate.Option("-p3|--python3", "Enables Python3", CommandOptionType.NoValue);
-            var nodeTypeOption = cmdJobCreate.Option("-nt|--node-type", "Node type for header and workders. Default value: Standard_D3_v2", CommandOptionType.SingleValue);
+            var nodeTypeOption = cmdJobCreate.Option("-nt|--node-type", "Node type for header and workers. Default value: Standard_D3_v2", CommandOptionType.SingleValue);
             var runtimeVersionOption = cmdJobCreate.Option("-rv|--runtime-version", "Runtime version. Default value: 4.2.x-scala2.11", CommandOptionType.SingleValue);
             var tableAccessControlOption = cmdJobCreate.Option("-tac|--table-access-control", "Enable table access control", CommandOptionType.NoValue);
 
@@ -62,7 +63,8 @@ namespace Microsoft.Azure.Databricks.Cli
                 else
                 {
                     var newCluster = GetNewClusterConfiguration(autoScaleOption, numOfWorkersOption,
-                        python3Option, nodeTypeOption, runtimeVersionOption, tableAccessControlOption);
+                        python3Option, nodeTypeOption, runtimeVersionOption, tableAccessControlOption,
+                        instancePoolOption);
 
                     if (newCluster == null)
                     {
@@ -153,7 +155,7 @@ namespace Microsoft.Azure.Databricks.Cli
 
         private static ClusterInfo GetNewClusterConfiguration(CommandOption autoScaleOption, CommandOption numOfWorkersOption,
             CommandOption python3Option, CommandOption nodeTypeOption, CommandOption runtimeVersionOption,
-            CommandOption tableAccessControlOption)
+            CommandOption tableAccessControlOption, CommandOption instancePoolOption)
         {
             var newCluster = ClusterInfo.GetNewClusterConfiguration();
             if (autoScaleOption.HasValue())
@@ -174,6 +176,11 @@ namespace Microsoft.Azure.Databricks.Cli
                 return null;
             }
 
+            if (instancePoolOption.HasValue())
+            {
+                newCluster.InstancePoolId = instancePoolOption.Value();
+            }
+
             newCluster.WithPython3(python3Option.HasValue());
 
             var nodeType = nodeTypeOption.HasValue()
@@ -183,7 +190,7 @@ namespace Microsoft.Azure.Databricks.Cli
 
             var runtimeVersion = runtimeVersionOption.HasValue()
                 ? runtimeVersionOption.Value()
-                : RuntimeVersions.Runtime_4_2_Scala_2_11;
+                : RuntimeVersions.Runtime_5_5;
 
             newCluster.WithRuntimeVersion(runtimeVersion);
             newCluster.WithTableAccessControl(tableAccessControlOption.HasValue());
