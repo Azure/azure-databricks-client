@@ -33,6 +33,7 @@ namespace Microsoft.Azure.Databricks.Cli
             var python3Option = cmdJobCreate.Option("-p3|--python3", "Enables Python3", CommandOptionType.NoValue);
             var nodeTypeOption = cmdJobCreate.Option("-nt|--node-type", "Node type for header and workers. Default value: Standard_D3_v2", CommandOptionType.SingleValue);
             var runtimeVersionOption = cmdJobCreate.Option("-rv|--runtime-version", "Runtime version. Default value: 4.2.x-scala2.11", CommandOptionType.SingleValue);
+            var clusterLogOption = cmdJobCreate.Option("-cld|--cluster-log-delivery", "Specify cluster log delivery path.", CommandOptionType.SingleValue);
             var tableAccessControlOption = cmdJobCreate.Option("-tac|--table-access-control", "Enable table access control", CommandOptionType.NoValue);
 
             var jobNameOption = cmdJobCreate.Option("-n|--job-name", "Job name", CommandOptionType.SingleValue);
@@ -64,7 +65,7 @@ namespace Microsoft.Azure.Databricks.Cli
                 {
                     var newCluster = GetNewClusterConfiguration(autoScaleOption, numOfWorkersOption,
                         python3Option, nodeTypeOption, runtimeVersionOption, tableAccessControlOption,
-                        instancePoolOption);
+                        instancePoolOption, clusterLogOption);
 
                     if (newCluster == null)
                     {
@@ -155,9 +156,15 @@ namespace Microsoft.Azure.Databricks.Cli
 
         private static ClusterInfo GetNewClusterConfiguration(CommandOption autoScaleOption, CommandOption numOfWorkersOption,
             CommandOption python3Option, CommandOption nodeTypeOption, CommandOption runtimeVersionOption,
-            CommandOption tableAccessControlOption, CommandOption instancePoolOption)
+            CommandOption tableAccessControlOption, CommandOption instancePoolOption, CommandOption clusterLogOption)
         {
             var newCluster = ClusterInfo.GetNewClusterConfiguration();
+
+            if (clusterLogOption.HasValue())
+            {
+                newCluster.WithClusterLogConf(clusterLogOption.Value());
+            }
+
             if (autoScaleOption.HasValue())
             {
                 var autoScale = autoScaleOption.Value();
@@ -180,14 +187,16 @@ namespace Microsoft.Azure.Databricks.Cli
             {
                 newCluster.InstancePoolId = instancePoolOption.Value();
             }
+            else
+            {
+                var nodeType = nodeTypeOption.HasValue()
+                    ? nodeTypeOption.Value()
+                    : NodeTypes.Standard_D3_v2;
+                newCluster.WithNodeType(nodeType);
+            }
 
             newCluster.WithPython3(python3Option.HasValue());
-
-            var nodeType = nodeTypeOption.HasValue()
-                ? nodeTypeOption.Value()
-                : NodeTypes.Standard_D3_v2;
-            newCluster.WithNodeType(nodeType);
-
+            
             var runtimeVersion = runtimeVersionOption.HasValue()
                 ? runtimeVersionOption.Value()
                 : RuntimeVersions.Runtime_5_5;
