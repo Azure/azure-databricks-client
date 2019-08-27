@@ -136,7 +136,7 @@ namespace Microsoft.Azure.Databricks.Client
             Run run = response.metadata.ToObject<Run>();
 
             string error = PropertyExists(response, "error") ? response.error.ToObject<string>() : null;
-            string notebookOutput = PropertyExists(response, "notebook_output")
+            string notebookOutput = PropertyExists(response, "notebook_output") && PropertyExists(response.notebook_output, "result")
                 ? response.notebook_output.result.ToObject<string>()
                 : null;
             return (notebookOutput, error, run);
