@@ -66,6 +66,7 @@ namespace Microsoft.Azure.Databricks.Cli
                 .Or<ClientApiException>(e => e.StatusCode == HttpStatusCode.BadGateway)
                 .Or<ClientApiException>(e => e.StatusCode == HttpStatusCode.InternalServerError)
                 .Or<ClientApiException>(e => e.Message.Contains("\"error_code\":\"TEMPORARILY_UNAVAILABLE\""))
+                .Or<TaskCanceledException>(e => !e.CancellationToken.IsCancellationRequested) // web request timeout
                 .OrResult<RunState>(runState => runState.LifeCycleState == RunLifeCycleState.PENDING)
                 .OrResult(runState => runState.LifeCycleState == RunLifeCycleState.RUNNING)
                 .OrResult(runState => runState.LifeCycleState == RunLifeCycleState.TERMINATING)
