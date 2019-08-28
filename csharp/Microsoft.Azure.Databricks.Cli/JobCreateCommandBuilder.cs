@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Databricks.Client;
@@ -45,7 +46,9 @@ namespace Microsoft.Azure.Databricks.Cli
 
             var waitOption = cmdJobCreate.Option("-w|--wait", "Wait for job to complete", CommandOptionType.NoValue);
             var deleteOption = cmdJobCreate.Option("-d|--delete", "Delete successful job", CommandOptionType.NoValue);
-            
+
+            var sparkConfOption = cmdJobCreate.Option("-conf|--conf", "Spark config", CommandOptionType.MultipleValue);
+
             cmdJobCreate.OnExecute(async () =>
             {
                 var jobSettings = GetJobSettings(jarMainClassOption, jobNameOption, cmdJobCreate,
@@ -65,7 +68,7 @@ namespace Microsoft.Azure.Databricks.Cli
                 {
                     var newCluster = GetNewClusterConfiguration(autoScaleOption, numOfWorkersOption,
                         python3Option, nodeTypeOption, runtimeVersionOption, tableAccessControlOption,
-                        instancePoolOption, clusterLogOption);
+                        instancePoolOption, clusterLogOption, sparkConfOption);
 
                     if (newCluster == null)
                     {
@@ -156,7 +159,7 @@ namespace Microsoft.Azure.Databricks.Cli
 
         private static ClusterInfo GetNewClusterConfiguration(CommandOption autoScaleOption, CommandOption numOfWorkersOption,
             CommandOption python3Option, CommandOption nodeTypeOption, CommandOption runtimeVersionOption,
-            CommandOption tableAccessControlOption, CommandOption instancePoolOption, CommandOption clusterLogOption)
+            CommandOption tableAccessControlOption, CommandOption instancePoolOption, CommandOption clusterLogOption, CommandOption sparkConfigOption)
         {
             var newCluster = ClusterInfo.GetNewClusterConfiguration();
 
@@ -196,13 +199,22 @@ namespace Microsoft.Azure.Databricks.Cli
             }
 
             newCluster.WithPython3(python3Option.HasValue());
-            
+
             var runtimeVersion = runtimeVersionOption.HasValue()
                 ? runtimeVersionOption.Value()
                 : RuntimeVersions.Runtime_5_5;
 
             newCluster.WithRuntimeVersion(runtimeVersion);
             newCluster.WithTableAccessControl(tableAccessControlOption.HasValue());
+
+            var sparkConf = from conf in sparkConfigOption.Values
+                            let kvp = conf.Split('=')
+                            where kvp.Length > 1
+                            let key = kvp[0]
+                            let value = kvp[1]
+                            select (key, value);
+
+            newCluster.SparkConfiguration = sparkConf.ToDictionary(tuple => tuple.key, tuple => tuple.value);
             return newCluster;
         }
     }
