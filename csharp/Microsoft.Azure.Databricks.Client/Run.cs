@@ -15,6 +15,12 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonProperty(PropertyName = "creator_user_name")]
         public string CreatorUserName { get; set; }
 
+        ///<summary>
+        /// The canonical identifier of the job that contains this run.
+        /// </summary>
+        [JsonProperty(PropertyName = "job_id")]
+        public long JobId { get; set; }
+
         /// <summary>
         /// If this run is a retry of a prior run attempt, this field contains the run_id of the original attempt; otherwise, it is the same as the run_id.
         /// </summary>
