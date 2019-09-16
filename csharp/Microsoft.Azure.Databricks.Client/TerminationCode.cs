@@ -76,6 +76,11 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// The Azure Databricks trial subscription expired.
         /// </summary>
-        TRIAL_EXPIRED
+        TRIAL_EXPIRED,
+
+        /// <summary>
+        /// Databricks driver may be down, resulting in a spark error.
+        /// </summary>
+        SPARK_ERROR
     }
 }
