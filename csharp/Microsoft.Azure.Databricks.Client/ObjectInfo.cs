@@ -27,5 +27,11 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonProperty(PropertyName = "language")]
         [JsonConverter(typeof(StringEnumConverter))]
         public Language? Language { get; set; }
+
+        /// <summary>
+        /// Unique identifier for a NOTEBOOK or DIRECTORY.
+        /// </summary>
+        [JsonProperty(PropertyName = "object_id")]
+        public long ObjectId { get; set; }
     }
 }
