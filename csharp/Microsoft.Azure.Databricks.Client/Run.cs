@@ -100,5 +100,29 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "run_page_url")]
         public string RunPageUrl { get; set; }
+
+        /// <summary>
+        /// The time at which this run was finished in epoch milliseconds (milliseconds since 1/1/1970 UTC).
+        /// </summary>
+        [JsonProperty(PropertyName = "start_time")]
+        [JsonConverter(typeof(MillisecondEpochDateTimeConverter))]
+        public DateTimeOffset? EndTime
+        {
+            get
+            {
+                if (StartTime.HasValue == false)
+                {
+                    return null;
+                }
+
+                var setupDuration = TimeSpan.FromMilliseconds(SetupDuration);
+                var cleanupDuration = TimeSpan.FromMilliseconds(CleanupDuration);
+                var executionDuration = TimeSpan.FromMilliseconds(ExecutionDuration);
+
+                var jobExecution = setupDuration.Add(cleanupDuration).Add(executionDuration);
+
+                return StartTime.Value.Add(jobExecution);
+            }
+        }
     }
 }
