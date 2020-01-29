@@ -104,8 +104,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// The time at which this run was finished in epoch milliseconds (milliseconds since 1/1/1970 UTC).
         /// </summary>
-        [JsonProperty(PropertyName = "start_time")]
-        [JsonConverter(typeof(MillisecondEpochDateTimeConverter))]
+        [JsonIgnore]
         public DateTimeOffset? EndTime
         {
             get
