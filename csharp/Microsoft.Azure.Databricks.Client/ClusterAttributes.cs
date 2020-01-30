@@ -94,7 +94,16 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonConverter(typeof(StringEnumConverter))]
         public ClusterSource? ClusterSource { get; set; }
 
+        /// <summary>
+        /// The optional ID of the instance pool to which the cluster belongs. Refer to Pools for details.
+        /// </summary>
         [JsonProperty(PropertyName = "instance_pool_id")]
         public string InstancePoolId { get; set; }
+
+        /// <summary>
+        /// Docker image for a custom container.
+        /// </summary>
+        [JsonProperty(PropertyName = "docker_image")]
+        public DockerImage DockerImage { get; set; }
     }
 }
