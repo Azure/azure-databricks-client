@@ -81,6 +81,11 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// Databricks driver may be down, resulting in a spark error.
         /// </summary>
-        SPARK_ERROR
+        SPARK_ERROR,
+
+        /// <summary>
+        /// OTHER
+        /// </summary>
+        OTHER
     }
 }
