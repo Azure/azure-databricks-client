@@ -102,6 +102,12 @@ namespace Microsoft.Azure.Databricks.Client
         public string RunPageUrl { get; set; }
 
         /// <summary>
+        /// Indication if the run has been completed.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsCompleted => State?.ResultState != null;
+
+        /// <summary>
         /// The time at which this run was finished in epoch milliseconds (milliseconds since 1/1/1970 UTC).
         /// </summary>
         [JsonIgnore]
@@ -109,7 +115,7 @@ namespace Microsoft.Azure.Databricks.Client
         {
             get
             {
-                if (StartTime.HasValue == false)
+                if (StartTime.HasValue == false || IsCompleted == false)
                 {
                     return null;
                 }
