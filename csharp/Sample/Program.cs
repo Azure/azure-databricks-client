@@ -320,12 +320,14 @@ namespace Sample
             Console.WriteLine("Creating standard cluster");
 
             var clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
-                .WithRuntimeVersion(RuntimeVersions.Runtime_3_5_Scala_2_11)
+                .WithRuntimeVersion(RuntimeVersions.Runtime_6_2)
                 .WithAutoScale(3, 7)
                 .WithAutoTermination(30)
                 .WithClusterLogConf("dbfs:/logs/")
                 .WithNodeType(NodeTypes.Standard_D3_v2)
                 .WithPython3(true);
+
+            clusterConfig.DockerImage = new DockerImage { Url = "databricksruntime/standard:latest" };
             
             var clusterId = await client.Clusters.Create(clusterConfig);
 
