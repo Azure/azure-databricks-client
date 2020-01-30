@@ -5,26 +5,6 @@ namespace Microsoft.Azure.Databricks.Client
     public class RuntimeVersions
     {
         /// <summary>
-        /// 3.5 LTS (includes Apache Spark 2.2.1, Scala 2.10)
-        /// </summary>
-        public const string Runtime_3_5_Scala_2_10 = "3.5.x-scala2.10";
-
-        /// <summary>
-        /// 3.5 LTS (includes Apache Spark 2.2.1, Scala 2.11)
-        /// </summary>
-        public const string Runtime_3_5_Scala_2_11 = "3.5.x-scala2.11";
-
-        /// <summary>
-        /// 5.3 HLS Beta (includes Apache Spark 2.4.0, Scala 2.11)
-        /// </summary>
-        public const string Runtime_5_3_HLS = "5.3.x-hls-scala2.11";
-
-        /// <summary>
-        /// 5.4 Genomics Beta (includes Apache Spark 2.4.3, Scala 2.11)
-        /// </summary>
-        public const string Runtime_5_4_HLS = "5.4.x-hls-scala2.11";
-
-        /// <summary>
         /// 5.5 LTS (includes Apache Spark 2.4.3, Scala 2.11)
         /// </summary>
         public const string Runtime_5_5 = "5.5.x-scala2.11";
@@ -48,11 +28,6 @@ namespace Microsoft.Azure.Databricks.Client
         /// 5.5 Conda Beta (includes Apache Spark 2.4.3, Scala 2.11)
         /// </summary>
         public const string Runtime_5_5_Conda = "5.5.x-conda-scala2.11";
-
-        /// <summary>
-        /// 5.5 Genomics Beta (includes Apache Spark 2.4.3, Scala 2.11)
-        /// </summary>
-        public const string Runtime_5_5_HLS = "5.5.x-hls-scala2.11";
 
         /// <summary>
         /// 6.0 (includes Apache Spark 2.4.3, Scala 2.11)
@@ -113,6 +88,26 @@ namespace Microsoft.Azure.Databricks.Client
         /// 6.2 Genomics (includes Apache Spark 2.4.4, Scala 2.11)
         /// </summary>
         public const string Runtime_6_2_HLS = "6.2.x-hls-scala2.11";
+
+        /// <summary>
+        /// 6.3 (includes Apache Spark 2.4.4, Scala 2.11)
+        /// </summary>
+        public const string Runtime_6_3 = "6.3.x-scala2.11";
+
+        /// <summary>
+        /// 6.3 ML (includes Apache Spark 2.4.4, Scala 2.11)
+        /// </summary>
+        public const string Runtime_6_3_CPU_ML = "6.3.x-cpu-ml-scala2.11";
+
+        /// <summary>
+        /// 6.3 ML (includes Apache Spark 2.4.4, GPU, Scala 2.11)
+        /// </summary>
+        public const string Runtime_6_3_GPU_ML = "6.3.x-gpu-ml-scala2.11";
+
+        /// <summary>
+        /// 6.3 Genomics (includes Apache Spark 2.4.4, Scala 2.11)
+        /// </summary>
+        public const string Runtime_6_3_HLS = "6.3.x-hls-scala2.11";
 
         /// <summary>
         /// Light 2.4 (includes Apache Spark 2.4, Scala 2.11)
