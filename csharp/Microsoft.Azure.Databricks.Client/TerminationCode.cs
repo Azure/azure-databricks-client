@@ -83,6 +83,8 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         SPARK_ERROR,
 
+        AZURE_RESOURCE_PROVIDER_THROTTLING,
+
         /// <summary>
         /// OTHER
         /// </summary>
