@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Databricks.Client;
@@ -31,9 +30,8 @@ namespace Microsoft.Azure.Databricks.Cli
             var autoScaleOption = cmdJobCreate.Option("-as|--auto-scale", "New cluster auto scale (min-max)", CommandOptionType.SingleValue);
             var numOfWorkersOption = cmdJobCreate.Option("-nw|--num-workers", "New cluster number of workers", CommandOptionType.SingleValue);
             var instancePoolOption = cmdJobCreate.Option("-ipid|--instance-pool-id", "Instance pool Id", CommandOptionType.SingleValue);
-            var python3Option = cmdJobCreate.Option("-p3|--python3", "Enables Python3", CommandOptionType.NoValue);
             var nodeTypeOption = cmdJobCreate.Option("-nt|--node-type", "Node type for header and workers. Default value: Standard_D3_v2", CommandOptionType.SingleValue);
-            var runtimeVersionOption = cmdJobCreate.Option("-rv|--runtime-version", "Runtime version. Default value: 4.2.x-scala2.11", CommandOptionType.SingleValue);
+            var runtimeVersionOption = cmdJobCreate.Option("-rv|--runtime-version", "Runtime version. Default value: apache-spark-2.4.x-scala2.11", CommandOptionType.SingleValue);
             var clusterLogOption = cmdJobCreate.Option("-cld|--cluster-log-delivery", "Specify cluster log delivery path.", CommandOptionType.SingleValue);
             var tableAccessControlOption = cmdJobCreate.Option("-tac|--table-access-control", "Enable table access control", CommandOptionType.NoValue);
 
@@ -48,6 +46,7 @@ namespace Microsoft.Azure.Databricks.Cli
             var deleteOption = cmdJobCreate.Option("-d|--delete", "Delete successful job", CommandOptionType.NoValue);
 
             var sparkConfOption = cmdJobCreate.Option("-conf|--conf", "Spark config", CommandOptionType.MultipleValue);
+            var tagsOption = cmdJobCreate.Option("-tags|--tags", "Custom tags", CommandOptionType.MultipleValue);
 
             cmdJobCreate.OnExecute(async () =>
             {
@@ -67,8 +66,8 @@ namespace Microsoft.Azure.Databricks.Cli
                 else
                 {
                     var newCluster = GetNewClusterConfiguration(autoScaleOption, numOfWorkersOption,
-                        python3Option, nodeTypeOption, runtimeVersionOption, tableAccessControlOption,
-                        instancePoolOption, clusterLogOption, sparkConfOption);
+                        nodeTypeOption, runtimeVersionOption, tableAccessControlOption,
+                        instancePoolOption, clusterLogOption, sparkConfOption, tagsOption);
 
                     if (newCluster == null)
                     {
@@ -158,8 +157,9 @@ namespace Microsoft.Azure.Databricks.Cli
         }
 
         private static ClusterInfo GetNewClusterConfiguration(CommandOption autoScaleOption, CommandOption numOfWorkersOption,
-            CommandOption python3Option, CommandOption nodeTypeOption, CommandOption runtimeVersionOption,
-            CommandOption tableAccessControlOption, CommandOption instancePoolOption, CommandOption clusterLogOption, CommandOption sparkConfigOption)
+            CommandOption nodeTypeOption, CommandOption runtimeVersionOption,
+            CommandOption tableAccessControlOption, CommandOption instancePoolOption, CommandOption clusterLogOption, 
+            CommandOption sparkConfigOption, CommandOption tagsOption)
         {
             var newCluster = ClusterInfo.GetNewClusterConfiguration();
 
@@ -198,11 +198,11 @@ namespace Microsoft.Azure.Databricks.Cli
                 newCluster.WithNodeType(nodeType);
             }
 
-            newCluster.WithPython3(python3Option.HasValue());
+            newCluster.WithPython3(true);
 
             var runtimeVersion = runtimeVersionOption.HasValue()
                 ? runtimeVersionOption.Value()
-                : RuntimeVersions.Runtime_5_5;
+                : RuntimeVersions.Runtime_Light_2_4;
 
             newCluster.WithRuntimeVersion(runtimeVersion);
             newCluster.WithTableAccessControl(tableAccessControlOption.HasValue());
@@ -215,6 +215,16 @@ namespace Microsoft.Azure.Databricks.Cli
                             select (key, value);
 
             newCluster.SparkConfiguration = sparkConf.ToDictionary(tuple => tuple.key, tuple => tuple.value);
+
+            var tags = from tag in tagsOption.Values
+                let kvp = tag.Split('=')
+                where kvp.Length > 1
+                let key = kvp[0]
+                let value = kvp[1]
+                select (key, value);
+
+            newCluster.CustomTags = tags.ToDictionary(tuple => tuple.key, tuple => tuple.value);
+            
             return newCluster;
         }
     }
