@@ -105,5 +105,11 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "docker_image")]
         public DockerImage DockerImage { get; set; }
+
+        /// <summary>
+        /// When enabled, local disk data will be encrypted at-rest. Contact your Microsoft or Databricks account representative to enable for your subscription.
+        /// </summary>
+        [JsonProperty(PropertyName = "enable_local_disk_encryption")]
+        public bool LocalDiskEncryption { get; set; }
     }
 }
