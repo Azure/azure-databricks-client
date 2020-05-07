@@ -6,7 +6,7 @@ namespace Microsoft.Azure.Databricks.Client
     public class RunState
     {
         /// <summary>
-        /// A description of a run’s current location in the run lifecycle. This field is always avaialble in the response.
+        /// A description of a run’s current location in the run lifecycle. This field is always available in the response.
         /// </summary>
         [JsonProperty(PropertyName = "life_cycle_state")]
         [JsonConverter(typeof(StringEnumConverter))]
