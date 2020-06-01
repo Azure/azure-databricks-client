@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
@@ -11,9 +12,9 @@ namespace Microsoft.Azure.Databricks.Client
         {
         }
 
-        public async Task<IDictionary<string, IEnumerable<LibraryFullStatus>>> AllClusterStatuses()
+        public async Task<IDictionary<string, IEnumerable<LibraryFullStatus>>> AllClusterStatuses(CancellationToken cancellationToken = default)
         {
-            var result = await HttpGet<dynamic>(this.HttpClient, "libraries/all-cluster-statuses")
+            var result = await HttpGet<dynamic>(this.HttpClient, "libraries/all-cluster-statuses", cancellationToken)
                 .ConfigureAwait(false);
 
             if (PropertyExists(result, "statuses"))
@@ -27,16 +28,16 @@ namespace Microsoft.Azure.Databricks.Client
             return new Dictionary<string, IEnumerable<LibraryFullStatus>>();
         }
 
-        public async Task<IEnumerable<LibraryFullStatus>> ClusterStatus(string clusterId)
+        public async Task<IEnumerable<LibraryFullStatus>> ClusterStatus(string clusterId, CancellationToken cancellationToken = default)
         {
             var url = $"libraries/cluster-status?cluster_id={clusterId}";
-            var result = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
+            var result = await HttpGet<dynamic>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
             return PropertyExists(result, "library_statuses")
                 ? result.library_statuses.ToObject<IEnumerable<LibraryFullStatus>>()
                 : Enumerable.Empty<LibraryFullStatus>();
         }
 
-        public async Task Install(string clusterId, IEnumerable<Library> libraries)
+        public async Task Install(string clusterId, IEnumerable<Library> libraries, CancellationToken cancellationToken = default)
         {
             if (libraries == null)
             {
@@ -51,10 +52,10 @@ namespace Microsoft.Azure.Databricks.Client
             }
 
             var request = new {cluster_id = clusterId, libraries = array };
-            await HttpPost(this.HttpClient, "libraries/install", request).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "libraries/install", request, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task Uninstall(string clusterId, IEnumerable<Library> libraries)
+        public async Task Uninstall(string clusterId, IEnumerable<Library> libraries, CancellationToken cancellationToken = default)
         {
             if (libraries == null)
             {
@@ -69,7 +70,7 @@ namespace Microsoft.Azure.Databricks.Client
             }
 
             var request = new { cluster_id = clusterId, libraries = array };
-            await HttpPost(this.HttpClient, "libraries/uninstall", request).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "libraries/uninstall", request, cancellationToken).ConfigureAwait(false);
         }
     }
 }
