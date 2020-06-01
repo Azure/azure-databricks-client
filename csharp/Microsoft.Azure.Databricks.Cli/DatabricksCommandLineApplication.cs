@@ -25,6 +25,9 @@ namespace Microsoft.Azure.Databricks.Cli
 
             ICommandLineApplicationBuilder jobsCommandBuilder = new JobsCommandBuilder(app);
             app.Commands.Add(jobsCommandBuilder.Build());
+
+            ICommandLineApplicationBuilder dbfsCommandBuilder = new DbfsCommandBuilder(app);
+            app.Commands.Add(dbfsCommandBuilder.Build());
             
             return app;
         }

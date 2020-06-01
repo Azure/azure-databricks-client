@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.CommandLineUtils;
@@ -98,6 +100,17 @@ namespace Microsoft.Azure.Databricks.Cli
             ConsoleLogger.WriteLineVerbose($"[{DateTime.UtcNow:s}] Deleting job {jobId}...");
             await _client.Jobs.Delete(jobId);
             ConsoleLogger.WriteLineVerbose($"[{DateTime.UtcNow:s}] Job {jobId} deleted.");
+        }
+
+        public async Task UploadFile(string localFilePath, string dbfsPath, bool overwrite,
+            CancellationToken cancellationToken = default)
+        {
+            using (var stream = new FileStream(localFilePath, FileMode.Open))
+            {
+                ConsoleLogger.WriteLineVerbose($"[{DateTime.UtcNow:s}] Uploading file {localFilePath} to {dbfsPath}...");
+                await _client.Dbfs.Upload(dbfsPath, overwrite, stream, cancellationToken);
+                ConsoleLogger.WriteLineVerbose($"[{DateTime.UtcNow:s}] File {localFilePath} uploaded to {dbfsPath}.");
+            }
         }
     }
 }
