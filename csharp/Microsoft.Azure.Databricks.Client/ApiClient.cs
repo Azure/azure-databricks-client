@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -25,9 +26,9 @@ namespace Microsoft.Azure.Databricks.Client
             return new ClientApiException(errorContent, statusCode);
         }
 
-        protected static async Task<T> HttpGet<T>(HttpClient httpClient, string requestUri)
+        protected static async Task<T> HttpGet<T>(HttpClient httpClient, string requestUri, CancellationToken cancellationToken = default)
         {
-            var response = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
+            var response = await httpClient.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -38,11 +39,11 @@ namespace Microsoft.Azure.Databricks.Client
             return JsonConvert.DeserializeObject<T>(responseContent);
         }
 
-        protected static async Task HttpPost<TBody>(HttpClient httpClient, string requestUri, TBody body)
+        protected static async Task HttpPost<TBody>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
         {
             
             HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
-            var response = await httpClient.PostAsync(requestUri, content).ConfigureAwait(false);
+            var response = await httpClient.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -50,10 +51,10 @@ namespace Microsoft.Azure.Databricks.Client
             }
         }
 
-        protected static async Task<TResult> HttpPost<TBody, TResult>(HttpClient httpClient, string requestUri, TBody body)
+        protected static async Task<TResult> HttpPost<TBody, TResult>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
-            var response = await httpClient.PostAsync(requestUri, content).ConfigureAwait(false);
+            var response = await httpClient.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {

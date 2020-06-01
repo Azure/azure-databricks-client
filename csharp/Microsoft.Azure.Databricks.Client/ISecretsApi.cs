@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
@@ -16,7 +17,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// </remarks>
         /// <param name="scope">Scope name requested by the user. Scope names are unique. This field is required.</param>
         /// <param name="initialManagePrincipal">The principal that is initially granted MANAGE permission to the created scope.</param>
-        Task CreateScope(string scope, string initialManagePrincipal);
+        Task CreateScope(string scope, string initialManagePrincipal, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes a secret scope.
@@ -25,7 +26,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// Throws RESOURCE_DOES_NOT_EXIST if the scope does not exist. Throws PERMISSION_DENIED if the user does not have permission to make this API call.
         /// </remarks>
         /// <param name="scope">Name of the scope to delete. This field is required.</param>
-        Task DeleteScope(string scope);
+        Task DeleteScope(string scope, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Lists all secret scopes available in the workspace.
@@ -33,7 +34,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <remarks>
         /// Throws PERMISSION_DENIED if the user does not have permission to make this API call.
         /// </remarks>
-        Task<IEnumerable<SecretScope>> ListScopes();
+        Task<IEnumerable<SecretScope>> ListScopes(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Inserts a secret under the provided scope with the given name. If a secret already exists with the same name, this command overwrites the existing secret’s value. The server encrypts the secret using the secret scope’s encryption settings before storing it. You must have WRITE or MANAGE permission on the secret scope.
@@ -46,7 +47,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="secretValue">The value will be stored in UTF-8 (MB4) form.</param>
         /// <param name="scope">The name of the scope to which the secret will be associated with. This field is required.</param>
         /// <param name="key">A unique name to identify the secret. This field is required.</param>
-        Task PutSecret(string secretValue, string scope, string key);
+        Task PutSecret(string secretValue, string scope, string key, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Inserts a secret under the provided scope with the given name. If a secret already exists with the same name, this command overwrites the existing secret’s value. The server encrypts the secret using the secret scope’s encryption settings before storing it. You must have WRITE or MANAGE permission on the secret scope.
@@ -59,7 +60,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="secretValue">The value will be stored as bytes.</param>
         /// <param name="scope">The name of the scope to which the secret will be associated with. This field is required.</param>
         /// <param name="key">A unique name to identify the secret. This field is required.</param>
-        Task PutSecret(byte[] secretValue, string scope, string key);
+        Task PutSecret(byte[] secretValue, string scope, string key, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes the secret stored in this secret scope. You must have WRITE or MANAGE permission on the secret scope.
@@ -69,7 +70,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// </remarks>
         /// <param name="scope">The name of the scope that contains the secret to delete. This field is required.</param>
         /// <param name="key">Name of the secret to delete. This field is required.</param>
-        Task DeleteSecret(string scope, string key);
+        Task DeleteSecret(string scope, string key, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data cannot be retrieved using this API. Users need the READ permission to make this call.
@@ -78,7 +79,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// Throws RESOURCE_DOES_NOT_EXIST if no such secret scope exists. Throws PERMISSION_DENIED if the user does not have permission to make this API call.
         /// </remarks>
         /// <param name="scope">The name of the scope whose secrets you want to list. This field is required.</param>
-        Task<IEnumerable<SecretMetadata>> ListSecrets(string scope);
+        Task<IEnumerable<SecretMetadata>> ListSecrets(string scope, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates or overwrites the ACL associated with the given principal (user or group) on the specified scope point. In general, a user or group will use the most powerful permission available to them, and permissions are ordered as follows:
@@ -96,7 +97,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="scope">The name of the scope to apply permissions to. This field is required.</param>
         /// <param name="principal">The principal to which the permission is applied. This field is required.</param>
         /// <param name="permission">The permission level applied to the principal. This field is required.</param>
-        Task PutSecretAcl(string scope, string principal, AclPermission permission);
+        Task PutSecretAcl(string scope, string principal, AclPermission permission, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes the given ACL on the given scope.
@@ -107,7 +108,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// </remarks>
         /// <param name="scope">The name of the scope to remove permissions from. This field is required.</param>
         /// <param name="principal">The principal to remove an existing ACL from. This field is required.</param>
-        Task DeleteSecretAcl(string scope, string principal);
+        Task DeleteSecretAcl(string scope, string principal, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Describes the details about the given ACL, such as the group and permission.
@@ -118,7 +119,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// </remarks>
         /// <param name="scope">The name of the scope to fetch ACL information from. This field is required.</param>
         /// <param name="principal">The principal to fetch ACL information for. This field is required.</param>
-        Task<AclItem> GetSecretAcl(string scope, string principal);
+        Task<AclItem> GetSecretAcl(string scope, string principal, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Lists the ACLs set on the given scope.
@@ -128,6 +129,6 @@ namespace Microsoft.Azure.Databricks.Client
         /// Throws RESOURCE_DOES_NOT_EXIST if no such secret scope exists. Throws PERMISSION_DENIED if the user does not have permission to make this API call.
         /// </remarks>
         /// <param name="scope">The name of the scope to fetch ACL information from. This field is required.</param>
-        Task<IEnumerable<AclItem>> ListSecretAcl(string scope);
+        Task<IEnumerable<AclItem>> ListSecretAcl(string scope, CancellationToken cancellationToken = default);
     }
 }

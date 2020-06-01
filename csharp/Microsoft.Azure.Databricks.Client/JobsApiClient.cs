@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
@@ -12,41 +13,41 @@ namespace Microsoft.Azure.Databricks.Client
         {
         }
 
-        public async Task<long> Create(JobSettings jobSettings)
+        public async Task<long> Create(JobSettings jobSettings, CancellationToken cancellationToken = default)
         {
             var jobIdentifier =
-                await HttpPost<JobSettings, dynamic>(this.HttpClient, "jobs/create", jobSettings)
+                await HttpPost<JobSettings, dynamic>(this.HttpClient, "jobs/create", jobSettings, cancellationToken)
                     .ConfigureAwait(false);
             return jobIdentifier.job_id.ToObject<long>();
         }
 
-        public async Task<IEnumerable<Job>> List()
+        public async Task<IEnumerable<Job>> List(CancellationToken cancellationToken = default)
         {
             const string requestUri = "jobs/list";
-            var jobList = await HttpGet<dynamic>(this.HttpClient, requestUri).ConfigureAwait(false);
+            var jobList = await HttpGet<dynamic>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
             return PropertyExists(jobList, "jobs")
                 ? jobList.jobs.ToObject<IEnumerable<Job>>()
                 : Enumerable.Empty<Job>();
         }
 
-        public async Task Delete(long jobId)
+        public async Task Delete(long jobId, CancellationToken cancellationToken = default)
         {
-            await HttpPost(this.HttpClient, "jobs/delete", new { job_id = jobId }).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "jobs/delete", new { job_id = jobId }, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<Job> Get(long jobId)
+        public async Task<Job> Get(long jobId, CancellationToken cancellationToken = default)
         {
             var requestUri = $"jobs/get?job_id={jobId}";
-            return await HttpGet<Job>(this.HttpClient, requestUri).ConfigureAwait(false);
+            return await HttpGet<Job>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task Reset(long jobId, JobSettings newSettings)
+        public async Task Reset(long jobId, JobSettings newSettings, CancellationToken cancellationToken = default)
         {
-            await HttpPost(this.HttpClient, "jobs/reset", new { job_id = jobId, new_settings = newSettings })
+            await HttpPost(this.HttpClient, "jobs/reset", new { job_id = jobId, new_settings = newSettings }, cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        public async Task<RunIdentifier> RunNow(long jobId, RunParameters runParams)
+        public async Task<RunIdentifier> RunNow(long jobId, RunParameters runParams, CancellationToken cancellationToken = default)
         {
             var settings = new RunNowSettings
             {
@@ -61,19 +62,19 @@ namespace Microsoft.Azure.Databricks.Client
                 settings.JarParams = runParams.JarParams;
             }
 
-            return await HttpPost<RunNowSettings, RunIdentifier>(this.HttpClient, "jobs/run-now", settings)
+            return await HttpPost<RunNowSettings, RunIdentifier>(this.HttpClient, "jobs/run-now", settings, cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        public async Task<long> RunSubmit(RunOnceSettings settings)
+        public async Task<long> RunSubmit(RunOnceSettings settings, CancellationToken cancellationToken = default)
         {
-            var result = await HttpPost<RunOnceSettings, RunIdentifier>(this.HttpClient, "jobs/runs/submit", settings)
+            var result = await HttpPost<RunOnceSettings, RunIdentifier>(this.HttpClient, "jobs/runs/submit", settings, cancellationToken)
                 .ConfigureAwait(false);
             return result.RunId;
         }
 
         public async Task<RunList> RunsList(long? jobId = null, int offset = 0, int limit = 20, bool activeOnly = false,
-            bool completedOnly = false)
+            bool completedOnly = false, CancellationToken cancellationToken = default)
         {
             if (activeOnly && completedOnly)
             {
@@ -97,42 +98,42 @@ namespace Microsoft.Azure.Databricks.Client
                 url += "&completed_only=true";
             }
 
-            return await HttpGet<RunList>(this.HttpClient, url).ConfigureAwait(false);
+            return await HttpGet<RunList>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<Run> RunsGet(long runId)
+        public async Task<Run> RunsGet(long runId, CancellationToken cancellationToken = default)
         {
             var url = $"jobs/runs/get?run_id={runId}";
-            return await HttpGet<Run>(this.HttpClient, url).ConfigureAwait(false);
+            return await HttpGet<Run>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task RunsCancel(long runId)
+        public async Task RunsCancel(long runId, CancellationToken cancellationToken = default)
         {
             var request = new { run_id = runId };
-            await HttpPost(this.HttpClient, "jobs/runs/cancel", request).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "jobs/runs/cancel", request, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task RunsDelete(long runId)
+        public async Task RunsDelete(long runId, CancellationToken cancellationToken = default)
         {
             var request = new { run_id = runId };
-            await HttpPost(this.HttpClient, "jobs/runs/delete", request).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "jobs/runs/delete", request, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<ViewItem>> RunsExport(long runId,
-            ViewsToExport viewsToExport = ViewsToExport.CODE)
+            ViewsToExport viewsToExport = ViewsToExport.CODE, CancellationToken cancellationToken = default)
         {
             var url = $"jobs/runs/export?run_id={runId}&views_to_export={viewsToExport}";
-            var viewItemList = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
+            var viewItemList = await HttpGet<dynamic>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
 
             return PropertyExists(viewItemList, "views")
                 ? viewItemList.views.ToObject<IEnumerable<ViewItem>>()
                 : Enumerable.Empty<ViewItem>();
         }
 
-        public async Task<(string, string, Run)> RunsGetOutput(long runId)
+        public async Task<(string, string, Run)> RunsGetOutput(long runId, CancellationToken cancellationToken = default)
         {
             var url = $"jobs/runs/get-output?run_id={runId}";
-            var response = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
+            var response = await HttpGet<dynamic>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
             Run run = response.metadata.ToObject<Run>();
 
             string error = PropertyExists(response, "error") ? response.error.ToObject<string>() : null;

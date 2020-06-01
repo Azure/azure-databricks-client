@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
@@ -17,29 +18,29 @@ namespace Microsoft.Azure.Databricks.Client
         {
         }
 
-        public async Task<long> Create(string path, bool overwrite)
+        public async Task<long> Create(string path, bool overwrite, CancellationToken cancellationToken = default)
         {
             var request = new { path, overwrite };
-            var response = await HttpPost<dynamic, FileHandle>(this.HttpClient, "dbfs/create", request).ConfigureAwait(false);
+            var response = await HttpPost<dynamic, FileHandle>(this.HttpClient, "dbfs/create", request, cancellationToken).ConfigureAwait(false);
             return response.Handle;
         }
 
-        public async Task AddBlock(long fileHandle, byte[] data)
+        public async Task AddBlock(long fileHandle, byte[] data, CancellationToken cancellationToken = default)
         {
             var request = new { handle = fileHandle, data };
-            await HttpPost(this.HttpClient, "dbfs/add-block", request).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "dbfs/add-block", request, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task Close(long fileHandle)
+        public async Task Close(long fileHandle, CancellationToken cancellationToken = default)
         {
             var handle = new FileHandle(fileHandle);
-            await HttpPost(this.HttpClient, "dbfs/close", handle).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "dbfs/close", handle, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task Upload(string path, bool overwrite, Stream stream)
+        public async Task Upload(string path, bool overwrite, Stream stream, CancellationToken cancellationToken = default)
         {
             const int mb = 1024 * 1024;
-            var handle = await this.Create(path, overwrite).ConfigureAwait(false);
+            var handle = await this.Create(path, overwrite, cancellationToken).ConfigureAwait(false);
 
             var originalPosition = 0L;
 
@@ -53,14 +54,14 @@ namespace Microsoft.Azure.Databricks.Client
             try
             {
                 int bytesRead;
-                while ((bytesRead = await stream.ReadAsync(buffer, 0, mb)) > 0)
+                while ((bytesRead = await stream.ReadAsync(buffer, 0, mb, cancellationToken)) > 0)
                 {
                     var contents = new byte[bytesRead];
                     Array.Copy(buffer, contents, bytesRead);
-                    await this.AddBlock(handle, contents).ConfigureAwait(false);
+                    await this.AddBlock(handle, contents, cancellationToken).ConfigureAwait(false);
                 }
 
-                await this.Close(handle).ConfigureAwait(false);
+                await this.Close(handle, cancellationToken).ConfigureAwait(false);
             }
             finally
             {
@@ -71,41 +72,41 @@ namespace Microsoft.Azure.Databricks.Client
             }
         }
 
-        public async Task Delete(string path, bool recursive)
+        public async Task Delete(string path, bool recursive, CancellationToken cancellationToken = default)
         {
             var request = new { path, recursive };
-            await HttpPost(this.HttpClient, "dbfs/delete", request).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "dbfs/delete", request, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<FileInfo> GetStatus(string path)
+        public async Task<FileInfo> GetStatus(string path, CancellationToken cancellationToken = default)
         {
             var url = $"dbfs/get-status?path={path}";
-            var result = await HttpGet<FileInfo>(this.HttpClient, url).ConfigureAwait(false);
+            var result = await HttpGet<FileInfo>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
             return result;
         }
 
-        public async Task<IEnumerable<FileInfo>> List(string path)
+        public async Task<IEnumerable<FileInfo>> List(string path, CancellationToken cancellationToken = default)
         {
             var url = $"dbfs/list?path={path}";
-            var result = await HttpGet<dynamic>(this.HttpClient, url).ConfigureAwait(false);
+            var result = await HttpGet<dynamic>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
             return PropertyExists(result, "files")
                 ? result.files.ToObject<IEnumerable<FileInfo>>()
                 : Enumerable.Empty<FileInfo>();
         }
 
-        public async Task Mkdirs(string path)
+        public async Task Mkdirs(string path, CancellationToken cancellationToken = default)
         {
             var request = new { path };
-            await HttpPost(this.HttpClient, "dbfs/mkdirs", request).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "dbfs/mkdirs", request, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task Move(string sourcePath, string destinationPath)
+        public async Task Move(string sourcePath, string destinationPath, CancellationToken cancellationToken = default)
         {
             var request = new { source_path = sourcePath, destination_path = destinationPath };
-            await HttpPost(this.HttpClient, "dbfs/move", request).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, "dbfs/move", request, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task Put(string path, byte[] contents, bool overwrite)
+        public async Task Put(string path, byte[] contents, bool overwrite, CancellationToken cancellationToken = default)
         {
             var form = new MultipartFormDataContent
                 {
@@ -114,7 +115,7 @@ namespace Microsoft.Azure.Databricks.Client
                     {new ByteArrayContent(contents), "contents"}
                 };
 
-            var response = await this.HttpClient.PostAsync("dbfs/put", form).ConfigureAwait(false);
+            var response = await this.HttpClient.PostAsync("dbfs/put", form, cancellationToken).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -122,24 +123,24 @@ namespace Microsoft.Azure.Databricks.Client
             }
         }
 
-        public async Task<FileReadBlock> Read(string path, long offset, long length)
+        public async Task<FileReadBlock> Read(string path, long offset, long length, CancellationToken cancellationToken = default)
         {
             var url = $"dbfs/read?path={path}&offset={offset}&length={length}";
-            var result = await HttpGet<FileReadBlock>(this.HttpClient, url).ConfigureAwait(false);
+            var result = await HttpGet<FileReadBlock>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
             return result;
         }
 
-        public async Task Download(string path, Stream stream)
+        public async Task Download(string path, Stream stream, CancellationToken cancellationToken = default)
         {
             const int mb = 1024 * 1024;
             var totalBytesRead = 0L;
-            var block = await Read(path, totalBytesRead, mb);
+            var block = await Read(path, totalBytesRead, mb, cancellationToken);
 
             while (block.BytesRead > 0)
             {
                 totalBytesRead += block.BytesRead;
-                await stream.WriteAsync(block.Data, 0, block.Data.Length);
-                block = await Read(path, totalBytesRead, mb);
+                await stream.WriteAsync(block.Data, 0, block.Data.Length, cancellationToken);
+                block = await Read(path, totalBytesRead, mb, cancellationToken);
             }
         }
     }

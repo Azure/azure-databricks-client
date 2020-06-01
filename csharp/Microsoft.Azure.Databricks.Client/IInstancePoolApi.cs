@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
@@ -12,7 +13,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// If you provide the min_idle_instances parameter, instances are provisioned in the background and are ready to use once the idle_count in the InstancePoolStats equals the requested minimum.
         /// </summary>
         /// <returns>instance_pool_id</returns>
-        Task<string> Create(InstancePoolAttributes poolAttributes);
+        Task<string> Create(InstancePoolAttributes poolAttributes, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Edit an instance pool. This modifies the configuration of an existing instance pool.
@@ -22,7 +23,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// - You must supply an instance_pool_name.
         /// - You must supply a node_type_id and it must match the original node_type_id
         /// </remarks>
-        Task Edit(string poolId, InstancePoolAttributes poolAttributes);
+        Task Edit(string poolId, InstancePoolAttributes poolAttributes, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Delete an instance pool.
@@ -32,16 +33,16 @@ namespace Microsoft.Azure.Databricks.Client
         /// Running clusters attached to the pool continue to run but cannot autoscale up.
         /// Terminated clusters attached to the pool will fail to start until they are edited to no longer use the pool.
         /// </summary>
-        Task Delete(string poolId);
+        Task Delete(string poolId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve the information for an instance pool given its identifier.
         /// </summary>
-        Task<InstancePoolInfo> Get(string poolId);
+        Task<InstancePoolInfo> Get(string poolId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List information for all instance pools.
         /// </summary>
-        Task<IEnumerable<InstancePoolInfo>> List();
+        Task<IEnumerable<InstancePoolInfo>> List(CancellationToken cancellationToken = default);
     }
 }
