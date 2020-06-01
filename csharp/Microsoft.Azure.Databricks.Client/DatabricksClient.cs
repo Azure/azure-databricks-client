@@ -16,13 +16,10 @@ namespace Microsoft.Azure.Databricks.Client
         private DatabricksClient(string baseUrl, string token, long timeoutSeconds = 30)
         {
             var apiUrl = new Uri(new Uri(baseUrl), "api/2.0/");
-            
-            var handler = new TimeoutHandler
+
+            var handler = new HttpClientHandler
             {
-                InnerHandler = new HttpClientHandler
-                {
-                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-                }
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
 
             var httpClient = new HttpClient(handler)
@@ -61,12 +58,9 @@ namespace Microsoft.Azure.Databricks.Client
         {
             var apiUrl = new Uri(new Uri(baseUrl), "api/2.0/");
 
-            var handler = new TimeoutHandler
+            var handler = new HttpClientHandler
             {
-                InnerHandler = new HttpClientHandler
-                {
-                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-                }
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
 
             var httpClient = new HttpClient(handler)
