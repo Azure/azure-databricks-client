@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public sealed class DatabricksClient : IDisposable
+    public class DatabricksClient : IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabricksClient"/> class.
@@ -13,7 +13,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="baseUrl">The base URL of the databricks portal. ex. https://southcentralus.azuredatabricks.net</param>
         /// <param name="token">The access token.</param>
         /// <param name="timeoutSeconds">The timeout in seconds for the http requests.</param>
-        private DatabricksClient(string baseUrl, string token, long timeoutSeconds = 30)
+        protected DatabricksClient(string baseUrl, string token, long timeoutSeconds = 30)
         {
             var apiUrl = new Uri(new Uri(baseUrl), "api/2.0/");
 
@@ -54,7 +54,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="databricksToken">The AAD token used to access the global databricks application (2ff814a6-3304-4ab8-85cb-cd0e6f879c1d).</param>
         /// <param name="managementToken">The AAD token for Azure management API (https://management.core.windows.net/).</param>
         /// <param name="timeoutSeconds">The timeout in seconds for the http requests.</param>
-        private DatabricksClient(string baseUrl, string workspaceResourceId, string databricksToken, string managementToken,  long timeoutSeconds = 30)
+        protected DatabricksClient(string baseUrl, string workspaceResourceId, string databricksToken, string managementToken,  long timeoutSeconds = 30)
         {
             var apiUrl = new Uri(new Uri(baseUrl), "api/2.0/");
 
@@ -98,7 +98,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="tokenApi">The token API implementation.</param>
         /// <param name="workspaceApi">The workspace API implementation.</param>
         /// <param name="instancePoolApi">The instance pool API implementation.</param>
-        private DatabricksClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi, ISecretsApi secretsApi,
+        protected DatabricksClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi, ISecretsApi secretsApi,
             IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi, IWorkspaceApi workspaceApi, IInstancePoolApi instancePoolApi)
         {
             this.Clusters = clusterApi;
