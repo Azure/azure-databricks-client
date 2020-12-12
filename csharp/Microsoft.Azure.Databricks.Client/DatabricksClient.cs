@@ -22,7 +22,7 @@ namespace Microsoft.Azure.Databricks.Client
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
 
-            var httpClient = new HttpClient(handler)
+            var httpClient = new HttpClient(handler, false)
             {
                 BaseAddress = apiUrl,
                 Timeout = TimeSpan.FromSeconds(timeoutSeconds)
