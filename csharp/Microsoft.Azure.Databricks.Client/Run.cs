@@ -69,6 +69,13 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonProperty(PropertyName = "start_time")]
         [JsonConverter(typeof(MillisecondEpochDateTimeConverter))]
         public DateTimeOffset? StartTime { get; set; }
+        
+        /// <summary>
+        /// The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC).
+        /// </summary>
+        [JsonProperty(PropertyName = "end_time")]
+        [JsonConverter(typeof(MillisecondEpochDateTimeConverter))]
+        public DateTimeOffset? EndTime { get; set; }
 
         /// <summary>
         /// The time it took to set up the cluster in milliseconds. For runs that run on new clusters this is the cluster creation time, for runs that run on existing clusters this time should be very short.
@@ -106,28 +113,5 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonIgnore]
         public bool IsCompleted => State?.ResultState != null;
-
-        /// <summary>
-        /// The time at which this run was finished in epoch milliseconds (milliseconds since 1/1/1970 UTC).
-        /// </summary>
-        [JsonIgnore]
-        public DateTimeOffset? EndTime
-        {
-            get
-            {
-                if (StartTime.HasValue == false || IsCompleted == false)
-                {
-                    return null;
-                }
-
-                var setupDuration = TimeSpan.FromMilliseconds(SetupDuration);
-                var cleanupDuration = TimeSpan.FromMilliseconds(CleanupDuration);
-                var executionDuration = TimeSpan.FromMilliseconds(ExecutionDuration);
-
-                var jobExecution = setupDuration.Add(cleanupDuration).Add(executionDuration);
-
-                return StartTime.Value.Add(jobExecution);
-            }
-        }
     }
 }

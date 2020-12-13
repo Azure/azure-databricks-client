@@ -8,8 +8,8 @@ namespace Microsoft.Azure.Databricks.Client
     public interface ISecretsApi : IDisposable
     {
         /// <summary>
-        /// Creates a new secret scope.
-        /// The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not exceed 128 characters.The maximum number of scopes in a workspace is 100.
+        /// Creates a new Databricks-backed secret scope.
+        /// The scope name must be unique within a workspace, must consist of alphanumeric characters, dashes, underscores, and periods, and may not exceed 128 characters.The maximum number of scopes in a workspace is 100.
         /// </summary>
         /// <remarks>
         /// If initial_manage_principal is specified, the initial ACL applied to the scope is applied to the supplied principal (user or group) with MANAGE permissions. The only supported principal for this option is the group users, which contains all users in the workspace. If initial_manage_principal is not specified, the initial ACL with MANAGE permission applied to the scope is assigned to the API request issuer’s user identity.
@@ -17,7 +17,38 @@ namespace Microsoft.Azure.Databricks.Client
         /// </remarks>
         /// <param name="scope">Scope name requested by the user. Scope names are unique. This field is required.</param>
         /// <param name="initialManagePrincipal">The principal that is initially granted MANAGE permission to the created scope.</param>
+        [Obsolete("This method has been renamed to " + nameof(CreateDatabricksBackedScope) + ".")]
         Task CreateScope(string scope, string initialManagePrincipal, CancellationToken cancellationToken = default);
+
+
+        /// <summary>
+        /// Creates a new Databricks-backed secret scope.
+        /// The scope name must be unique within a workspace, must consist of alphanumeric characters, dashes, underscores, and periods, and may not exceed 128 characters.The maximum number of scopes in a workspace is 100.
+        /// </summary>
+        /// <remarks>
+        /// If initial_manage_principal is specified, the initial ACL applied to the scope is applied to the supplied principal (user or group) with MANAGE permissions. The only supported principal for this option is the group users, which contains all users in the workspace. If initial_manage_principal is not specified, the initial ACL with MANAGE permission applied to the scope is assigned to the API request issuer’s user identity.
+        /// Throws RESOURCE_ALREADY_EXISTS if a scope with the given name already exists.Throws RESOURCE_LIMIT_EXCEEDED if maximum number of scopes in the workspace is exceeded.Throws INVALID_PARAMETER_VALUE if the scope name is invalid.
+        /// </remarks>
+        /// <param name="scope">Scope name requested by the user. Scope names are unique. This field is required.</param>
+        /// <param name="initialManagePrincipal">The principal that is initially granted MANAGE permission to the created scope.</param>
+        Task CreateDatabricksBackedScope(string scope, string initialManagePrincipal, CancellationToken cancellationToken = default);
+
+        /*
+         This API call is currently not working per https://github.com/MicrosoftDocs/azure-docs/issues/65000. Comment out for now.
+        /// <summary>
+        /// Creates a new Azure Key Vault-backed secret scope.
+        /// The scope name must be unique within a workspace, must consist of alphanumeric characters, dashes, underscores, and periods, and may not exceed 128 characters.The maximum number of scopes in a workspace is 100.
+        /// </summary>
+        /// <remarks>
+        /// If initial_manage_principal is specified, the initial ACL applied to the scope is applied to the supplied principal (user or group) with MANAGE permissions. The only supported principal for this option is the group users, which contains all users in the workspace. If initial_manage_principal is not specified, the initial ACL with MANAGE permission applied to the scope is assigned to the API request issuer’s user identity.
+        /// Throws RESOURCE_ALREADY_EXISTS if a scope with the given name already exists.Throws RESOURCE_LIMIT_EXCEEDED if maximum number of scopes in the workspace is exceeded.Throws INVALID_PARAMETER_VALUE if the scope name is invalid.
+        /// </remarks>
+        /// <param name="scope">Scope name requested by the user. Scope names are unique. This field is required.</param>
+        /// <param name="initialManagePrincipal">The principal that is initially granted MANAGE permission to the created scope.</param>
+        /// <param name="akvResourceId">The resource id of the backend Azure Key Vault. E.g. "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/azure-rg/providers/Microsoft.KeyVault/vaults/my-azure-kv"</param>
+        /// <param name="akvDnsName">The DNS name of the backend Azure Key Vault. E.g. "https://my-azure-kv.vault.azure.net/"</param>
+        Task CreateAkvBackedScope(string scope, string initialManagePrincipal, string akvResourceId, string akvDnsName, CancellationToken cancellationToken = default);
+        */
 
         /// <summary>
         /// Deletes a secret scope.
