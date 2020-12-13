@@ -23,7 +23,7 @@ namespace Sample
         {
             if (args.Length < 2)
             {
-                Console.Error.WriteLine("Usage: <Azure databricks base url> <access token>");
+                await Console.Error.WriteLineAsync("Usage: <Azure databricks base url> <access token>");
                 return;
             }
             
@@ -192,7 +192,7 @@ namespace Sample
 
             const string scopeName = "SampleScope";
             Console.WriteLine("Creating secrets scope");
-            await client.Secrets.CreateScope(scopeName, null);
+            await client.Secrets.CreateDatabricksBackedScope(scopeName, null);
 
             Console.WriteLine("Creating text secret");
             await client.Secrets.PutSecret("textvalue", scopeName, "secretkey.text");
@@ -250,7 +250,7 @@ namespace Sample
             var poolAttributes = new InstancePoolAttributes
             {
                 PoolName = "TestInstancePool",
-                PreloadedSparkVersions = new[] {RuntimeVersions.Runtime_6_3},
+                PreloadedSparkVersions = new[] {RuntimeVersions.Runtime_6_4},
                 MinIdleInstances = 2,
                 MaxCapacity = 100,
                 IdleInstanceAutoTerminationMinutes = 15,
@@ -282,7 +282,7 @@ namespace Sample
 
             Console.WriteLine("Creating a sample cluster in the pool.");
             var clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
-                .WithRuntimeVersion(RuntimeVersions.Runtime_6_3)
+                .WithRuntimeVersion(RuntimeVersions.Runtime_7_3)
                 .WithAutoScale(3, 7)
                 .WithAutoTermination(30)
                 .WithClusterLogConf("dbfs:/logs/");
@@ -320,7 +320,7 @@ namespace Sample
             Console.WriteLine("Creating standard cluster");
 
             var clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
-                .WithRuntimeVersion(RuntimeVersions.Runtime_6_2)
+                .WithRuntimeVersion(RuntimeVersions.Runtime_6_4)
                 .WithAutoScale(3, 7)
                 .WithAutoTermination(30)
                 .WithClusterLogConf("dbfs:/logs/")
@@ -358,7 +358,7 @@ namespace Sample
             Console.WriteLine("Creating HighConcurrency cluster");
 
             clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
-                .WithRuntimeVersion(RuntimeVersions.Runtime_6_3)
+                .WithRuntimeVersion(RuntimeVersions.Runtime_6_4)
                 .WithAutoScale(3, 7)
                 .WithAutoTermination(30)
                 .WithClusterLogConf("dbfs:/logs/")
@@ -468,12 +468,12 @@ namespace Sample
                 .WithNumberOfWorkers(3)
                 .WithPython3(true)
                 .WithNodeType(NodeTypes.Standard_D3_v2)
-                .WithRuntimeVersion(RuntimeVersions.Runtime_6_3);
+                .WithRuntimeVersion(RuntimeVersions.Runtime_6_4);
 
             Console.WriteLine($"Creating workspace {SampleWorkspacePath}");
             await client.Workspace.Mkdirs(SampleWorkspacePath);
 
-            Console.WriteLine("Dowloading sample notebook");
+            Console.WriteLine("Downloading sample notebook");
             var content = await DownloadSampleNotebook();
 
             Console.WriteLine($"Importing sample HTML notebook to {SampleNotebookPath}");
