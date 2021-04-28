@@ -74,7 +74,7 @@ namespace Microsoft.Azure.Databricks.Client
         }
 
         public async Task<RunList> RunsList(long? jobId = null, int offset = 0, int limit = 20, bool activeOnly = false,
-            bool completedOnly = false, CancellationToken cancellationToken = default)
+            bool completedOnly = false, RunType? runType = null, CancellationToken cancellationToken = default)
         {
             if (activeOnly && completedOnly)
             {
@@ -96,6 +96,11 @@ namespace Microsoft.Azure.Databricks.Client
             if (completedOnly)
             {
                 url += "&completed_only=true";
+            }
+
+            if (runType.HasValue)
+            {
+                url += $"&run_type={runType.Value}";
             }
 
             return await HttpGet<RunList>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);

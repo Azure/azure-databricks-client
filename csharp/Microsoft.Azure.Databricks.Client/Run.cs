@@ -108,6 +108,10 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonProperty(PropertyName = "run_page_url")]
         public string RunPageUrl { get; set; }
 
+        [JsonProperty(PropertyName = "run_type")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public RunType RunType { get; set; }
+
         /// <summary>
         /// Indication if the run has been completed.
         /// </summary>
