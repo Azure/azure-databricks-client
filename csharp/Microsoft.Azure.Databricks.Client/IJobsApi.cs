@@ -66,7 +66,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// </param>
         /// <param name="runType">The type of runs to return. For a description of run types, see Run.</param>
         Task<RunList> RunsList(long? jobId = null, int offset = 0, int limit = 20, bool activeOnly = false,
-            bool completedOnly = false, RunType? runType = null, CancellationToken cancellationToken = default);
+            bool completedOnly = false, /*RunType? runType = null, */ CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieves the metadata of a run.
