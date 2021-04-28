@@ -64,8 +64,9 @@ namespace Microsoft.Azure.Databricks.Client
         /// if true, only completed runs will be included in the results; otherwise, lists both active and completed runs.
         /// Note: This field cannot be true when active_only is true.
         /// </param>
+        /// <param name="runType">The type of runs to return. For a description of run types, see Run.</param>
         Task<RunList> RunsList(long? jobId = null, int offset = 0, int limit = 20, bool activeOnly = false,
-            bool completedOnly = false, CancellationToken cancellationToken = default);
+            bool completedOnly = false, RunType? runType = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieves the metadata of a run.
