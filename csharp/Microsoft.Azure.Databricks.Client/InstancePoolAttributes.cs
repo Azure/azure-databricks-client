@@ -64,5 +64,18 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "preloaded_spark_versions")]
         public string[] PreloadedSparkVersions { get; set; }
+
+        /// <summary>
+        /// A list with at least one Docker image the pool installs on each instance. Pool clusters that use a preloaded Docker image start faster as they do not have to wait for the image to download.
+        /// Available only if your account has Databricks Container Services enabled.
+        /// </summary>
+        [JsonProperty(PropertyName = "preloaded_docker_images")]
+        public DockerImage[] PreloadedDockerImages { get; set; }
+
+        /// <summary>
+        /// Defines the instance availability type (such as spot or on-demand) and max bid price.
+        /// </summary>
+        [JsonProperty(PropertyName = "azure_attributes")]
+        public InstancePoolAzureAttributes AzureAttributes { get; set; }
     }
 }
