@@ -111,5 +111,17 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "enable_local_disk_encryption")]
         public bool LocalDiskEncryption { get; set; }
+
+        /// <summary>
+        /// A cluster policy ID.
+        /// </summary>
+        [JsonProperty(PropertyName = "policy_id")]
+        public string PolicyId { get; set; }
+
+        /// <summary>
+        /// Whether to use policy default values for missing cluster attributes. Default value: false.
+        /// </summary>
+        [JsonProperty(PropertyName = "apply_policy_default_values")]
+        public bool ApplyPolicyDefaultValues { get; set; }
     }
 }
