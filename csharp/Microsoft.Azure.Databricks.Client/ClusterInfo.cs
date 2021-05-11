@@ -13,9 +13,14 @@ namespace Microsoft.Azure.Databricks.Client
         Standard,
 
         /// <summary>
-        /// High concurrency cluster mode. Optimized to run concurrent SQL, Python, and R workloads. Does not support Scala. Previously known as Serverless.
+        /// High concurrency cluster mode. Optimized to run concurrent SQL, Python, and R workloads. Does not support Scala. Previously known as Serverless. <see href="https://docs.microsoft.com/en-us/azure/databricks/clusters/configure#high-concurrency"/>
         /// </summary>
-        HighConcurrency
+        HighConcurrency,
+
+        /// <summary>
+        /// A Single Node cluster is a cluster consisting of a Spark driver and no Spark workers. <see href="https://docs.microsoft.com/en-us/azure/databricks/clusters/single-node"/>
+        /// </summary>
+        SingleNode
     }
 
     /// <summary>
@@ -24,6 +29,15 @@ namespace Microsoft.Azure.Databricks.Client
     /// <seealso cref="T:Microsoft.Azure.Databricks.DatabricksClient.ClusterInstance" />
     public class ClusterInfo : ClusterAttributes
     {
+        public ClusterInfo()
+        {
+            // Use python3 by default.
+            this.SparkEnvironmentVariables = new Dictionary<string, string>
+            {
+                {"PYSPARK_PYTHON", "/databricks/python3/bin/python3"}
+            };
+        }
+
         public static ClusterInfo GetNewClusterConfiguration(string clusterName = null)
         {
             return new ClusterInfo
@@ -180,8 +194,19 @@ namespace Microsoft.Azure.Databricks.Client
         }
 
         /// <summary>
+        /// Specifies whether the cluster uses Python version 2.
+        /// Python 2 reached its end of life on January 1, 2020. Python 2 is not supported in Databricks Runtime 6.0 and above. Databricks Runtime 5.5 and below continue to support Python 2.
+        /// </summary>
+        public ClusterInfo WithPython2()
+        {
+            SparkEnvironmentVariables?.Remove("PYSPARK_PYTHON");
+            return this;
+        }
+
+        /// <summary>
         /// Specifies whether the cluster supports Python version 3.
         /// </summary>
+        [Obsolete("Python3 is enabled by default. If you want to use Python2, call \"WithPython2\".")]
         public ClusterInfo WithPython3(bool enablePython3)
         {
             if (this.SparkEnvironmentVariables == null)
@@ -257,15 +282,24 @@ namespace Microsoft.Azure.Databricks.Client
                 this.SparkConfiguration = new Dictionary<string, string>();
             }
 
-            if (clusterMode == ClusterMode.HighConcurrency)
+            switch (clusterMode)
             {
-                this.CustomTags["ResourceClass"] = "Serverless";
-                this.SparkConfiguration["spark.databricks.cluster.profile"] = "serverless";
-            }
-            else
-            {
-                this.CustomTags.Remove("ResourceClass");
-                this.SparkConfiguration.Remove("spark.databricks.cluster.profile");
+                case ClusterMode.HighConcurrency:
+                    this.CustomTags["ResourceClass"] = "Serverless";
+                    this.SparkConfiguration["spark.databricks.cluster.profile"] = "serverless";
+                    this.SparkConfiguration.Remove("spark.master");
+                    break;
+                case ClusterMode.SingleNode:
+                    this.CustomTags["ResourceClass"] = "SingleNode";
+                    this.SparkConfiguration["spark.databricks.cluster.profile"] = "singleNode";
+                    this.SparkConfiguration["spark.master"] = "local[*]";
+                    this.NumberOfWorkers = 0;
+                    break;
+                default: // Standard mode
+                    this.CustomTags.Remove("ResourceClass");
+                    this.SparkConfiguration.Remove("spark.databricks.cluster.profile");
+                    this.SparkConfiguration.Remove("spark.master");
+                    break;
             }
 
             var allowedReplLang = DatabricksAllowedReplLang(_enableTableAccessControl, clusterMode);

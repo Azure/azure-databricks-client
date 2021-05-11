@@ -321,11 +321,10 @@ namespace Sample
 
             var clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
                 .WithRuntimeVersion(RuntimeVersions.Runtime_6_4_ESR)
-                .WithAutoScale(3, 7)
                 .WithAutoTermination(30)
                 .WithClusterLogConf("dbfs:/logs/")
                 .WithNodeType(NodeTypes.Standard_D3_v2)
-                .WithPython3(true);
+                .WithClusterMode(ClusterMode.SingleNode);
 
             clusterConfig.DockerImage = new DockerImage { Url = "databricksruntime/standard:latest" };
             
