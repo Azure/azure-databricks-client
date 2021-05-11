@@ -123,5 +123,11 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "apply_policy_default_values")]
         public bool ApplyPolicyDefaultValues { get; set; }
+
+        /// <summary>
+        /// Defines attributes such as the instance availability type, node placement, and max bid price. If not specified during cluster creation, a set of default values is used.
+        /// </summary>
+        [JsonProperty(PropertyName = "azure_attributes")]
+        public AzureAttributes AzureAttributes { get; set; }
     }
 }

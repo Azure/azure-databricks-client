@@ -257,7 +257,12 @@ namespace Sample
                 NodeTypeId = NodeTypes.Standard_D3_v2,
                 EnableElasticDisk = true,
                 DiskSpec = new DiskSpec
-                    {DiskCount = 2, DiskSize = 64, DiskType = DiskType.FromAzureDisk(AzureDiskVolumeType.STANDARD_LRS)}
+                    {DiskCount = 2, DiskSize = 64, DiskType = DiskType.FromAzureDisk(AzureDiskVolumeType.STANDARD_LRS)},
+                PreloadedDockerImages = new[]
+                {
+                    new DockerImage {Url = "databricksruntime/standard:latest"}
+                },
+                AzureAttributes = new InstancePoolAzureAttributes {Availability = AzureAvailability.SPOT_AZURE, SpotBidMaxPrice = -1}
             };
 
             var poolId = await client.InstancePool.Create(poolAttributes).ConfigureAwait(false);
@@ -309,7 +314,7 @@ namespace Sample
             {
                 Console.WriteLine($"\t{nodeType.NodeTypeId}\tMemory: {nodeType.MemoryMb} MB\tCores: {nodeType.NumCores}\tAvailable Quota: {nodeType.ClusterCloudProviderNodeInfo.AvailableCoreQuota}");
             }
-
+            
             Console.WriteLine("Listing Databricks runtime versions");
             var sparkVersions = await client.Clusters.ListSparkVersions();
             foreach (var (key, name) in sparkVersions)
@@ -327,7 +332,7 @@ namespace Sample
                 .WithClusterMode(ClusterMode.SingleNode);
 
             clusterConfig.DockerImage = new DockerImage { Url = "databricksruntime/standard:latest" };
-            
+
             var clusterId = await client.Clusters.Create(clusterConfig);
 
             var createdCluster = await client.Clusters.Get(clusterId);
@@ -362,7 +367,6 @@ namespace Sample
                 .WithAutoTermination(30)
                 .WithClusterLogConf("dbfs:/logs/")
                 .WithNodeType(NodeTypes.Standard_D3_v2)
-                .WithPython3(true)
                 .WithClusterMode(ClusterMode.HighConcurrency)
                 .WithTableAccessControl(true);
 
@@ -465,7 +469,6 @@ namespace Sample
             Console.WriteLine("Creating new job");
             var newCluster = ClusterInfo.GetNewClusterConfiguration()
                 .WithNumberOfWorkers(3)
-                .WithPython3(true)
                 .WithNodeType(NodeTypes.Standard_D3_v2)
                 .WithRuntimeVersion(RuntimeVersions.Runtime_6_4_ESR);
 
