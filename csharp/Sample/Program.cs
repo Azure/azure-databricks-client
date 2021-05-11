@@ -250,7 +250,7 @@ namespace Sample
             var poolAttributes = new InstancePoolAttributes
             {
                 PoolName = "TestInstancePool",
-                PreloadedSparkVersions = new[] {RuntimeVersions.Runtime_6_4},
+                PreloadedSparkVersions = new[] {RuntimeVersions.Runtime_6_4_ESR},
                 MinIdleInstances = 2,
                 MaxCapacity = 100,
                 IdleInstanceAutoTerminationMinutes = 15,
@@ -320,7 +320,7 @@ namespace Sample
             Console.WriteLine("Creating standard cluster");
 
             var clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
-                .WithRuntimeVersion(RuntimeVersions.Runtime_6_4)
+                .WithRuntimeVersion(RuntimeVersions.Runtime_6_4_ESR)
                 .WithAutoScale(3, 7)
                 .WithAutoTermination(30)
                 .WithClusterLogConf("dbfs:/logs/")
@@ -358,7 +358,7 @@ namespace Sample
             Console.WriteLine("Creating HighConcurrency cluster");
 
             clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
-                .WithRuntimeVersion(RuntimeVersions.Runtime_6_4)
+                .WithRuntimeVersion(RuntimeVersions.Runtime_6_4_ESR)
                 .WithAutoScale(3, 7)
                 .WithAutoTermination(30)
                 .WithClusterLogConf("dbfs:/logs/")
@@ -468,7 +468,7 @@ namespace Sample
                 .WithNumberOfWorkers(3)
                 .WithPython3(true)
                 .WithNodeType(NodeTypes.Standard_D3_v2)
-                .WithRuntimeVersion(RuntimeVersions.Runtime_6_4);
+                .WithRuntimeVersion(RuntimeVersions.Runtime_6_4_ESR);
 
             Console.WriteLine($"Creating workspace {SampleWorkspacePath}");
             await client.Workspace.Mkdirs(SampleWorkspacePath);
