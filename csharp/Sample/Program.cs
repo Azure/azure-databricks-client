@@ -550,16 +550,28 @@ namespace Sample
                         HttpCompletionOption.ResponseHeadersRead);
                     await response.Content.CopyToAsync(ms);
                 }
-                
+
                 await client.Dbfs.Upload(uploadPath, true, ms);
+            }
+
+            using (var ms = new MemoryStream())
+            {
+                await client.Dbfs.Download(uploadPath, ms);
+                ms.Position = 0;
+                var sr = new StreamReader(ms);
+                var content = await sr.ReadToEndAsync();
+                Console.WriteLine(content.Substring(0, 100));
             }
 
             Console.WriteLine("Getting info of the uploaded file");
             var uploadedFile = await client.Dbfs.GetStatus(uploadPath);
             Console.WriteLine("Path: {0}\tSize: {1}", uploadedFile.Path, uploadedFile.FileSize);
 
+            var newPath = "/test/" + Guid.NewGuid() + ".txt";
+            await client.Dbfs.Move(uploadPath, newPath);
+
             Console.WriteLine("Deleting uploaded file");
-            await client.Dbfs.Delete(uploadPath, false);
+            await client.Dbfs.Delete(newPath, false);
         }
     }
 }

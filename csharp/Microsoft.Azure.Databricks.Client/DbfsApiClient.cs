@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace Microsoft.Azure.Databricks.Client
 {
@@ -74,20 +75,22 @@ namespace Microsoft.Azure.Databricks.Client
 
         public async Task Delete(string path, bool recursive, CancellationToken cancellationToken = default)
         {
-            var request = new { path, recursive };
+            var request = new { path = path, recursive };
             await HttpPost(this.HttpClient, "dbfs/delete", request, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<FileInfo> GetStatus(string path, CancellationToken cancellationToken = default)
         {
-            var url = $"dbfs/get-status?path={path}";
+            var encodedPath = WebUtility.UrlEncode(path);
+            var url = $"dbfs/get-status?path={encodedPath}";
             var result = await HttpGet<FileInfo>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
             return result;
         }
 
         public async Task<IEnumerable<FileInfo>> List(string path, CancellationToken cancellationToken = default)
         {
-            var url = $"dbfs/list?path={path}";
+            var encodedPath = WebUtility.UrlEncode(path);
+            var url = $"dbfs/list?path={encodedPath}";
             var result = await HttpGet<dynamic>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
             return PropertyExists(result, "files")
                 ? result.files.ToObject<IEnumerable<FileInfo>>()
@@ -125,7 +128,8 @@ namespace Microsoft.Azure.Databricks.Client
 
         public async Task<FileReadBlock> Read(string path, long offset, long length, CancellationToken cancellationToken = default)
         {
-            var url = $"dbfs/read?path={path}&offset={offset}&length={length}";
+            var encodedPath = WebUtility.UrlEncode(path);
+            var url = $"dbfs/read?path={encodedPath}&offset={offset}&length={length}";
             var result = await HttpGet<FileReadBlock>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
             return result;
         }
