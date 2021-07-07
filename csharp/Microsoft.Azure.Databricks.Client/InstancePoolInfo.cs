@@ -48,5 +48,35 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "stats")]
         public InstancePoolStats Stats { get; set; }
+
+        /// <summary>
+        /// Status about failed pending instances in the pool.
+        /// </summary>
+        [JsonProperty(PropertyName = "status")]
+        public InstancePoolStatus Status { get; set; }
+    }
+
+    public class InstancePoolStatus
+    {
+        /// <summary>
+        /// List of error messages for the failed pending instances.
+        /// </summary>
+        [JsonProperty(PropertyName = "pending_instance_errors")]
+        public List<PendingInstanceError> PendingInstanceErrors { get; set; }
+    }
+
+    public class PendingInstanceError
+    {
+        /// <summary>
+        /// ID of the failed instance.
+        /// </summary>
+        [JsonProperty(PropertyName = "instance_id")]
+        public string InstanceId { get; set; }
+
+        /// <summary>
+        /// Message describing the cause of the failure.
+        /// </summary>
+        [JsonProperty(PropertyName = "message")]
+        public string Message { get; set; }
     }
 }
