@@ -1,4 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
+// ReSharper disable InconsistentNaming
 namespace Microsoft.Azure.Databricks.Client
 {
     public enum TerminationCode
@@ -88,6 +88,46 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// OTHER
         /// </summary>
-        OTHER
+        OTHER,
+
+        /// <summary>
+        /// The cluster failed to start because of user network configuration issues. Possible reasons include misconfiguration of firewall settings, UDR entries, DNS, or route tables.
+        /// </summary>
+        BOOTSTRAP_TIMEOUT,
+
+        /// <summary>
+        /// Azure Databricks was unable to launch containers on worker nodes for the cluster. Have your admin check your network configuration.
+        /// </summary>
+        CONTAINER_LAUNCH_FAILURE,
+
+        /// <summary>
+        /// The cluster failed to start because Databricks File System (DBFS) could not be reached.
+        /// </summary>
+        DBFS_COMPONENT_UNHEALTHY,
+
+        /// <summary>
+        /// Azure Databricks was not able to access the Spark driver, because it was not reachable.
+        /// </summary>
+        DRIVER_UNREACHABLE,
+
+        /// <summary>
+        /// Azure Databricks was not able to access the Spark driver, because it was unresponsive.
+        /// </summary>
+        DRIVER_UNRESPONSIVE,
+
+        /// <summary>
+        /// The cluster failed to start because the external metastore could not be reached
+        /// </summary>
+        METASTORE_COMPONENT_UNHEALTHY,
+
+        /// <summary>
+        /// The cluster was terminated due to an error in the network configuration. For example, a workspace with VNet injection had incorrect DNS settings that blocked access to worker artifacts.
+        /// </summary>
+        NETWORK_CONFIGURATION_FAILURE,
+
+        /// <summary>
+        /// Azure Databricks reached the Azure Resource Manager request limit which will prevent the Azure SDK from issuing any read or write request to the Azure Resource Manager. The request limit is applied to each subscription every hour. Retry after an hour or changing to a smaller cluster size might help to resolve the issue.
+        /// </summary>
+        AZURE_RESOURCE_MANAGER_THROTTLING
     }
 }
