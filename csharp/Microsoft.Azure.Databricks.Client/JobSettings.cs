@@ -50,6 +50,17 @@ namespace Microsoft.Azure.Databricks.Client
         }
 
         /// <summary>
+        /// Adds a cron schedule to a job
+        /// </summary>
+        /// <param name="cronSchedule"></param>
+        /// <returns></returns>
+        public JobSettings WithSchedule(CronSchedule cronSchedule)
+        {
+            this.Schedule = cronSchedule;
+            return this;
+        }
+
+        /// <summary>
         /// An optional name for the job. The default value is Untitled.
         /// </summary>
         [JsonProperty(PropertyName = "name")]
