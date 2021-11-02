@@ -482,15 +482,33 @@ namespace Sample
             await client.Workspace.Import(SampleNotebookPath, ExportFormat.HTML, null,
                 content, true);
 
+            var schedule = new CronSchedule()
+            {
+                QuartzCronExpression = "0 0 9 ? * MON-FRI",
+                TimezoneId = "Europe/London",
+                PauseStatus = PauseStatus.UNPAUSED
+            };
+            
             var jobSettings = JobSettings.GetNewNotebookJobSettings(
                     "Sample Job",
                     SampleNotebookPath,
                     null)
-                .WithNewCluster(newCluster);
+                .WithNewCluster(newCluster)
+                .WithSchedule(schedule);
 
             var jobId = await client.Jobs.Create(jobSettings);
 
             Console.WriteLine("Job created: {0}", jobId);
+
+            var jobWithClusterInfo = await client.Jobs.Get(jobId);
+
+            var existingSettings = jobWithClusterInfo.Settings;
+            var existingSchedule = existingSettings.Schedule;
+            existingSchedule.PauseStatus = PauseStatus.PAUSED;
+            existingSettings.Schedule = existingSchedule;
+            
+            Console.WriteLine("Pausing job schedule");
+            await client.Jobs.Reset(jobId, existingSettings);
 
             Console.WriteLine("Run now: {0}", jobId);
             var runId = (await client.Jobs.RunNow(jobId, null)).RunId;
