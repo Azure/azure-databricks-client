@@ -47,6 +47,15 @@ namespace Microsoft.Azure.Databricks.Client
                 .ConfigureAwait(false);
         }
 
+        public async Task Update(long jobId, JobSettings newSettings, string[] fieldsToRemove = default,
+            CancellationToken cancellationToken = default)
+        {
+            await HttpPost(this.HttpClient, "jobs/update",
+                    new {job_id = jobId, new_settings = newSettings, fields_to_remove = fieldsToRemove},
+                    cancellationToken)
+                .ConfigureAwait(false);
+        }
+
         public async Task<RunIdentifier> RunNow(long jobId, RunParameters runParams, CancellationToken cancellationToken = default)
         {
             var settings = new RunNowSettings

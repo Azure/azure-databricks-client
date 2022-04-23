@@ -90,7 +90,7 @@ namespace Sample
             using (var httpClient = new HttpClient())
             {
                 content = await httpClient.GetByteArrayAsync(
-                    "https://cdn2.hubspot.net/hubfs/438089/notebooks/Quick_Start/Quick_Start_Using_Scala.html"
+                    "https://docs.databricks.com/_static/notebooks/getting-started/quickstartusingscala.html"
                 );
             }
 
@@ -482,7 +482,7 @@ namespace Sample
             await client.Workspace.Import(SampleNotebookPath, ExportFormat.HTML, null,
                 content, true);
 
-            var schedule = new CronSchedule()
+            var schedule = new CronSchedule
             {
                 QuartzCronExpression = "0 0 9 ? * MON-FRI",
                 TimezoneId = "Europe/London",
@@ -499,6 +499,26 @@ namespace Sample
             var jobId = await client.Jobs.Create(jobSettings);
 
             Console.WriteLine("Job created: {0}", jobId);
+
+            // Adding email notifications and libraries.
+            await client.Jobs.Update(jobId, new JobSettings
+            {
+                EmailNotifications = new JobEmailNotifications
+                {
+                    OnSuccess = new[] {"someone@example.com"}
+                },
+                Libraries = new List<Library>
+                {
+                    new MavenLibrary
+                    {
+                        MavenLibrarySpec = new MavenLibrarySpec
+                            {Coordinates = "com.microsoft.azure:synapseml_2.12:0.9.5"}
+                    }
+                }
+            });
+
+            // Removing email notifications and libraries.
+            await client.Jobs.Update(jobId, new JobSettings(), new[] {"email_notifications", "libraries"});
 
             var jobWithClusterInfo = await client.Jobs.Get(jobId);
 
