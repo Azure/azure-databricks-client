@@ -41,12 +41,21 @@ namespace Microsoft.Azure.Databricks.Client
         Task Reset(long jobId, JobSettings newSettings, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Add, change, or remove specific settings of an existing job. Use the Reset endpoint to overwrite all job settings.
+        /// </summary>
+        /// <param name="jobId">The canonical identifier of the job to update. This field is required.</param>
+        /// <param name="newSettings">The new settings for the job. Any top-level fields specified in new_settings are completely replaced. Partially updating nested fields is not supported. Changes to the field JobSettings.timeout_seconds are applied to active runs.Changes to other fields are applied to future runs only.</param>
+        /// <param name="fieldsToRemove">Remove top-level fields in the job settings. Removing nested fields is not supported. This field is optional.</param>
+        Task Update(long jobId, JobSettings newSettings, string[] fieldsToRemove = default,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Runs the job now, and returns the run_id of the triggered run.
         /// </summary>
         Task<RunIdentifier> RunNow(long jobId, RunParameters runParams, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Submit a one-time run with the provided settings. This endpoint doesn’t require a Databricks job to be created. You can directly submit your workload. Runs submitted via this endpoint don’t show up in the UI. Once the run is submitted, you can use the jobs/runs/get API to check the run state.
+        /// Submit a one-time run with the provided settings. This endpoint doesn't require a Databricks job to be created. You can directly submit your workload. Runs submitted via this endpoint don’t show up in the UI. Once the run is submitted, you can use the jobs/runs/get API to check the run state.
         /// </summary>
         Task<long> RunSubmit(RunOnceSettings settings, CancellationToken cancellationToken = default);
 
