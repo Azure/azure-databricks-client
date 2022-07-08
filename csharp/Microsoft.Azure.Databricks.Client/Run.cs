@@ -112,6 +112,9 @@ namespace Microsoft.Azure.Databricks.Client
         [JsonConverter(typeof(StringEnumConverter))]
         public RunType RunType { get; set; }
 
+        [JsonProperty(PropertyName = "run_name")]
+        public string RunName { get; set; }
+
         /// <summary>
         /// Indication if the run has been completed.
         /// </summary>
