@@ -15,7 +15,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="timeoutSeconds">The timeout in seconds for the http requests.</param>
         protected DatabricksClient(string baseUrl, string token, long timeoutSeconds = 30)
         {
-            var apiUrl = new Uri(new Uri(baseUrl), "api/2.0/");
+            var apiUrl = new Uri(new Uri(baseUrl), "api/");
 
             var handler = new HttpClientHandler
             {
@@ -57,7 +57,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="timeoutSeconds">The timeout in seconds for the http requests.</param>
         protected DatabricksClient(string baseUrl, string workspaceResourceId, string databricksToken, string managementToken,  long timeoutSeconds = 30)
         {
-            var apiUrl = new Uri(new Uri(baseUrl), "api/2.0/");
+            var apiUrl = new Uri(new Uri(baseUrl), "api/");
 
             var handler = new HttpClientHandler
             {

@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Azure.Databricks.Client.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using FileInfo = Microsoft.Azure.Databricks.Client.Models.FileInfo;
 
 namespace Microsoft.Azure.Databricks.Client
 {

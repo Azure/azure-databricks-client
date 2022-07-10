@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Azure.Databricks.Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,12 +11,18 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// Creates a new Spark cluster. This method will acquire new instances from the cloud provider if necessary. This method is asynchronous; the returned cluster_id can be used to poll the cluster status. When this method returns, the cluster will be in a PENDING state. The cluster will be usable once it enters a RUNNING state.
         /// </summary>
-        Task<string> Create(ClusterInfo clusterInfo, CancellationToken cancellationToken = default);
+        /// <param name="clusterAttributes">Cluster attributes to be created.</param>
+        /// <param name="idempotencyToken">
+        /// An optional token that can be used to guarantee the idempotency of cluster creation requests. If the idempotency token is assigned to a cluster that is not in the TERMINATED state, the request does not create a new cluster but instead returns the ID of the existing cluster. Otherwise, a new cluster is created. The idempotency token is cleared when the cluster is terminated
+        /// If you specify the idempotency token, upon failure you can retry until the request succeeds.Azure Databricks will guarantee that exactly one cluster will be launched with that idempotency token.
+        /// This token should have at most 64 characters.
+        /// </param>
+        Task<string> Create(ClusterAttributes clusterAttributes, string idempotencyToken = default, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Starts a terminated Spark cluster given its ID. This is similar to createCluster, except:
         ///     The previous cluster id and attributes are preserved.
-        ///     The cluster starts with the last specified cluster size. If the previous cluster was an autoscaling cluster, the current cluster starts with the minimum number of nodes.
+        ///     The cluster starts with the last specified cluster size. If the previous cluster was an auto-scaling cluster, the current cluster starts with the minimum number of nodes.
         ///     If the cluster is not in a TERMINATED state, nothing will happen.
         ///     Clusters launched to run a job cannot be started.
         /// </summary>
@@ -26,7 +33,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// A cluster can be edited if it is in a RUNNING or TERMINATED state.If a cluster is edited while in a RUNNING state, it will be restarted so that the new attributes can take effect.If a cluster is edited while in a TERMINATED state, it will remain TERMINATED. The next time it is started using the clusters/start API, the new attributes will take effect.An attempt to edit a cluster in any other state will be rejected with an INVALID_STATE error code.
         /// Clusters created by the Databricks Jobs service cannot be edited.
         /// </summary>
-        Task Edit(string clusterId, ClusterInfo clusterConfig, CancellationToken cancellationToken = default);
+        Task Edit(string clusterId, ClusterAttributes clusterConfig, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Restarts a Spark cluster given its id. If the cluster is not in a RUNNING state, nothing will happen.

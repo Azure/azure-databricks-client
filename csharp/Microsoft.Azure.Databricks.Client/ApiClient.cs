@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Microsoft.Azure.Databricks.Client.Converters;
+using System;
+using System.IO;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.Databricks.Client
 {
@@ -11,8 +14,19 @@ namespace Microsoft.Azure.Databricks.Client
     {
         protected readonly HttpClient HttpClient;
 
-        private static readonly JsonSerializerSettings JsonSerializerSettings =
-            new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Ignore};
+        protected virtual string ApiVersion => "2.0";
+
+        protected static readonly JsonSerializerOptions Options = new()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+            Converters = {
+                new JsonStringEnumConverter(),
+                new MillisecondEpochDateTimeConverter(),
+                new LibraryConverter(),
+                new SecretScopeConverter(),
+                new AccessControlRequestConverter()
+            }
+        };
 
         protected ApiClient(HttpClient httpClient)
         {
@@ -35,14 +49,14 @@ namespace Microsoft.Azure.Databricks.Client
                 throw CreateApiException(response);
             }
 
-            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<T>(responseContent);
+            var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            return JsonSerializer.Deserialize<T>(responseStream, Options);
         }
 
         protected static async Task HttpPost<TBody>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
         {
-            
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
+
+            HttpContent content = new StringContent(JsonSerializer.Serialize(body, Options));
             var response = await httpClient.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
@@ -53,7 +67,7 @@ namespace Microsoft.Azure.Databricks.Client
 
         protected static async Task<TResult> HttpPost<TBody, TResult>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
         {
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
+            HttpContent content = new StringContent(JsonSerializer.Serialize(body, Options));
             var response = await httpClient.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
@@ -61,8 +75,8 @@ namespace Microsoft.Azure.Databricks.Client
                 throw CreateApiException(response);
             }
 
-            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<TResult>(responseContent);
+            var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            return JsonSerializer.Deserialize<TResult>(responseStream, Options);
         }
 
         protected static async Task HttpPatch<TBody>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
@@ -124,6 +138,7 @@ namespace Microsoft.Azure.Databricks.Client
         }
 
         protected static bool PropertyExists(JObject obj, string propertyName)
+        protected static bool PropertyExists(JsonObject obj, string propertyName)
         {
             return obj.ContainsKey(propertyName);
         }

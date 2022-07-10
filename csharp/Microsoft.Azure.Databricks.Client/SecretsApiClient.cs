@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.Azure.Databricks.Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace Microsoft.Azure.Databricks.Client
 {
@@ -29,7 +31,7 @@ namespace Microsoft.Azure.Databricks.Client
             CancellationToken cancellationToken = default)
         {
             var request = new {scope, initial_manage_principal = initialManagePrincipal};
-            await HttpPost(this.HttpClient, "secrets/scopes/create", request, cancellationToken).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/scopes/create", request, cancellationToken).ConfigureAwait(false);
         }
 
         /*
@@ -49,82 +51,92 @@ namespace Microsoft.Azure.Databricks.Client
                 }
             };
 
-            await HttpPost(this.HttpClient, "secrets/scopes/create", request, cancellationToken).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/scopes/create", request, cancellationToken).ConfigureAwait(false);
         }
         */
 
         public async Task DeleteScope(string scope, CancellationToken cancellationToken = default)
         {
             var request = new {scope};
-            await HttpPost(this.HttpClient, "secrets/scopes/delete", request, cancellationToken).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/scopes/delete", request, cancellationToken).ConfigureAwait(false);
         }
-
-        private static readonly JsonSerializer SecretScopeConverter = new JsonSerializer
-        {
-            Converters = { new SecretScopeConverter() }
-        };
 
         public async Task<IEnumerable<SecretScope>> ListScopes(CancellationToken cancellationToken = default)
         {
-            var scopeList = await HttpGet<dynamic>(this.HttpClient, "secrets/scopes/list", cancellationToken).ConfigureAwait(false);
+            var scopeList = await HttpGet<JsonObject>(this.HttpClient, $"{ApiVersion}/secrets/scopes/list", cancellationToken).ConfigureAwait(false);
 
-            return PropertyExists(scopeList, "scopes")
-                ? scopeList.scopes.ToObject<IEnumerable<SecretScope>>(SecretScopeConverter)
-                : Enumerable.Empty<SecretScope>();
+            if (scopeList.TryGetPropertyValue("scopes", out var scopes))
+            {
+                return scopes.Deserialize<IEnumerable<SecretScope>>(Options);
+            }
+            else
+            {
+                return Enumerable.Empty<SecretScope>();
+            }
         }
 
         public async Task PutSecret(string secretValue, string scope, string key, CancellationToken cancellationToken = default)
         {
             var request = new {scope, key, string_value = secretValue};
-            await HttpPost(this.HttpClient, "secrets/put", request, cancellationToken).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/put", request, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task PutSecret(byte[] secretValue, string scope, string key, CancellationToken cancellationToken = default)
         {
             var request = new { scope, key, bytes_value = secretValue };
-            await HttpPost(this.HttpClient, "secrets/put", request, cancellationToken).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/put", request, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task DeleteSecret(string scope, string key, CancellationToken cancellationToken = default)
         {
             var request = new { scope, key };
-            await HttpPost(this.HttpClient, "secrets/delete", request, cancellationToken).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/delete", request, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<SecretMetadata>> ListSecrets(string scope, CancellationToken cancellationToken = default)
         {
-            var url = $"secrets/list?scope={scope}";
-            var secretList = await HttpGet<dynamic>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
-            return PropertyExists(secretList, "secrets")
-                ? secretList.secrets.ToObject<IEnumerable<SecretMetadata>>()
-                : Enumerable.Empty<SecretMetadata>();
+            var url = $"{ApiVersion}/secrets/list?scope={scope}";
+            var secretList = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
+            if (secretList.TryGetPropertyValue("secrets", out var secrets))
+            {
+                return secrets.Deserialize<IEnumerable<SecretMetadata>>(Options);
+            }
+            else
+            {
+                return Enumerable.Empty<SecretMetadata>();
+            }
         }
 
         public async Task PutSecretAcl(string scope, string principal, AclPermission permission, CancellationToken cancellationToken = default)
         {
             var request = new { scope, principal, permission = permission.ToString() };
-            await HttpPost(this.HttpClient, "secrets/acls/put", request, cancellationToken).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/acls/put", request, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task DeleteSecretAcl(string scope, string principal, CancellationToken cancellationToken = default)
         {
             var request = new { scope, principal };
-            await HttpPost(this.HttpClient, "secrets/acls/delete", request, cancellationToken).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/acls/delete", request, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<AclItem> GetSecretAcl(string scope, string principal, CancellationToken cancellationToken = default)
         {
-            var url = $"secrets/acls/get?scope={scope}&principal={principal}";
+            var url = $"{ApiVersion}/secrets/acls/get?scope={scope}&principal={principal}";
             return await HttpGet<AclItem>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<AclItem>> ListSecretAcl(string scope, CancellationToken cancellationToken = default)
         {
-            var url = $"secrets/acls/list?scope={scope}";
-            var aclList = await HttpGet<dynamic>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
-            return PropertyExists(aclList, "items")
-                ? aclList.items.ToObject<IEnumerable<AclItem>>()
-                : Enumerable.Empty<AclItem>();
+            var url = $"{ApiVersion}/secrets/acls/list?scope={scope}";
+            var aclList = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
+            if (aclList.TryGetPropertyValue("items", out var items))
+            {
+                return items.Deserialize<IEnumerable<AclItem>>(Options);
+            }
+            else
+            {
+                return Enumerable.Empty<AclItem>();
+            }
         }
     }
 }

@@ -1,160 +1,195 @@
 ﻿using System;
+using Microsoft.Azure.Databricks.Client.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Microsoft.Azure.Databricks.Client
+namespace Microsoft.Azure.Databricks.Client;
+public class JobsApiClient : ApiClient, IJobsApi
 {
-    public class JobsApiClient : ApiClient, IJobsApi
+    protected override string ApiVersion => "2.1";
+
+    public JobsApiClient(HttpClient httpClient) : base(httpClient)
     {
-        public JobsApiClient(HttpClient httpClient) : base(httpClient)
-        {
-        }
+    }
 
-        public async Task<long> Create(JobSettings jobSettings, CancellationToken cancellationToken = default)
-        {
-            var jobIdentifier =
-                await HttpPost<JobSettings, dynamic>(this.HttpClient, "jobs/create", jobSettings, cancellationToken)
-                    .ConfigureAwait(false);
-            return jobIdentifier.job_id.ToObject<long>();
-        }
+    public async Task<long> Create(JobSettings jobSettings,
+        IEnumerable<AccessControlRequest> accessControlList = default,
+        CancellationToken cancellationToken = default)
+    {
+        var request = JsonSerializer.SerializeToNode(jobSettings, Options)!.AsObject();
+            
+        accessControlList.Iter(
+            acr => request.Add("access_control_list", JsonSerializer.SerializeToNode(acr, Options))
+        );
 
-        public async Task<IEnumerable<Job>> List(CancellationToken cancellationToken = default)
-        {
-            const string requestUri = "jobs/list";
-            var jobList = await HttpGet<dynamic>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
-            return PropertyExists(jobList, "jobs")
-                ? jobList.jobs.ToObject<IEnumerable<Job>>()
-                : Enumerable.Empty<Job>();
-        }
-
-        public async Task Delete(long jobId, CancellationToken cancellationToken = default)
-        {
-            await HttpPost(this.HttpClient, "jobs/delete", new { job_id = jobId }, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task<Job> Get(long jobId, CancellationToken cancellationToken = default)
-        {
-            var requestUri = $"jobs/get?job_id={jobId}";
-            return await HttpGet<Job>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task Reset(long jobId, JobSettings newSettings, CancellationToken cancellationToken = default)
-        {
-            await HttpPost(this.HttpClient, "jobs/reset", new { job_id = jobId, new_settings = newSettings }, cancellationToken)
-                .ConfigureAwait(false);
-        }
-
-        public async Task Update(long jobId, JobSettings newSettings, string[] fieldsToRemove = default,
-            CancellationToken cancellationToken = default)
-        {
-            await HttpPost(this.HttpClient, "jobs/update",
-                    new {job_id = jobId, new_settings = newSettings, fields_to_remove = fieldsToRemove},
+        var jobIdentifier =
+            await HttpPost<JsonObject, JsonObject>(this.HttpClient, $"{ApiVersion}/jobs/create", request,
                     cancellationToken)
                 .ConfigureAwait(false);
-        }
+        return jobIdentifier["job_id"]!.GetValue<long>();
+    }
 
-        public async Task<RunIdentifier> RunNow(long jobId, RunParameters runParams, CancellationToken cancellationToken = default)
+    public async Task<JobList> List(int limit = 20, int offset = 0, bool expandTasks = false,
+        CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{ApiVersion}/jobs/list";
+        var response = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken)
+            .ConfigureAwait(false);
+
+        response.TryGetPropertyValue("jobs", out var jobsNode);
+        var jobs = jobsNode
+            .Map(node => node.Deserialize<IEnumerable<Job>>(Options))
+            .GetOrElse(Enumerable.Empty<Job>);
+
+        response.TryGetPropertyValue("has_more", out var hasMoreNode);
+        var hasMore = hasMoreNode.Exists(node => node.GetValue<bool>());
+            
+        return new JobList {Jobs = jobs, HasMore = hasMore};
+    }
+
+    public async Task Delete(long jobId, CancellationToken cancellationToken = default)
+    {
+        await HttpPost(this.HttpClient, $"{ApiVersion}/jobs/delete", new { job_id = jobId }, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<Job> Get(long jobId, CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{ApiVersion}/jobs/get?job_id={jobId}";
+        return await HttpGet<Job>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task Reset(long jobId, JobSettings newSettings, CancellationToken cancellationToken = default)
+    {
+        await HttpPost(this.HttpClient, $"{ApiVersion}/jobs/reset", new { job_id = jobId, new_settings = newSettings }, cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async Task Update(long jobId, JobSettings newSettings, string[] fieldsToRemove = default,
+        CancellationToken cancellationToken = default)
+    {
+        await HttpPost(this.HttpClient, $"{ApiVersion}/jobs/update",
+                new { job_id = jobId, new_settings = newSettings, fields_to_remove = fieldsToRemove },
+                cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<long> RunNow(long jobId, RunParameters runParams = default, string idempotencyToken = default,
+        CancellationToken cancellationToken = default)
+    {
+        var request = runParams.Map(p => JsonSerializer.SerializeToNode(p, Options)!.AsObject())
+            .GetOrElse(() => new JsonObject());
+        request.Add("job_id", jobId);
+        idempotencyToken.Iter(token => request.Add("idempotency_token", token));
+
+        var result = await HttpPost<JsonObject, RunIdentifier>(
+            this.HttpClient, $"{ApiVersion}/jobs/run-now", request, cancellationToken
+        ).ConfigureAwait(false);
+
+        return result.RunId;
+    }
+
+    public async Task<long> RunSubmit(RunSubmitSettings settings,
+        IEnumerable<AccessControlRequest> accessControlList = default, string idempotencyToken = default,
+        CancellationToken cancellationToken = default)
+    {
+        var request = JsonSerializer.SerializeToNode(settings, Options)!.AsObject();
+        idempotencyToken.Iter(token => request.Add("idempotency_token", token));
+        accessControlList.Iter(
+            acr => request.Add("access_control_list", JsonSerializer.SerializeToNode(acr, Options))
+        );
+
+        var result = await HttpPost<JsonObject, RunIdentifier>(
+            this.HttpClient, $"{ApiVersion}/jobs/runs/submit", request, cancellationToken
+        ).ConfigureAwait(false);
+
+        return result.RunId;
+    }
+
+    public async Task<RunList> RunsList(long? jobId = default, int offset = 0, int limit = 25,
+        bool activeOnly = default, bool completedOnly = default,
+        RunType? runType = default, bool expandTasks = default, DateTimeOffset? startTimeFrom = default,
+        DateTimeOffset? startTimeTo = default,
+        CancellationToken cancellationToken = default)
+    {
+        if (activeOnly && completedOnly)
         {
-            var settings = new RunNowSettings
-            {
-                JobId = jobId
-            };
-
-            if (runParams != null)
-            {
-                settings.SparkSubmitParams = runParams.SparkSubmitParams;
-                settings.PythonParams = runParams.PythonParams;
-                settings.NotebookParams = runParams.NotebookParams;
-                settings.JarParams = runParams.JarParams;
-            }
-
-            return await HttpPost<RunNowSettings, RunIdentifier>(this.HttpClient, "jobs/run-now", settings, cancellationToken)
-                .ConfigureAwait(false);
+            throw new ArgumentException(
+                $"{nameof(activeOnly)} and {nameof(completedOnly)} cannot both be true."
+            );
         }
 
-        public async Task<long> RunSubmit(RunOnceSettings settings, CancellationToken cancellationToken = default)
+        static string EmptyStr() => string.Empty;
+
+        var url = $"{ApiVersion}/jobs/runs/list?limit={limit}&offset={offset}";
+
+        url += jobId.Map(id => $"&job_id={id}").GetOrElse(EmptyStr);
+        url += activeOnly ? "&active_only=true" : EmptyStr();
+        url += completedOnly ? "&completed_only=true" : EmptyStr();
+        url += runType.Map(type => $"&run_type={type}").GetOrElse(EmptyStr);
+        url += expandTasks ? "&expand_task=true" : EmptyStr();
+        url += startTimeFrom.Map(time => $"&start_time_from={time.ToUnixTimeMilliseconds()}").GetOrElse(EmptyStr);
+        url += startTimeTo.Map(time => $"&start_time_to={time.ToUnixTimeMilliseconds()}").GetOrElse(EmptyStr);
+        return await HttpGet<RunList>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<(Run, RepairHistory)> RunsGet(long runId, bool includeHistory = default,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"{ApiVersion}/jobs/runs/get?run_id={runId}&include_history={JsonValue.Create(includeHistory)}";
+        var response = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
+        return (response.Deserialize<Run>(Options), response.Deserialize<RepairHistory>(Options));
+    }
+
+    public async Task RunsCancel(long runId, CancellationToken cancellationToken = default)
+    {
+        var request = new { run_id = runId };
+        await HttpPost(this.HttpClient, $"{ApiVersion}/jobs/runs/cancel", request, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task RunsDelete(long runId, CancellationToken cancellationToken = default)
+    {
+        var request = new { run_id = runId };
+        await HttpPost(this.HttpClient, $"{ApiVersion}/jobs/runs/delete", request, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<IEnumerable<ViewItem>> RunsExport(long runId,
+        ViewsToExport viewsToExport = ViewsToExport.CODE, CancellationToken cancellationToken = default)
+    {
+        var url = $"{ApiVersion}/jobs/runs/export?run_id={runId}&views_to_export={viewsToExport}";
+        var viewItemList = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
+
+        viewItemList.TryGetPropertyValue("views", out var views);
+        return views.Map(v => v.Deserialize<IEnumerable<ViewItem>>(Options)).GetOrElse(Enumerable.Empty<ViewItem>);
+    }
+
+    public async Task<RunOutput> RunsGetOutput(long runId, CancellationToken cancellationToken = default)
+    {
+        var url = $"{ApiVersion}/jobs/runs/get-output?run_id={runId}";
+        return await HttpGet<RunOutput>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<long> RunsRepair(RepairRunInput repairRunInput, RunParameters repairRunParameters,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"{ApiVersion}/jobs/runs/repair";
+        var inputNode = JsonSerializer.SerializeToNode(repairRunInput, Options)!.AsObject();
+        var parametersNode = JsonSerializer.SerializeToNode(repairRunParameters, Options)!.AsObject();
+        foreach (var kvp in parametersNode)
         {
-            var result = await HttpPost<RunOnceSettings, RunIdentifier>(this.HttpClient, "jobs/runs/submit", settings, cancellationToken)
-                .ConfigureAwait(false);
-            return result.RunId;
+            if (kvp.Value == null)
+                continue;
+            
+            var node = kvp.Value!.ToJsonString(Options);
+            inputNode.Add(kvp.Key, JsonNode.Parse(node));
         }
 
-        public async Task<RunList> RunsList(long? jobId = null, int offset = 0, int limit = 20, bool activeOnly = false,
-            bool completedOnly = false, /*RunType? runType = null, */ CancellationToken cancellationToken = default)
-        {
-            if (activeOnly && completedOnly)
-            {
-                throw new ArgumentException(
-                    $"{nameof(activeOnly)} and {nameof(completedOnly)} cannot both be true.");
-            }
-
-            var url = $"jobs/runs/list?limit={limit}&offset={offset}";
-            if (jobId.HasValue)
-            {
-                url += $"&job_id={jobId.Value}";
-            }
-
-            if (activeOnly)
-            {
-                url += "&active_only=true";
-            }
-
-            if (completedOnly)
-            {
-                url += "&completed_only=true";
-            }
-
-            // if (runType.HasValue)
-            // {
-            //     url += $"&run_type={runType.Value}";
-            // }
-
-            return await HttpGet<RunList>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task<Run> RunsGet(long runId, CancellationToken cancellationToken = default)
-        {
-            var url = $"jobs/runs/get?run_id={runId}";
-            return await HttpGet<Run>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task RunsCancel(long runId, CancellationToken cancellationToken = default)
-        {
-            var request = new { run_id = runId };
-            await HttpPost(this.HttpClient, "jobs/runs/cancel", request, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task RunsDelete(long runId, CancellationToken cancellationToken = default)
-        {
-            var request = new { run_id = runId };
-            await HttpPost(this.HttpClient, "jobs/runs/delete", request, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task<IEnumerable<ViewItem>> RunsExport(long runId,
-            ViewsToExport viewsToExport = ViewsToExport.CODE, CancellationToken cancellationToken = default)
-        {
-            var url = $"jobs/runs/export?run_id={runId}&views_to_export={viewsToExport}";
-            var viewItemList = await HttpGet<dynamic>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
-
-            return PropertyExists(viewItemList, "views")
-                ? viewItemList.views.ToObject<IEnumerable<ViewItem>>()
-                : Enumerable.Empty<ViewItem>();
-        }
-
-        public async Task<(string, string, Run)> RunsGetOutput(long runId, CancellationToken cancellationToken = default)
-        {
-            var url = $"jobs/runs/get-output?run_id={runId}";
-            var response = await HttpGet<dynamic>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
-            Run run = response.metadata.ToObject<Run>();
-
-            string error = PropertyExists(response, "error") ? response.error.ToObject<string>() : null;
-            string notebookOutput = PropertyExists(response, "notebook_output") && PropertyExists(response.notebook_output, "result")
-                ? response.notebook_output.result.ToObject<string>()
-                : null;
-            return (notebookOutput, error, run);
-        }
+        var response = await HttpPost<JsonObject, JsonObject>(this.HttpClient, url, inputNode, cancellationToken)
+            .ConfigureAwait(false);
+        return response["repair_id"]!.GetValue<long>();
     }
 }

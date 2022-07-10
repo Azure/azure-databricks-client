@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Azure.Databricks.Client.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,27 +17,37 @@ namespace Microsoft.Azure.Databricks.Client
 
         public async Task<IDictionary<string, IEnumerable<LibraryFullStatus>>> AllClusterStatuses(CancellationToken cancellationToken = default)
         {
-            var result = await HttpGet<dynamic>(this.HttpClient, "libraries/all-cluster-statuses", cancellationToken)
+            var result = await HttpGet<JsonObject>(this.HttpClient, $"{ApiVersion}/libraries/all-cluster-statuses", cancellationToken)
                 .ConfigureAwait(false);
 
-            if (PropertyExists(result, "statuses"))
+            if (result.TryGetPropertyValue("statuses", out var statuses))
             {
-                return ((IEnumerable<dynamic>) result.statuses).ToDictionary(
-                    d => (string) d.cluster_id.ToObject<string>(),
-                    d => (IEnumerable<LibraryFullStatus>) d.library_statuses.ToObject<IEnumerable<LibraryFullStatus>>()
-                );
+                return statuses
+                    .Deserialize<IEnumerable<JsonObject>>(Options)
+                    .ToDictionary(
+                        e => e["cluster_id"].Deserialize<string>(Options),
+                        e => e["library_statuses"].Deserialize<IEnumerable<LibraryFullStatus>>(Options)
+                    );
             }
-
-            return new Dictionary<string, IEnumerable<LibraryFullStatus>>();
+            else
+            {
+                return new Dictionary<string, IEnumerable<LibraryFullStatus>>();
+            }
         }
 
         public async Task<IEnumerable<LibraryFullStatus>> ClusterStatus(string clusterId, CancellationToken cancellationToken = default)
         {
-            var url = $"libraries/cluster-status?cluster_id={clusterId}";
-            var result = await HttpGet<dynamic>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
-            return PropertyExists(result, "library_statuses")
-                ? result.library_statuses.ToObject<IEnumerable<LibraryFullStatus>>()
-                : Enumerable.Empty<LibraryFullStatus>();
+            var url = $"{ApiVersion}/libraries/cluster-status?cluster_id={clusterId}";
+            var result = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
+
+            if (result.TryGetPropertyValue("library_statuses", out var library_statuses))
+            {
+                return library_statuses.Deserialize<IEnumerable<LibraryFullStatus>>();
+            }
+            else
+            {
+                return Enumerable.Empty<LibraryFullStatus>();
+            }
         }
 
         public async Task Install(string clusterId, IEnumerable<Library> libraries, CancellationToken cancellationToken = default)
@@ -51,8 +64,8 @@ namespace Microsoft.Azure.Databricks.Client
                 return;
             }
 
-            var request = new {cluster_id = clusterId, libraries = array };
-            await HttpPost(this.HttpClient, "libraries/install", request, cancellationToken).ConfigureAwait(false);
+            var request = new { cluster_id = clusterId, libraries = array };
+            await HttpPost(this.HttpClient, $"{ApiVersion}/libraries/install", request, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task Uninstall(string clusterId, IEnumerable<Library> libraries, CancellationToken cancellationToken = default)
@@ -70,7 +83,7 @@ namespace Microsoft.Azure.Databricks.Client
             }
 
             var request = new { cluster_id = clusterId, libraries = array };
-            await HttpPost(this.HttpClient, "libraries/uninstall", request, cancellationToken).ConfigureAwait(false);
+            await HttpPost(this.HttpClient, $"{ApiVersion}/libraries/uninstall", request, cancellationToken).ConfigureAwait(false);
         }
     }
 }

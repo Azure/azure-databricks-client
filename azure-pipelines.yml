@@ -1,0 +1,147 @@
+trigger:
+  - master
+
+pr:
+  - master
+  - releases/*
+
+pool:
+  name: CDML
+  demands: ImageOverride -equals MMS2022
+
+variables:
+  solution: "**/*.sln"
+  buildConfiguration: "Release"
+  major: 2
+  minor: 0
+  patch: 0
+  suffix: -rc.1
+
+jobs:
+  - job: Build
+    variables:
+      prid: variables['system.pullrequest.pullrequestid']
+      prrevision: $[counter(variables['system.pullrequest.pullrequestid'], 0)]
+    steps:
+      - bash: |
+          echo "##vso[build.updatebuildnumber]$(major).$(minor).$(patch)-pr.$(prid).$(prrevision)"
+        displayName: Set PR BuildNumber
+        condition: eq(variables['Build.Reason'], 'PullRequest')
+      - bash: |
+          echo "##vso[build.updatebuildnumber]$(major).$(minor).$(patch)$(suffix)"
+        displayName: Set Branch BuildNumber
+        condition: ne(variables['Build.Reason'], 'PullRequest')
+      - task: DotNetCoreCLI@2
+        displayName: dotnet build
+        inputs:
+          command: 'build'
+          projects: '$(solution)'
+          arguments: '-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)'
+      - task: DotNetCoreCLI@2
+        displayName: dotnet test
+        inputs:
+          command: 'test'
+          projects: '$(solution)'
+          arguments: '-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)'
+      - task: EsrpCodeSigning@1
+        displayName: code sign dll
+        condition: ne(variables['Build.Reason'], 'PullRequest')
+        inputs:
+          ConnectedServiceName: 'ESRP Code Signing'
+          FolderPath: 'csharp\Microsoft.Azure.Databricks.Client\bin\$(buildConfiguration)'
+          Pattern: 'Microsoft.Azure.Databricks.Client.dll'
+          signConfigType: 'inlineSignParams'
+          inlineOperation: |
+            [
+                {
+                    "keyCode": "CP-230012",
+                    "operationSetCode": "SigntoolSign",
+                    "parameters": [
+                    {
+                        "parameterName": "OpusName",
+                        "parameterValue": "Microsoft"
+                    },
+                    {
+                        "parameterName": "OpusInfo",
+                        "parameterValue": "http://www.microsoft.com"
+                    },
+                    {
+                        "parameterName": "FileDigest",
+                        "parameterValue": "/fd \"SHA256\""
+                    },
+                    {
+                        "parameterName": "PageHash",
+                        "parameterValue": "/NPH"
+                    },
+                    {
+                        "parameterName": "TimeStamp",
+                        "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+                    }
+                    ],
+                    "toolName": "sign",
+                    "toolVersion": "1.0"
+                },
+                {
+                    "keyCode": "CP-230012",
+                    "operationSetCode": "SigntoolVerify",
+                    "parameters": [ ],
+                    "toolName": "sign",
+                    "toolVersion": "1.0"
+                }
+            ]
+          SessionTimeout: '60'
+          MaxConcurrency: '50'
+          MaxRetryAttempts: '5'
+      - task: DotNetCoreCLI@2
+        displayName: dotnet pack
+        inputs:
+          command: 'pack'
+          packagesToPack: '$(solution)'
+          configuration: '$(buildConfiguration)'
+          nobuild: true
+          versioningScheme: 'off'
+          buildProperties: 'Version=$(Build.BuildNumber)'
+          packDirectory: '$(Build.ArtifactStagingDirectory)'
+      - task: EsrpCodeSigning@1
+        displayName: code sign nupkg
+        condition: ne(variables['Build.Reason'], 'PullRequest')
+        inputs:
+          ConnectedServiceName: 'ESRP Code Signing'
+          FolderPath: '$(Build.ArtifactStagingDirectory)'
+          Pattern: '*.nupkg'
+          signConfigType: 'inlineSignParams'
+          inlineOperation: |
+            [
+                {
+                    "keyCode": "CP-401405",
+                    "operationSetCode": "NuGetSign",
+                    "parameters": [ ],
+                    "toolName": "sign",
+                    "toolVersion": "1.0"
+                },
+                {
+                    "keyCode": "CP-401405",
+                    "operationSetCode": "NuGetVerify",
+                    "parameters": [ ],
+                    "toolName": "sign",
+                    "toolVersion": "1.0"
+                }
+            ]
+          SessionTimeout: '60'
+          MaxConcurrency: '50'
+          MaxRetryAttempts: '5'
+      - task: CopyFiles@2
+        displayName: Copy Files to $(Build.ArtifactStagingDirectory)
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)'
+          Contents: |
+            **\bin\**
+            *.nupkg 
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
+          CleanTargetFolder: false
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Artifacts to drop
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
