@@ -13,13 +13,13 @@ namespace Microsoft.Azure.Databricks.Client
                 /// based on the state of the workspace or the permissions of the calling user. This request is published
                 /// for consistency with other permissions APIs.
                 /// </summary>
-                Task<IEnumerable<(PermissionLevel, string description)>> GetTokenPermissionsLevels();
+                Task<IEnumerable<(PermissionLevel, string description)>> GetTokenPermissionsLevels(CancellationToken cancellationToken = default);
 
                 /// <summary>
                 /// Get the set of all token permissions for the workspace. 
                 /// </summary>
                 /// <returns></returns>
-                Task<IEnumerable<AclPermissionItem>> GetTokenPermissions();
+                Task<IEnumerable<AclPermissionItem>> GetTokenPermissions(CancellationToken cancellationToken = default);
 
                 /// <summary>
                 /// Grant token permissions for one or more users, groups, or service principals. 
@@ -33,7 +33,7 @@ namespace Microsoft.Azure.Databricks.Client
                 /// </summary>
                 /// <param name="AccessControlList"></param>
                 /// <returns></returns>
-                Task UpdateTokenPermissions(IEnumerable<AclPermissionItem> AccessControlList);
+                Task UpdateTokenPermissions(IEnumerable<AclPermissionItem> AccessControlList, CancellationToken cancellationToken = default);
 
                 /// <summary>
                 /// Update all token permissions for all users, groups, and service principals for 
@@ -47,56 +47,56 @@ namespace Microsoft.Azure.Databricks.Client
                 /// </summary>
                 /// <param name="AccessControlList"></param>
                 /// <returns></returns>
-                Task ReplaceTokenPermissionsForWorkspace(IEnumerable<AclPermissionItem> AccessControlList);
+                Task ReplaceTokenPermissionsForWorkspace(IEnumerable<AclPermissionItem> AccessControlList, CancellationToken cancellationToken = default);
 
-                Task<IEnumerable<(PermissionLevel, string description)>> GetClusterPermissionLevels(string clusterId);
-                Task<IEnumerable<AclPermissionItem>> GetClusterPermissions(string clusterId);
-                Task UpdateClusterPermissions(IEnumerable<AclPermissionItem> AccessControlList, string clusterId);
-                Task ReplaceClusterPermissions(IEnumerable<AclPermissionItem> AccessControlList, string clusterId);
+                Task<IEnumerable<(PermissionLevel, string description)>> GetClusterPermissionLevels(string clusterId, CancellationToken cancellationToken = default);
+                Task<IEnumerable<AclPermissionItem>> GetClusterPermissions(string clusterId, CancellationToken cancellationToken = default);
+                Task UpdateClusterPermissions(IEnumerable<AclPermissionItem> AccessControlList, string clusterId, CancellationToken cancellationToken = default);
+                Task ReplaceClusterPermissions(IEnumerable<AclPermissionItem> AccessControlList, string clusterId, CancellationToken cancellationToken = default);
 
-                Task<IEnumerable<(PermissionLevel, string description)>> GetInstancePoolPermissionLevels(string instancePoolId);
-                Task<IEnumerable<AclPermissionItem>> GetInstancePoolPermissions(string instancePoolId);
-                Task UpdateInstancePoolPermissions(IEnumerable<AclPermissionItem> AccessControlList, string instancePoolId);
-                Task ReplaceInstancePoolPermissions(IEnumerable<AclPermissionItem> AccessControlList, string instancePoolId);
+                Task<IEnumerable<(PermissionLevel, string description)>> GetInstancePoolPermissionLevels(string instancePoolId, CancellationToken cancellationToken = default);
+                Task<IEnumerable<AclPermissionItem>> GetInstancePoolPermissions(string instancePoolId, CancellationToken cancellationToken = default);
+                Task UpdateInstancePoolPermissions(IEnumerable<AclPermissionItem> AccessControlList, string instancePoolId, CancellationToken cancellationToken = default);
+                Task ReplaceInstancePoolPermissions(IEnumerable<AclPermissionItem> AccessControlList, string instancePoolId, CancellationToken cancellationToken = default);
 
-                Task<IEnumerable<(PermissionLevel, string description)>> GetJobPermissionLevels(string jobId);
-                Task<IEnumerable<AclPermissionItem>> GetJobPermissions(string jobId);
-                Task UpdateJobPermissions(IEnumerable<AclPermissionItem> AccessControlList, string jobId);
-                Task ReplaceJobPermissions(IEnumerable<AclPermissionItem> AccessControlList, string jobId);
+                Task<IEnumerable<(PermissionLevel, string description)>> GetJobPermissionLevels(string jobId, CancellationToken cancellationToken = default);
+                Task<IEnumerable<AclPermissionItem>> GetJobPermissions(string jobId, CancellationToken cancellationToken = default);
+                Task UpdateJobPermissions(IEnumerable<AclPermissionItem> AccessControlList, string jobId, CancellationToken cancellationToken = default);
+                Task ReplaceJobPermissions(IEnumerable<AclPermissionItem> AccessControlList, string jobId, CancellationToken cancellationToken = default);
 
-                Task<IEnumerable<(PermissionLevel, string description)>> GetPipelinePermissionLevels(string pipelineId);
-                Task<IEnumerable<AclPermissionItem>> GetPipelinePermissions(string pipelineId);
-                Task UpdatePipelinePermissions(IEnumerable<AclPermissionItem> AccessControlList, string pipelineId);
-                Task ReplacePipelinePermissions(IEnumerable<AclPermissionItem> AccessControlList, string pipelineId);
+                Task<IEnumerable<(PermissionLevel, string description)>> GetPipelinePermissionLevels(string pipelineId, CancellationToken cancellationToken = default);
+                Task<IEnumerable<AclPermissionItem>> GetPipelinePermissions(string pipelineId, CancellationToken cancellationToken = default);
+                Task UpdatePipelinePermissions(IEnumerable<AclPermissionItem> AccessControlList, string pipelineId, CancellationToken cancellationToken = default);
+                Task ReplacePipelinePermissions(IEnumerable<AclPermissionItem> AccessControlList, string pipelineId, CancellationToken cancellationToken = default);
 
-                Task<IEnumerable<(PermissionLevel, string description)>> GetNotebookPermissionLevels(string notebookId);
-                Task<IEnumerable<AclPermissionItem>> GetNotebookPermissions(string notebookId);
-                Task UpdateNotebookPermissions(IEnumerable<AclPermissionItem> AccessControlList, string notebookId);
-                Task ReplaceNotebookPermissions(IEnumerable<AclPermissionItem> AccessControlList, string notebookId);
+                Task<IEnumerable<(PermissionLevel, string description)>> GetNotebookPermissionLevels(string notebookId, CancellationToken cancellationToken = default);
+                Task<IEnumerable<AclPermissionItem>> GetNotebookPermissions(string notebookId, CancellationToken cancellationToken = default);
+                Task UpdateNotebookPermissions(IEnumerable<AclPermissionItem> AccessControlList, string notebookId, CancellationToken cancellationToken = default);
+                Task ReplaceNotebookPermissions(IEnumerable<AclPermissionItem> AccessControlList, string notebookId, CancellationToken cancellationToken = default);
 
-                Task<IEnumerable<(PermissionLevel, string description)>> GetDirectoryPermissionLevels(string directoryId);
-                Task<IEnumerable<AclPermissionItem>> GetDirectoryPermissions(string directoryId);
-                Task UpdateDirectoryPermissions(IEnumerable<AclPermissionItem> AccessControlList, string directoryId);
-                Task ReplaceDirectoryPermissions(IEnumerable<AclPermissionItem> AccessControlList, string directoryId);
+                Task<IEnumerable<(PermissionLevel, string description)>> GetDirectoryPermissionLevels(string directoryId, CancellationToken cancellationToken = default);
+                Task<IEnumerable<AclPermissionItem>> GetDirectoryPermissions(string directoryId, CancellationToken cancellationToken = default);
+                Task UpdateDirectoryPermissions(IEnumerable<AclPermissionItem> AccessControlList, string directoryId, CancellationToken cancellationToken = default);
+                Task ReplaceDirectoryPermissions(IEnumerable<AclPermissionItem> AccessControlList, string directoryId, CancellationToken cancellationToken = default);
 
-                Task<IEnumerable<(PermissionLevel, string description)>> GetExperimentPermissionLevels(string experimentId);
-                Task<IEnumerable<AclPermissionItem>> GetExperimentPermissions(string experimentId);
-                Task UpdateExperimentPermissions(IEnumerable<AclPermissionItem> AccessControlList, string experimentId);
-                Task ReplaceExperimentPermissions(IEnumerable<AclPermissionItem> AccessControlList, string experimentId);
+                Task<IEnumerable<(PermissionLevel, string description)>> GetExperimentPermissionLevels(string experimentId, CancellationToken cancellationToken = default);
+                Task<IEnumerable<AclPermissionItem>> GetExperimentPermissions(string experimentId, CancellationToken cancellationToken = default);
+                Task UpdateExperimentPermissions(IEnumerable<AclPermissionItem> AccessControlList, string experimentId, CancellationToken cancellationToken = default);
+                Task ReplaceExperimentPermissions(IEnumerable<AclPermissionItem> AccessControlList, string experimentId, CancellationToken cancellationToken = default);
 
-                Task<IEnumerable<(PermissionLevel, string description)>> GetRegisteredModelPermissionLevels(string registeredModelId);
-                Task<IEnumerable<AclPermissionItem>> GetRegisteredModelPermissions(string registeredModelId);
-                Task UpdateRegisteredModelPermissions(IEnumerable<AclPermissionItem> AccessControlList, string registeredModelId);
-                Task ReplaceRegisteredModelPermissions(IEnumerable<AclPermissionItem> AccessControlList, string registeredModelId);
+                Task<IEnumerable<(PermissionLevel, string description)>> GetRegisteredModelPermissionLevels(string registeredModelId, CancellationToken cancellationToken = default);
+                Task<IEnumerable<AclPermissionItem>> GetRegisteredModelPermissions(string registeredModelId, CancellationToken cancellationToken = default);
+                Task UpdateRegisteredModelPermissions(IEnumerable<AclPermissionItem> AccessControlList, string registeredModelId, CancellationToken cancellationToken = default);
+                Task ReplaceRegisteredModelPermissions(IEnumerable<AclPermissionItem> AccessControlList, string registeredModelId, CancellationToken cancellationToken = default);
 
-                Task<IEnumerable<(PermissionLevel, string description)>> GetSqlWarehousePermissionLevels(string endpointId);
-                Task<IEnumerable<AclPermissionItem>> GetSqlWarehousePermissions(string endpointId);
-                Task UpdateSqlWarehousePermissions(IEnumerable<AclPermissionItem> AccessControlList, string endpointId);
-                Task ReplaceSqlWarehousePermissions(IEnumerable<AclPermissionItem> AccessControlList, string endpointId);
+                Task<IEnumerable<(PermissionLevel, string description)>> GetSqlWarehousePermissionLevels(string endpointId, CancellationToken cancellationToken = default);
+                Task<IEnumerable<AclPermissionItem>> GetSqlWarehousePermissions(string endpointId, CancellationToken cancellationToken = default);
+                Task UpdateSqlWarehousePermissions(IEnumerable<AclPermissionItem> AccessControlList, string endpointId, CancellationToken cancellationToken = default);
+                Task ReplaceSqlWarehousePermissions(IEnumerable<AclPermissionItem> AccessControlList, string endpointId, CancellationToken cancellationToken = default);
 
-                Task<IEnumerable<(PermissionLevel, string description)>> GetRepoPermissionLevels(string repoId);
-                Task<IEnumerable<AclPermissionItem>> GetRepoPermissions(string repoId);
-                Task UpdateRepoPermissions(IEnumerable<AclPermissionItem> AccessControlList, string repoId);
-                Task ReplaceRepoPermissions(IEnumerable<AclPermissionItem> AccessControlList, string repoId);
+                Task<IEnumerable<(PermissionLevel, string description)>> GetRepoPermissionLevels(string repoId, CancellationToken cancellationToken = default);
+                Task<IEnumerable<AclPermissionItem>> GetRepoPermissions(string repoId, CancellationToken cancellationToken = default);
+                Task UpdateRepoPermissions(IEnumerable<AclPermissionItem> AccessControlList, string repoId, CancellationToken cancellationToken = default);
+                Task ReplaceRepoPermissions(IEnumerable<AclPermissionItem> AccessControlList, string repoId, CancellationToken cancellationToken = default);
         }
 }
