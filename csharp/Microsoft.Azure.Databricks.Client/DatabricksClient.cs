@@ -41,6 +41,7 @@ namespace Microsoft.Azure.Databricks.Client
             this.Token = new TokenApiClient(httpClient);
             this.Workspace = new WorkspaceApiClient(httpClient);
             this.InstancePool = new InstancePoolApiClient(httpClient);
+            this.Permissions = new PermissionsApiClient(httpClient);
         }
 
         /// <summary>
@@ -170,6 +171,8 @@ namespace Microsoft.Azure.Databricks.Client
         public IWorkspaceApi Workspace { get; }
 
         public IInstancePoolApi InstancePool { get; }
+
+        public IPermissionsApi Permissions { get; }
 
         public void Dispose()
         {
