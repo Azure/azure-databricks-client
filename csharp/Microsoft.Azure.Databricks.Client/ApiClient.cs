@@ -65,6 +65,21 @@ namespace Microsoft.Azure.Databricks.Client
             return JsonConvert.DeserializeObject<TResult>(responseContent);
         }
 
+        protected static async Task HttpPatch<TBody>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
+        {
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
+            HttpRequestMessage msg = new HttpRequestMessage(new HttpMethod("PATCH"), requestUri)
+            {
+                Content = content
+            };
+            var response = await httpClient.SendAsync(msg).ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw CreateApiException(response);
+            }
+        }
+
         protected static async Task<TResult> HttpPatch<TBody, TResult>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
@@ -95,6 +110,17 @@ namespace Microsoft.Azure.Databricks.Client
 
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<TResult>(responseContent);
+        }
+
+        protected static async Task HttpPut<TBody>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
+        {
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
+            var response = await httpClient.PutAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw CreateApiException(response);
+            }
         }
 
         protected static bool PropertyExists(JObject obj, string propertyName)
