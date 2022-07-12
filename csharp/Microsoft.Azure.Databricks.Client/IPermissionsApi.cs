@@ -19,7 +19,7 @@ namespace Microsoft.Azure.Databricks.Client
                 /// Get the set of all token permissions for the workspace. 
                 /// </summary>
                 /// <returns></returns>
-                Task<IEnumerable<AclItem>> GetTokenPermissions();
+                Task<IEnumerable<AclPermissionItem>> GetTokenPermissions();
 
                 /// <summary>
                 /// Grant token permissions for one or more users, groups, or service principals. 
@@ -48,5 +48,55 @@ namespace Microsoft.Azure.Databricks.Client
                 /// <param name="AccessControlList"></param>
                 /// <returns></returns>
                 Task ReplaceTokenPermissionsForWorkspace(IEnumerable<AclPermissionItem> AccessControlList);
+
+                Task<IEnumerable<(PermissionLevel, string description)>> GetClusterPermissionLevels(string clusterId);
+                Task<IEnumerable<AclPermissionItem>> GetClusterPermissions(string clusterId);
+                Task UpdateClusterPermissions(IEnumerable<AclPermissionItem> AccessControlList, string clusterId);
+                Task ReplaceClusterPermissions(IEnumerable<AclPermissionItem> AccessControlList, string clusterId);
+
+                Task<IEnumerable<(PermissionLevel, string description)>> GetInstancePoolPermissionLevels(string instancePoolId);
+                Task<IEnumerable<AclPermissionItem>> GetInstancePoolPermissions(string instancePoolId);
+                Task UpdateInstancePoolPermissions(IEnumerable<AclPermissionItem> AccessControlList, string instancePoolId);
+                Task ReplaceInstancePoolPermissions(IEnumerable<AclPermissionItem> AccessControlList, string instancePoolId);
+
+                Task<IEnumerable<(PermissionLevel, string description)>> GetJobPermissionLevels(string jobId);
+                Task<IEnumerable<AclPermissionItem>> GetJobPermissions(string jobId);
+                Task UpdateJobPermissions(IEnumerable<AclPermissionItem> AccessControlList, string jobId);
+                Task ReplaceJobPermissions(IEnumerable<AclPermissionItem> AccessControlList, string jobId);
+
+                Task<IEnumerable<(PermissionLevel, string description)>> GetPipelinePermissionLevels(string pipelineId);
+                Task<IEnumerable<AclPermissionItem>> GetPipelinePermissions(string pipelineId);
+                Task UpdatePipelinePermissions(IEnumerable<AclPermissionItem> AccessControlList, string pipelineId);
+                Task ReplacePipelinePermissions(IEnumerable<AclPermissionItem> AccessControlList, string pipelineId);
+
+                Task<IEnumerable<(PermissionLevel, string description)>> GetNotebookPermissionLevels(string notebookId);
+                Task<IEnumerable<AclPermissionItem>> GetNotebookPermissions(string notebookId);
+                Task UpdateNotebookPermissions(IEnumerable<AclPermissionItem> AccessControlList, string notebookId);
+                Task ReplaceNotebookPermissions(IEnumerable<AclPermissionItem> AccessControlList, string notebookId);
+
+                Task<IEnumerable<(PermissionLevel, string description)>> GetDirectoryPermissionLevels(string directoryId);
+                Task<IEnumerable<AclPermissionItem>> GetDirectoryPermissions(string directoryId);
+                Task UpdateDirectoryPermissions(IEnumerable<AclPermissionItem> AccessControlList, string directoryId);
+                Task ReplaceDirectoryPermissions(IEnumerable<AclPermissionItem> AccessControlList, string directoryId);
+
+                Task<IEnumerable<(PermissionLevel, string description)>> GetExperimentPermissionLevels(string experimentId);
+                Task<IEnumerable<AclPermissionItem>> GetExperimentPermissions(string experimentId);
+                Task UpdateExperimentPermissions(IEnumerable<AclPermissionItem> AccessControlList, string experimentId);
+                Task ReplaceExperimentPermissions(IEnumerable<AclPermissionItem> AccessControlList, string experimentId);
+
+                Task<IEnumerable<(PermissionLevel, string description)>> GetRegisteredModelPermissionLevels(string registeredModelId);
+                Task<IEnumerable<AclPermissionItem>> GetRegisteredModelPermissions(string registeredModelId);
+                Task UpdateRegisteredModelPermissions(IEnumerable<AclPermissionItem> AccessControlList, string registeredModelId);
+                Task ReplaceRegisteredModelPermissions(IEnumerable<AclPermissionItem> AccessControlList, string registeredModelId);
+
+                Task<IEnumerable<(PermissionLevel, string description)>> GetSqlWarehousePermissionLevels(string endpointId);
+                Task<IEnumerable<AclPermissionItem>> GetSqlWarehousePermissions(string endpointId);
+                Task UpdateSqlWarehousePermissions(IEnumerable<AclPermissionItem> AccessControlList, string endpointId);
+                Task ReplaceSqlWarehousePermissions(IEnumerable<AclPermissionItem> AccessControlList, string endpointId);
+
+                Task<IEnumerable<(PermissionLevel, string description)>> GetRepoPermissionLevels(string repoId);
+                Task<IEnumerable<AclPermissionItem>> GetRepoPermissions(string repoId);
+                Task UpdateRepoPermissions(IEnumerable<AclPermissionItem> AccessControlList, string repoId);
+                Task ReplaceRepoPermissions(IEnumerable<AclPermissionItem> AccessControlList, string repoId);
         }
 }
