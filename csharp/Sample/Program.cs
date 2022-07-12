@@ -42,6 +42,7 @@ namespace Sample
                 await JobsApi(client);
                 await ClustersApi(client);
                 await InstancePoolApi(client);
+                await PermissionsApi(client);
             }
 
             Console.WriteLine("Press enter to exit");
@@ -610,6 +611,38 @@ namespace Sample
 
             Console.WriteLine("Deleting uploaded file");
             await client.Dbfs.Delete(newPath, false);
+        }
+
+        public static async Task PermissionsApi(DatabricksClient client)
+        {
+            //need to create some stuff to create permissions on i suppose
+            //workspaces
+            Console.WriteLine("Creating a new workspace...");
+            await client.Workspace.Mkdirs(SampleWorkspacePath);
+            var info = await client.Workspace.List(SampleWorkspacePath);
+            var dirInfo = info.First(x => x.Path == SampleWorkspacePath);
+            var allowablePermissions = await client.Permissions.GetDirectoryPermissionLevels(dirInfo.ObjectId.ToString());
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem{Principal = DatabricksUserName, Permission = x.Item1});
+            var currentInfo = await client.Permissions.GetDirectoryPermissions(dirInfo.ObjectId.ToString());
+            Console.WriteLine($"Current directory permissions for {dirInfo.Path}: ");
+            foreach (var x in currentInfo)
+            {
+                Console.WriteLine($"Principal: {x.Principal}");
+                Console.WriteLine($"Permission Level: {x.Permission.ToString()}");
+            }
+            Console.WriteLine("Now updating..");
+            foreach (var acl in Acl)
+            {
+                await client.Permissions.UpdateDirectoryPermissions(new[] {acl}, dirInfo.ObjectId.ToString());
+                Console.WriteLine($"Updated user permissions to {acl.Permission}");
+            }
+            Console.WriteLine("now resetting...");
+            await client.Permissions.ReplaceDirectoryPermissions(currentInfo, dirInfo.ObjectId.ToString());
+            Console.WriteLine("Permissions reset");
+
+
+            //clusters
         }
     }
 }
