@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Microsoft.Azure.Databricks.Client
 {
@@ -7,13 +8,7 @@ namespace Microsoft.Azure.Databricks.Client
     /// </summary>
     public class UserAclItem : AclPermissionItem
     {
-        internal override Dictionary<string, string> ToDictionaryRepresentation()
-        {
-            return new Dictionary<string, string>
-            {
-                {"user_name", Principal},
-                {"permission_level", Permission.ToString()}
-            };
-        }
+        [JsonProperty("user_name")]
+        public override string Principal { get => base.Principal; set => base.Principal = value; }
     }
 }
