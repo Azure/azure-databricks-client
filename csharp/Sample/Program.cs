@@ -695,8 +695,6 @@ namespace Sample
                 .WithNodeType(NodeTypes.Standard_D3_v2)
                 .WithClusterMode(ClusterMode.SingleNode);
 
-            clusterConfig.DockerImage = new DockerImage { Url = "databricksruntime/standard:latest" };
-
             var clusterId = await client.Clusters.Create(clusterConfig);
 
             var createdCluster = await client.Clusters.Get(clusterId);
@@ -734,14 +732,120 @@ namespace Sample
             Console.WriteLine("Sample cluster removed");
         }
 
-        private static Task PoolPermissions(DatabricksClient client)
+        private static async Task PoolPermissions(DatabricksClient client)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Creating Testing Instance Pool");
+            var poolAttributes = new InstancePoolAttributes
+            {
+                PoolName = "TestInstancePool",
+                PreloadedSparkVersions = new[] {RuntimeVersions.Runtime_6_4_ESR},
+                MinIdleInstances = 2,
+                MaxCapacity = 100,
+                IdleInstanceAutoTerminationMinutes = 15,
+                NodeTypeId = NodeTypes.Standard_D3_v2,
+                EnableElasticDisk = true,
+                DiskSpec = new DiskSpec
+                    {DiskCount = 2, DiskSize = 64, DiskType = DiskType.FromAzureDisk(AzureDiskVolumeType.STANDARD_LRS)},
+                AzureAttributes = new InstancePoolAzureAttributes {Availability = AzureAvailability.SPOT_AZURE, SpotBidMaxPrice = -1}
+            };
+
+            var poolId = await client.InstancePool.Create(poolAttributes).ConfigureAwait(false);
+
+            Console.WriteLine($"Getting and displaying the allowable permission levels for pool {poolId}");
+            var allowablePermissions = await client.Permissions.GetInstancePoolPermissionLevels(poolId);
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
+            Console.WriteLine($"Getting and displaying current access levels for pool {poolId}");
+            var currentPermissions = await client.Permissions.GetInstancePoolPermissions(poolId);
+            foreach (var x in currentPermissions)
+            {
+                Console.WriteLine(x.Principal);
+                Console.WriteLine(x.Permission);
+            }
+            Console.WriteLine("Now trying updating..");
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
+            foreach (var acl in Acl)
+            {
+                await client.Permissions.UpdateInstancePoolPermissions(new[] { acl }, poolId);
+                Console.WriteLine($"Updated user permissions to {acl.Permission}");
+            }
+            Console.WriteLine("now resetting...");
+            await client.Permissions.ReplaceInstancePoolPermissions(currentPermissions, poolId);
+            Console.WriteLine($"Permissions reset for pool {poolId}");
+
+            Console.WriteLine("Deleting pool");
+            await client.InstancePool.Delete(poolId);
         }
 
-        private static Task JobPermissions(DatabricksClient client)
+        private static async Task JobPermissions(DatabricksClient client)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Creating new job");
+            var newCluster = ClusterInfo.GetNewClusterConfiguration()
+                .WithNumberOfWorkers(3)
+                .WithNodeType(NodeTypes.Standard_D3_v2)
+                .WithRuntimeVersion(RuntimeVersions.Runtime_6_4_ESR);
+
+            Console.WriteLine($"Creating workspace {SampleWorkspacePath}");
+            await client.Workspace.Mkdirs(SampleWorkspacePath);
+
+            Console.WriteLine("Downloading sample notebook");
+            var content = await DownloadSampleNotebook();
+
+            Console.WriteLine($"Importing sample HTML notebook to {SampleNotebookPath}");
+            await client.Workspace.Import(SampleNotebookPath, ExportFormat.HTML, null,
+                content, true);
+
+            var schedule = new CronSchedule
+            {
+                QuartzCronExpression = "0 0 9 ? * MON-FRI",
+                TimezoneId = "Europe/London",
+                PauseStatus = PauseStatus.UNPAUSED
+            };
+            
+            var jobSettings = JobSettings.GetNewNotebookJobSettings(
+                    "Sample Job",
+                    SampleNotebookPath,
+                    null)
+                .WithNewCluster(newCluster)
+                .WithSchedule(schedule);
+
+            var jobId = await client.Jobs.Create(jobSettings);
+
+            Console.WriteLine("Job created: {0}", jobId);
+
+            Console.WriteLine($"Getting and displaying the allowable permission levels for job {jobId}");
+            var allowablePermissions = await client.Permissions.GetJobPermissionLevels(jobId.ToString());
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
+            Console.WriteLine($"Getting and displaying current access levels for job {jobId}");
+            var currentPermissions = await client.Permissions.GetJobPermissions(jobId.ToString());
+            foreach (var x in currentPermissions)
+            {
+                Console.WriteLine(x.Principal);
+                Console.WriteLine(x.Permission);
+            }
+            Console.WriteLine("Now trying updating..");
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
+            foreach (var acl in Acl)
+            {
+                await client.Permissions.UpdateJobPermissions(new[] { acl }, jobId.ToString());
+                Console.WriteLine($"Updated user permissions to {acl.Permission}");
+            }
+            Console.WriteLine("now resetting...");
+            await client.Permissions.ReplaceJobPermissions(currentPermissions, jobId.ToString());
+            Console.WriteLine($"Permissions reset for job {jobId}");
+
+            await client.Workspace.Delete(SampleNotebookPath, true);
+            await client.Jobs.Delete(jobId);
+            Console.WriteLine("Resources removed");
         }
 
         private static Task PipelinePermissions(DatabricksClient client)
