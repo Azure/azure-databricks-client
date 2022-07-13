@@ -618,7 +618,15 @@ namespace Sample
             await WorkspacePermissions(client);
             await TokenPermissions(client);
             await ClusterPermissions(client);
-            //clusters
+            await PoolPermissions(client);
+            await JobPermissions(client);
+            await PipelinePermissions(client);
+            await NotebookPermissions(client);
+            await DirectoryPermissions(client);
+            await ExperimentsPermissions(client);
+            await RegisteredModelsPermissions(client);
+            await SqlWarehousePermissions(client);
+            await RepoPermissions(client);
         }
 
         private static async Task WorkspacePermissions(DatabricksClient client)
@@ -626,8 +634,7 @@ namespace Sample
             Console.WriteLine("Creating a new workspace...");
             await client.Workspace.Mkdirs(SampleWorkspacePath);
             //get directory info because we need the id
-            var info = await client.Workspace.List(SampleWorkspacePath);
-            var dirInfo = info.First(x => x.Path == SampleWorkspacePath);
+            var dirInfo = await client.Workspace.GetStatus(SampleWorkspacePath);
             Console.WriteLine($"Getting and displaying the allowable permission levels for directory with id {dirInfo.ObjectId}");
             var allowablePermissions = await client.Permissions.GetDirectoryPermissionLevels(dirInfo.ObjectId.ToString());
             foreach (var x in allowablePermissions)
@@ -725,6 +732,51 @@ namespace Sample
             Console.WriteLine($"Permissions reset for cluster {clusterId}");
             await client.Clusters.Delete(clusterId);
             Console.WriteLine("Sample cluster removed");
+        }
+
+        private static Task PoolPermissions(DatabricksClient client)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static Task JobPermissions(DatabricksClient client)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static Task PipelinePermissions(DatabricksClient client)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static Task NotebookPermissions(DatabricksClient client)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static Task DirectoryPermissions(DatabricksClient client)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static Task ExperimentsPermissions(DatabricksClient client)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static Task RegisteredModelsPermissions(DatabricksClient client)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static Task SqlWarehousePermissions(DatabricksClient client)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static Task RepoPermissions(DatabricksClient client)
+        {
+            throw new NotImplementedException();
         }
     }
 }
