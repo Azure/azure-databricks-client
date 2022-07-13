@@ -38,7 +38,7 @@ namespace Microsoft.Azure.Databricks.Client
                 select new GroupAclItem
                 {
                     Principal = (string)rules["group_name"],
-                    Permission = (PermissionLevel)Enum.Parse(typeof(PermissionLevel), (string)rules["all_permissions"]["permission_level"])
+                    Permission = (PermissionLevel)Enum.Parse(typeof(PermissionLevel), (string)rules["all_permissions"][0]["permission_level"])
                 };
             var users = 
                 from rules in acl
@@ -46,7 +46,7 @@ namespace Microsoft.Azure.Databricks.Client
                 select new UserAclItem
                 {
                     Principal = (string)rules["user_name"],
-                    Permission = (PermissionLevel)Enum.Parse(typeof(PermissionLevel), (string)rules["all_permissions"]["permission_level"])
+                    Permission = (PermissionLevel)Enum.Parse(typeof(PermissionLevel), (string)rules["all_permissions"][0]["permission_level"])
                 };
             var servicePrincipals = 
                 from rules in acl
@@ -54,7 +54,7 @@ namespace Microsoft.Azure.Databricks.Client
                 select new ServicePrincipalAclItem
                 {
                     Principal = (string)rules["service_principal_name"],
-                    Permission = (PermissionLevel)Enum.Parse(typeof(PermissionLevel), (string)rules["all_permissions"]["permission_level"])
+                    Permission = (PermissionLevel)Enum.Parse(typeof(PermissionLevel), (string)rules["all_permissions"][0]["permission_level"])
                 };
             list.AddRange(groups);
             list.AddRange(users);
