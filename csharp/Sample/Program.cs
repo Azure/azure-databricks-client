@@ -615,34 +615,116 @@ namespace Sample
 
         public static async Task PermissionsApi(DatabricksClient client)
         {
-            //need to create some stuff to create permissions on i suppose
-            //workspaces
+            await WorkspacePermissions(client);
+            await TokenPermissions(client);
+            await ClusterPermissions(client);
+            //clusters
+        }
+
+        private static async Task WorkspacePermissions(DatabricksClient client)
+        {
             Console.WriteLine("Creating a new workspace...");
             await client.Workspace.Mkdirs(SampleWorkspacePath);
+            //get directory info because we need the id
             var info = await client.Workspace.List(SampleWorkspacePath);
             var dirInfo = info.First(x => x.Path == SampleWorkspacePath);
+            Console.WriteLine($"Getting and displaying the allowable permission levels for directory with id {dirInfo.ObjectId}");
             var allowablePermissions = await client.Permissions.GetDirectoryPermissionLevels(dirInfo.ObjectId.ToString());
-            var Acl = allowablePermissions
-                .Select(x => new UserAclItem{Principal = DatabricksUserName, Permission = x.Item1});
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
             var currentInfo = await client.Permissions.GetDirectoryPermissions(dirInfo.ObjectId.ToString());
-            Console.WriteLine($"Current directory permissions for {dirInfo.Path}: ");
+            Console.WriteLine($"Getting and displaying the current permission levels for directory with id {dirInfo.ObjectId}");
             foreach (var x in currentInfo)
             {
                 Console.WriteLine($"Principal: {x.Principal}");
                 Console.WriteLine($"Permission Level: {x.Permission.ToString()}");
             }
-            Console.WriteLine("Now updating..");
+            Console.WriteLine("Now trying updating..");
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
             foreach (var acl in Acl)
             {
-                await client.Permissions.UpdateDirectoryPermissions(new[] {acl}, dirInfo.ObjectId.ToString());
+                await client.Permissions.UpdateDirectoryPermissions(new[] { acl }, dirInfo.ObjectId.ToString());
                 Console.WriteLine($"Updated user permissions to {acl.Permission}");
             }
             Console.WriteLine("now resetting...");
             await client.Permissions.ReplaceDirectoryPermissions(currentInfo, dirInfo.ObjectId.ToString());
-            Console.WriteLine("Permissions reset");
+            Console.WriteLine("Permissions reset for workspace");
+            await client.Workspace.Delete(SampleWorkspacePath, true);
+            Console.WriteLine("Sample workspace removed");
+        }
 
+        private static async Task TokenPermissions(DatabricksClient client)
+        {
+            //only the getters are shown here, since updating these permissions might invalidate 
+            //the token that we are currently using to connect in the first place.
+            Console.WriteLine("Getting and displaying the allowable permission levels for databricks tokens...");
+            var allowablePermissions = await client.Permissions.GetTokenPermissionsLevels();
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
+            Console.WriteLine("Getting and displaying current access levels for tokens...");
+            var currentPermissions = await client.Permissions.GetTokenPermissions();
+            foreach (var x in currentPermissions)
+            {
+                Console.WriteLine(x.Principal);
+                Console.WriteLine(x.Permission);
+            }
+        }
 
-            //clusters
+        private static async Task ClusterPermissions(DatabricksClient client)
+        {
+            Console.WriteLine("Creating standard cluster");
+
+            var clusterConfig = ClusterInfo.GetNewClusterConfiguration("Sample cluster")
+                .WithRuntimeVersion(RuntimeVersions.Runtime_6_4_ESR)
+                .WithAutoTermination(30)
+                .WithClusterLogConf("dbfs:/logs/")
+                .WithNodeType(NodeTypes.Standard_D3_v2)
+                .WithClusterMode(ClusterMode.SingleNode);
+
+            clusterConfig.DockerImage = new DockerImage { Url = "databricksruntime/standard:latest" };
+
+            var clusterId = await client.Clusters.Create(clusterConfig);
+
+            var createdCluster = await client.Clusters.Get(clusterId);
+            var createdClusterConfig = JsonConvert.SerializeObject(createdCluster, Formatting.Indented);
+
+            Console.WriteLine("Created cluster config: ");
+            Console.WriteLine(createdClusterConfig);
+
+            Console.WriteLine($"Getting and displaying the allowable permission levels for cluster {clusterId}");
+            var allowablePermissions = await client.Permissions.GetClusterPermissionLevels(clusterId);
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
+            Console.WriteLine($"Getting and displaying current access levels for cluster {clusterId}");
+            var currentPermissions = await client.Permissions.GetClusterPermissions(clusterId);
+            foreach (var x in currentPermissions)
+            {
+                Console.WriteLine(x.Principal);
+                Console.WriteLine(x.Permission);
+            }
+            Console.WriteLine("Now trying updating..");
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
+            foreach (var acl in Acl)
+            {
+                await client.Permissions.UpdateClusterPermissions(new[] { acl }, clusterId);
+                Console.WriteLine($"Updated user permissions to {acl.Permission}");
+            }
+            Console.WriteLine("now resetting...");
+            await client.Permissions.ReplaceClusterPermissions(currentPermissions, clusterId);
+            Console.WriteLine($"Permissions reset for cluster {clusterId}");
+            await client.Clusters.Delete(clusterId);
+            Console.WriteLine("Sample cluster removed");
         }
     }
 }
