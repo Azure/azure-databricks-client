@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Microsoft.Azure.Databricks.Client
 {
@@ -10,13 +12,13 @@ namespace Microsoft.Azure.Databricks.Client
         /// <summary>
         /// The principal to which the permission is applied. This field is required.
         /// </summary>
-        public string Principal { get; set; }
+        public virtual string Principal { get; set; }
 
         /// <summary>
         /// The permission level applied to the principal. This field is required.
         /// </summary>
-        public PermissionLevel Permission { get; set; }
-
-        internal abstract Dictionary<string,string> ToDictionaryRepresentation();
+        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("permission_level")]
+        public virtual PermissionLevel Permission { get; set; }
     }
 }
