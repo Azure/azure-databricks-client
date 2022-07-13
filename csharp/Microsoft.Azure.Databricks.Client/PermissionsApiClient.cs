@@ -24,7 +24,8 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<AclPermissionItem>> GetClusterPermissions(string clusterId, CancellationToken cancellationToken = default)
         {
             var requestUri = $"permissions/clusters/{clusterId}";
-            return await HttpGet<AclPermissionItem[]>(HttpClient, requestUri, cancellationToken);
+            var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
+            return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
         public async Task<IEnumerable<AclPermissionDescription>> GetDirectoryPermissionLevels(string directoryId, CancellationToken cancellationToken = default)
@@ -39,7 +40,8 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<AclPermissionItem>> GetDirectoryPermissions(string directoryId, CancellationToken cancellationToken = default)
         {
             var requestUri = $"permissions/directories/{directoryId}";
-            return await HttpGet<AclPermissionItem[]>(HttpClient, requestUri, cancellationToken);
+            var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
+            return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
         public async Task<IEnumerable<AclPermissionDescription>> GetExperimentPermissionLevels(string experimentId, CancellationToken cancellationToken = default)
@@ -54,7 +56,8 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<AclPermissionItem>> GetExperimentPermissions(string experimentId, CancellationToken cancellationToken = default)
         {
             var requestUri = $"permissions/experiments/{experimentId}";
-            return await HttpGet<AclPermissionItem[]>(HttpClient, requestUri, cancellationToken);
+            var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
+            return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
         public async Task<IEnumerable<AclPermissionDescription>> GetInstancePoolPermissionLevels(string instancePoolId, CancellationToken cancellationToken = default)
@@ -69,7 +72,8 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<AclPermissionItem>> GetInstancePoolPermissions(string instancePoolId, CancellationToken cancellationToken = default)
         {
             var requestUri = $"permissions/instance-pools/{instancePoolId}";
-            return await HttpGet<AclPermissionItem[]>(HttpClient, requestUri, cancellationToken);
+            var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
+            return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
         public async Task<IEnumerable<AclPermissionDescription>> GetJobPermissionLevels(string jobId, CancellationToken cancellationToken = default)
@@ -84,7 +88,8 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<AclPermissionItem>> GetJobPermissions(string jobId, CancellationToken cancellationToken = default)
         {
             var requestUri = $"permissions/jobs/{jobId}";
-            return await HttpGet<AclPermissionItem[]>(HttpClient, requestUri, cancellationToken);
+            var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
+            return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
         public async Task<IEnumerable<AclPermissionDescription>> GetNotebookPermissionLevels(string notebookId, CancellationToken cancellationToken = default)
@@ -99,7 +104,8 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<AclPermissionItem>> GetNotebookPermissions(string notebookId, CancellationToken cancellationToken = default)
         {
             var requestUri = $"permissions/notebooks/{notebookId}";
-            return await HttpGet<AclPermissionItem[]>(HttpClient, requestUri, cancellationToken);
+            var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
+            return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
         public async Task<IEnumerable<AclPermissionDescription>> GetPipelinePermissionLevels(string pipelineId, CancellationToken cancellationToken = default)
@@ -114,7 +120,8 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<AclPermissionItem>> GetPipelinePermissions(string pipelineId, CancellationToken cancellationToken = default)
         {
             var requestUri = $"permissions/pipelines/{pipelineId}";
-            return await HttpGet<AclPermissionItem[]>(HttpClient, requestUri, cancellationToken);
+            var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
+            return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
         public async Task<IEnumerable<AclPermissionDescription>> GetRegisteredModelPermissionLevels(string registeredModelId, CancellationToken cancellationToken = default)
@@ -129,7 +136,8 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<AclPermissionItem>> GetRegisteredModelPermissions(string registeredModelId, CancellationToken cancellationToken = default)
         {
             var requestUri = $"permissions/registered-models/{registeredModelId}";
-            return await HttpGet<AclPermissionItem[]>(HttpClient, requestUri, cancellationToken);
+            var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
+            return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
         public async Task<IEnumerable<AclPermissionDescription>> GetRepoPermissionLevels(string repoId, CancellationToken cancellationToken = default)
@@ -144,7 +152,8 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<AclPermissionItem>> GetRepoPermissions(string repoId, CancellationToken cancellationToken = default)
         {
             var requestUri = $"permissions/repos/{repoId}";
-            return await HttpGet<AclPermissionItem[]>(HttpClient, requestUri, cancellationToken);
+            var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
+            return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
         public async Task<IEnumerable<AclPermissionDescription>> GetSqlWarehousePermissionLevels(string endpointId, CancellationToken cancellationToken = default)
@@ -159,13 +168,15 @@ namespace Microsoft.Azure.Databricks.Client
         public async Task<IEnumerable<AclPermissionItem>> GetSqlWarehousePermissions(string endpointId, CancellationToken cancellationToken = default)
         {
             var requestUri = $"permissions/sql/endpoints/{endpointId}";
-            return await HttpGet<AclPermissionItem[]>(HttpClient, requestUri, cancellationToken);
+            var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
+            return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
         public async Task<IEnumerable<AclPermissionItem>> GetTokenPermissions(CancellationToken cancellationToken = default)
         {
             const string requestUri = "permissions/authorization/tokens";
-            return await HttpGet<AclPermissionItem[]>(HttpClient, requestUri, cancellationToken);
+            var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
+            return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
         public async Task<IEnumerable<AclPermissionDescription>> GetTokenPermissionsLevels(CancellationToken cancellationToken = default)
