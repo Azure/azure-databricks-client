@@ -16,6 +16,7 @@ namespace Microsoft.Azure.Databricks.Client
         CAN_READ,
         CAN_EDIT,
         CAN_MANAGE_STAGING_VERSIONS,
-        CAN_MANAGE_PRODUCTION_VERSIONS
+        CAN_MANAGE_PRODUCTION_VERSIONS,
+        CAN_VIEW
     }
 }

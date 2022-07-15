@@ -19,6 +19,26 @@ namespace Sample
         private static readonly string SampleWorkspacePath = $"/Users/{DatabricksUserName}/SampleWorkspace";
         private static readonly string SampleNotebookPath = $"{SampleWorkspacePath}/Quick Start Using Scala";
 
+        //fill in an existing delta live pipeline ID in the variable below 
+        //if you wish to try out the permissions API for a delta live pipeline in your workspace
+        private static readonly string DeltaLivePipelineId = null;
+
+        //fill in an existing experiment ID in the variable below if you wish to try out the permissions API 
+        //for an experiment in your workspace
+        private static readonly string ExperimentId = null;
+
+        //fill in an existing registered model ID in the variable below if you wish to try out the permissions API 
+        //for a registered model in your workspace
+        private static readonly string RegisteredModelId = null;
+        
+        //fill in an existing sql warehouse endpoint ID in the variable below if you wish to try out the permissions API 
+        //for a sql warehous in your workspace
+        private static readonly string SqlWareHouseEndpointId = null;
+
+        //file in an existing repository id in the variable below if you wish to try out the permissions API
+        //for a repository in your workspace
+        private static readonly string RepositoryId = null;
+
         public static async Task Main(string[] args)
         {
             if (args.Length < 2)
@@ -832,7 +852,10 @@ namespace Sample
                 Console.WriteLine(x.Permission);
             }
             Console.WriteLine("Now trying updating..");
+            //a job must have exactly 1 owner, which would be the security principal used to create it in this program
+            //this means we can't try the other permission levels here as the job would have 0 owners and this is not allowed
             var Acl = allowablePermissions
+                .Where(x => x.PermissionLevel == PermissionLevel.IS_OWNER)
                 .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
             foreach (var acl in Acl)
             {
@@ -844,43 +867,255 @@ namespace Sample
             Console.WriteLine($"Permissions reset for job {jobId}");
 
             await client.Workspace.Delete(SampleNotebookPath, true);
-            await client.Jobs.Delete(jobId);
+            //deleting jobs is not an implemented method in the API
             Console.WriteLine("Resources removed");
         }
 
-        private static Task PipelinePermissions(DatabricksClient client)
+        private static async Task PipelinePermissions(DatabricksClient client)
         {
-            throw new NotImplementedException();
+            if (DeltaLivePipelineId is null)
+            {
+                return;
+            }
+            Console.WriteLine($"Getting and displaying the allowable permission levels for DeltaLivePipeline {DeltaLivePipelineId}");
+            var allowablePermissions = await client.Permissions.GetPipelinePermissionLevels(DeltaLivePipelineId);
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
+            Console.WriteLine($"Getting and displaying current access levels for DeltaLivePipeline {DeltaLivePipelineId}");
+            var currentPermissions = await client.Permissions.GetPipelinePermissions(DeltaLivePipelineId);
+            foreach (var x in currentPermissions)
+            {
+                Console.WriteLine(x.Principal);
+                Console.WriteLine(x.Permission);
+            }
+            Console.WriteLine("Now trying updating..");
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
+            foreach (var acl in Acl)
+            {
+                await client.Permissions.UpdatePipelinePermissions(new[] { acl }, DeltaLivePipelineId);
+                Console.WriteLine($"Updated user permissions to {acl.Permission}");
+            }
+            Console.WriteLine("now resetting...");
+            await client.Permissions.ReplacePipelinePermissions(currentPermissions, DeltaLivePipelineId);
+            Console.WriteLine($"Permissions reset for DeltaLivePipeline {DeltaLivePipelineId}");
         }
 
-        private static Task NotebookPermissions(DatabricksClient client)
+        private static async Task NotebookPermissions(DatabricksClient client)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Creating workspace {SampleWorkspacePath}");
+            await client.Workspace.Mkdirs(SampleWorkspacePath);
+
+            Console.WriteLine("Downloading sample notebook");
+            var content = await DownloadSampleNotebook();
+
+            Console.WriteLine($"Importing sample HTML notebook to {SampleNotebookPath}");
+            await client.Workspace.Import(SampleNotebookPath, ExportFormat.HTML, null,
+                content, true);
+            var dirInfo = await client.Workspace.GetStatus(SampleNotebookPath);
+            var notebookId = dirInfo.ObjectId.ToString();
+            
+            Console.WriteLine($"Getting and displaying the allowable permission levels for notebook {notebookId}");
+            var allowablePermissions = await client.Permissions.GetNotebookPermissionLevels(notebookId);
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
+            Console.WriteLine($"Getting and displaying current access levels for notebook {notebookId}");
+            var currentPermissions = await client.Permissions.GetNotebookPermissions(notebookId);
+            foreach (var x in currentPermissions)
+            {
+                Console.WriteLine(x.Principal);
+                Console.WriteLine(x.Permission);
+            }
+            Console.WriteLine("Now trying updating..");
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
+            foreach (var acl in Acl)
+            {
+                await client.Permissions.UpdateNotebookPermissions(new[] { acl }, notebookId);
+                Console.WriteLine($"Updated user permissions to {acl.Permission}");
+            }
+            Console.WriteLine("now resetting...");
+            await client.Permissions.ReplaceNotebookPermissions(currentPermissions, notebookId);
+            Console.WriteLine($"Permissions reset for notebook {notebookId}");
+
+            Console.WriteLine("Deleting sample workspace");
+            await client.Workspace.Delete(SampleWorkspacePath, true);
         }
 
-        private static Task DirectoryPermissions(DatabricksClient client)
+        private static async Task DirectoryPermissions(DatabricksClient client)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Creating workspace {SampleWorkspacePath}");
+            await client.Workspace.Mkdirs(SampleWorkspacePath);
+
+            var dirInfo = await client.Workspace.GetStatus(SampleWorkspacePath);
+            var directoryId = dirInfo.ObjectId.ToString();
+            
+            Console.WriteLine($"Getting and displaying the allowable permission levels for directory {directoryId}");
+            var allowablePermissions = await client.Permissions.GetDirectoryPermissionLevels(directoryId);
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
+            Console.WriteLine($"Getting and displaying current access levels for directory {directoryId}");
+            var currentPermissions = await client.Permissions.GetDirectoryPermissions(directoryId);
+            foreach (var x in currentPermissions)
+            {
+                Console.WriteLine(x.Principal);
+                Console.WriteLine(x.Permission);
+            }
+            Console.WriteLine("Now trying updating..");
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
+            foreach (var acl in Acl)
+            {
+                await client.Permissions.UpdateDirectoryPermissions(new[] { acl }, directoryId);
+                Console.WriteLine($"Updated user permissions to {acl.Permission}");
+            }
+            Console.WriteLine("now resetting...");
+            await client.Permissions.ReplaceDirectoryPermissions(currentPermissions, directoryId);
+            Console.WriteLine($"Permissions reset for directory {directoryId}");
+
+            Console.WriteLine("Deleting sample workspace");
+            await client.Workspace.Delete(SampleWorkspacePath, true);
         }
 
-        private static Task ExperimentsPermissions(DatabricksClient client)
+        private static async Task ExperimentsPermissions(DatabricksClient client)
         {
-            throw new NotImplementedException();
+            if (ExperimentId is null)
+            {
+                return;
+            }
+            Console.WriteLine($"Getting and displaying the allowable permission levels for Experiment {ExperimentId}");
+            var allowablePermissions = await client.Permissions.GetExperimentPermissionLevels(ExperimentId);
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
+            Console.WriteLine($"Getting and displaying current access levels for Experiment {ExperimentId}");
+            var currentPermissions = await client.Permissions.GetExperimentPermissions(ExperimentId);
+            foreach (var x in currentPermissions)
+            {
+                Console.WriteLine(x.Principal);
+                Console.WriteLine(x.Permission);
+            }
+            Console.WriteLine("Now trying updating..");
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
+            foreach (var acl in Acl)
+            {
+                await client.Permissions.UpdateExperimentPermissions(new[] { acl }, ExperimentId);
+                Console.WriteLine($"Updated user permissions to {acl.Permission}");
+            }
+            Console.WriteLine("now resetting...");
+            await client.Permissions.ReplaceExperimentPermissions(currentPermissions, ExperimentId);
+            Console.WriteLine($"Permissions reset for Experiment {ExperimentId}");
         }
 
-        private static Task RegisteredModelsPermissions(DatabricksClient client)
+        private static async Task RegisteredModelsPermissions(DatabricksClient client)
         {
-            throw new NotImplementedException();
+            if (RegisteredModelId is null)
+            {
+                return;
+            }
+            Console.WriteLine($"Getting and displaying the allowable permission levels for RegisteredModel {RegisteredModelId}");
+            var allowablePermissions = await client.Permissions.GetRegisteredModelPermissionLevels(RegisteredModelId);
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
+            Console.WriteLine($"Getting and displaying current access levels for RegisteredModel {RegisteredModelId}");
+            var currentPermissions = await client.Permissions.GetRegisteredModelPermissions(RegisteredModelId);
+            foreach (var x in currentPermissions)
+            {
+                Console.WriteLine(x.Principal);
+                Console.WriteLine(x.Permission);
+            }
+            Console.WriteLine("Now trying updating..");
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
+            foreach (var acl in Acl)
+            {
+                await client.Permissions.UpdateRegisteredModelPermissions(new[] { acl }, RegisteredModelId);
+                Console.WriteLine($"Updated user permissions to {acl.Permission}");
+            }
+            Console.WriteLine("now resetting...");
+            await client.Permissions.ReplaceRegisteredModelPermissions(currentPermissions, RegisteredModelId);
+            Console.WriteLine($"Permissions reset for RegisteredModel {RegisteredModelId}");
         }
 
-        private static Task SqlWarehousePermissions(DatabricksClient client)
+        private static async Task SqlWarehousePermissions(DatabricksClient client)
         {
-            throw new NotImplementedException();
+            if (SqlWareHouseEndpointId is null)
+            {
+                return;
+            }
+            Console.WriteLine($"Getting and displaying the allowable permission levels for SqlWareHouseEndpoint {SqlWareHouseEndpointId}");
+            var allowablePermissions = await client.Permissions.GetSqlWarehousePermissionLevels(SqlWareHouseEndpointId);
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
+            Console.WriteLine($"Getting and displaying current access levels for SqlWareHouseEndpoint {SqlWareHouseEndpointId}");
+            var currentPermissions = await client.Permissions.GetSqlWarehousePermissions(SqlWareHouseEndpointId);
+            foreach (var x in currentPermissions)
+            {
+                Console.WriteLine(x.Principal);
+                Console.WriteLine(x.Permission);
+            }
+            Console.WriteLine("Now trying updating..");
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
+            foreach (var acl in Acl)
+            {
+                await client.Permissions.UpdateSqlWarehousePermissions(new[] { acl }, SqlWareHouseEndpointId);
+                Console.WriteLine($"Updated user permissions to {acl.Permission}");
+            }
+            Console.WriteLine("now resetting...");
+            await client.Permissions.ReplaceSqlWarehousePermissions(currentPermissions, SqlWareHouseEndpointId);
+            Console.WriteLine($"Permissions reset for SqlWareHouseEndpoint {SqlWareHouseEndpointId}");
         }
 
-        private static Task RepoPermissions(DatabricksClient client)
+        private static async Task RepoPermissions(DatabricksClient client)
         {
-            throw new NotImplementedException();
+            if (RepositoryId is null)
+            {
+                return;
+            }
+            Console.WriteLine($"Getting and displaying the allowable permission levels for Repository {RepositoryId}");
+            var allowablePermissions = await client.Permissions.GetRepoPermissionLevels(RepositoryId);
+            foreach (var x in allowablePermissions)
+            {
+                Console.WriteLine(x.PermissionLevel);
+                Console.WriteLine(x.Description);
+            }
+            Console.WriteLine($"Getting and displaying current access levels for Repository {RepositoryId}");
+            var currentPermissions = await client.Permissions.GetRepoPermissions(RepositoryId);
+            foreach (var x in currentPermissions)
+            {
+                Console.WriteLine(x.Principal);
+                Console.WriteLine(x.Permission);
+            }
+            Console.WriteLine("Now trying updating..");
+            var Acl = allowablePermissions
+                .Select(x => new UserAclItem { Principal = DatabricksUserName, Permission = x.PermissionLevel });
+            foreach (var acl in Acl)
+            {
+                await client.Permissions.UpdateRepoPermissions(new[] { acl }, RepositoryId);
+                Console.WriteLine($"Updated user permissions to {acl.Permission}");
+            }
+            Console.WriteLine("now resetting...");
+            await client.Permissions.ReplaceRepoPermissions(currentPermissions, RepositoryId);
+            Console.WriteLine($"Permissions reset for Repository {RepositoryId}");
         }
     }
 }
