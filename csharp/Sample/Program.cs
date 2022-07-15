@@ -32,7 +32,7 @@ namespace Sample
         private static readonly string RegisteredModelId = null;
         
         //fill in an existing sql warehouse endpoint ID in the variable below if you wish to try out the permissions API 
-        //for a sql warehous in your workspace
+        //for a sql warehouse in your workspace
         private static readonly string SqlWareHouseEndpointId = null;
 
         //file in an existing repository id in the variable below if you wish to try out the permissions API
