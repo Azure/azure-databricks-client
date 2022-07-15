@@ -8,11 +8,11 @@ namespace Microsoft.Azure.Databricks.Client
         public interface IPermissionsApi : IDisposable
         {
                 /// <summary>
-                /// Returns a JSON representation of the possible permissions levels for tokens. For details, 
-                /// see the required token permission levels for various actions. The results of this request do not change 
-                /// based on the state of the workspace or the permissions of the calling user. This request is published
-                /// for consistency with other permissions APIs.
+                /// Asynchronously returns a list of <cref>AclPermissionDescription</cref> representing all possible
+                /// <cref>PermissionLevel</cref> values that can be applied to tokens
                 /// </summary>
+                /// <param name="cancellationToken"></param>
+                /// <returns></returns>
                 Task<IEnumerable<AclPermissionDescription>> GetTokenPermissionsLevels(CancellationToken cancellationToken = default);
 
                 /// <summary>
