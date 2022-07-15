@@ -689,7 +689,7 @@ namespace Sample
             //only the getters are shown here, since updating these permissions might invalidate 
             //the token that we are currently using to connect in the first place.
             Console.WriteLine("Getting and displaying the allowable permission levels for databricks tokens...");
-            var allowablePermissions = await client.Permissions.GetTokenPermissionsLevels();
+            var allowablePermissions = await client.Permissions.GetTokenPermissionLevels();
             foreach (var x in allowablePermissions)
             {
                 Console.WriteLine(x.PermissionLevel);
