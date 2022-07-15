@@ -179,7 +179,7 @@ namespace Microsoft.Azure.Databricks.Client
             return AclPermissionItem.ParseFromPermissionsHttpResult(result);
         }
 
-        public async Task<IEnumerable<AclPermissionDescription>> GetTokenPermissionsLevels(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<AclPermissionDescription>> GetTokenPermissionLevels(CancellationToken cancellationToken = default)
         {
             const string requestUri = "permissions/authorization/tokens/permissionLevels";
             var result = await HttpGet<dynamic>(HttpClient, requestUri, cancellationToken);
