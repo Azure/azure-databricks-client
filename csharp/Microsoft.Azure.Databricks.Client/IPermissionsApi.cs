@@ -11,7 +11,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// Asynchronously returns a list of <see cref="AclPermissionDescription"/> representing all possible
         /// <see cref="PermissionLevel"/> values that can be applied to tokens
         /// </summary>
-        Task<IEnumerable<AclPermissionDescription>> GetTokenPermissionsLevels(CancellationToken cancellationToken = default);
+        Task<IEnumerable<AclPermissionDescription>> GetTokenPermissionLevels(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
