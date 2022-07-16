@@ -20,7 +20,7 @@ variables:
 jobs:
   - job: Build
     variables:
-      prid: variables['system.pullrequest.pullrequestid']
+      prid: $(system.pullrequest.pullrequestid)
       prrevision: $[counter(variables['system.pullrequest.pullrequestid'], 0)]
     steps:
       - bash: |
@@ -34,23 +34,23 @@ jobs:
       - task: DotNetCoreCLI@2
         displayName: dotnet build
         inputs:
-          command: 'build'
-          projects: '$(solution)'
-          arguments: '-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)'
+          command: "build"
+          projects: "$(solution)"
+          arguments: "-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)"
       - task: DotNetCoreCLI@2
         displayName: dotnet test
         inputs:
-          command: 'test'
-          projects: '$(solution)'
-          arguments: '-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)'
+          command: "test"
+          projects: "$(solution)"
+          arguments: "-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)"
       - task: EsrpCodeSigning@1
         displayName: code sign dll
         condition: ne(variables['Build.Reason'], 'PullRequest')
         inputs:
-          ConnectedServiceName: 'ESRP Code Signing'
+          ConnectedServiceName: "ESRP Code Signing"
           FolderPath: 'csharp\Microsoft.Azure.Databricks.Client\bin\$(buildConfiguration)'
-          Pattern: 'Microsoft.Azure.Databricks.Client.dll'
-          signConfigType: 'inlineSignParams'
+          Pattern: "Microsoft.Azure.Databricks.Client.dll"
+          signConfigType: "inlineSignParams"
           inlineOperation: |
             [
                 {
@@ -89,27 +89,27 @@ jobs:
                     "toolVersion": "1.0"
                 }
             ]
-          SessionTimeout: '60'
-          MaxConcurrency: '50'
-          MaxRetryAttempts: '5'
+          SessionTimeout: "60"
+          MaxConcurrency: "50"
+          MaxRetryAttempts: "5"
       - task: DotNetCoreCLI@2
         displayName: dotnet pack
         inputs:
-          command: 'pack'
-          packagesToPack: '$(solution)'
-          configuration: '$(buildConfiguration)'
+          command: "pack"
+          packagesToPack: "$(solution)"
+          configuration: "$(buildConfiguration)"
           nobuild: true
-          versioningScheme: 'off'
-          buildProperties: 'Version=$(Build.BuildNumber)'
-          packDirectory: '$(Build.ArtifactStagingDirectory)'
+          versioningScheme: "off"
+          buildProperties: "Version=$(Build.BuildNumber)"
+          packDirectory: "$(Build.ArtifactStagingDirectory)"
       - task: EsrpCodeSigning@1
         displayName: code sign nupkg
         condition: ne(variables['Build.Reason'], 'PullRequest')
         inputs:
-          ConnectedServiceName: 'ESRP Code Signing'
-          FolderPath: '$(Build.ArtifactStagingDirectory)'
-          Pattern: '*.nupkg'
-          signConfigType: 'inlineSignParams'
+          ConnectedServiceName: "ESRP Code Signing"
+          FolderPath: "$(Build.ArtifactStagingDirectory)"
+          Pattern: "*.nupkg"
+          signConfigType: "inlineSignParams"
           inlineOperation: |
             [
                 {
@@ -127,21 +127,21 @@ jobs:
                     "toolVersion": "1.0"
                 }
             ]
-          SessionTimeout: '60'
-          MaxConcurrency: '50'
-          MaxRetryAttempts: '5'
+          SessionTimeout: "60"
+          MaxConcurrency: "50"
+          MaxRetryAttempts: "5"
       - task: CopyFiles@2
         displayName: Copy Files to $(Build.ArtifactStagingDirectory)
         inputs:
-          SourceFolder: '$(Build.SourcesDirectory)'
+          SourceFolder: "$(Build.SourcesDirectory)"
           Contents: |
             **\bin\**
-            *.nupkg 
-          TargetFolder: '$(Build.ArtifactStagingDirectory)'
+            *.nupkg
+          TargetFolder: "$(Build.ArtifactStagingDirectory)"
           CleanTargetFolder: false
       - task: PublishBuildArtifacts@1
         displayName: Publish Artifacts to drop
         inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'drop'
-          publishLocation: 'Container'
+          PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+          ArtifactName: "drop"
+          publishLocation: "Container"

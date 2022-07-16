@@ -1,7 +1,7 @@
 # Azure Databricks Client Library
 
 ----------
-[![Build Status](https://microsoft.visualstudio.com/Data%20Science/_apis/build/status/azure-databricks-client-2.0?branchName=jasowang%2F2.0)](https://microsoft.visualstudio.com/Data%20Science/_build/latest?definitionId=87621&branchName=jasowang%2F2.0)
+[![Build Status](https://microsoft.visualstudio.com/Data%20Science/_apis/build/status/azure-databricks-client-2.0?branchName=refs%2Fpull%2F73%2Fmerge)](https://microsoft.visualstudio.com/Data%20Science/_build/latest?definitionId=87621&branchName=refs%2Fpull%2F73%2Fmerge)
 [![NuGet version ()](https://img.shields.io/badge/nuget-blue.svg)](https://www.nuget.org/packages/Microsoft.Azure.Databricks.Client/)
 [![Version 1.1 ()](https://img.shields.io/badge/1.1%20release-informational.svg)](https://github.com/Azure/azure-databricks-client/tree/releases/1.1)
 
