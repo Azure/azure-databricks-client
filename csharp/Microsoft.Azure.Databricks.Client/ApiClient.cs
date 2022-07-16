@@ -1,145 +1,156 @@
-﻿using System;
+﻿using Microsoft.Azure.Databricks.Client.Converters;
+using System;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Azure.Databricks.Client
+namespace Microsoft.Azure.Databricks.Client;
+
+public abstract class ApiClient : IDisposable
 {
-    public abstract class ApiClient : IDisposable
+    protected readonly HttpClient HttpClient;
+
+    protected virtual string ApiVersion => "2.0";
+
+    protected static readonly JsonSerializerOptions Options = new()
     {
-        protected readonly HttpClient HttpClient;
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+        PropertyNameCaseInsensitive = true,
+        Converters = {
+            new JsonStringEnumConverter(),
+            new MillisecondEpochDateTimeConverter(),
+            new LibraryConverter(),
+            new SecretScopeConverter(),
+            new AclPermissionItemConverter()
+        }
+    };
 
-        private static readonly JsonSerializerSettings JsonSerializerSettings =
-            new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Ignore};
+    protected ApiClient(HttpClient httpClient)
+    {
+        HttpClient = httpClient;
+    }
 
-        protected ApiClient(HttpClient httpClient)
+    protected static ClientApiException CreateApiException(HttpResponseMessage response)
+    {
+        var statusCode = response.StatusCode;
+        var errorContent = response.Content.ReadAsStringAsync().Result;
+        return new ClientApiException(errorContent, statusCode);
+    }
+
+    protected static async Task<T> HttpGet<T>(HttpClient httpClient, string requestUri, CancellationToken cancellationToken = default)
+    {
+        var response = await httpClient.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
+
+        if (!response.IsSuccessStatusCode)
         {
-            HttpClient = httpClient;
+            throw CreateApiException(response);
         }
 
-        protected static ClientApiException CreateApiException(HttpResponseMessage response)
+        var respContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+        return JsonSerializer.Deserialize<T>(respContent, Options);
+    }
+
+    protected static async Task HttpPost<TBody>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
+    {
+
+        HttpContent content = new StringContent(JsonSerializer.Serialize(body, Options));
+        var response = await httpClient.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
+
+        if (!response.IsSuccessStatusCode)
         {
-            var statusCode = response.StatusCode;
-            var errorContent = response.Content.ReadAsStringAsync().Result;
-            return new ClientApiException(errorContent, statusCode);
+            throw CreateApiException(response);
+        }
+    }
+
+    protected static async Task<TResult> HttpPost<TBody, TResult>(HttpClient httpClient, string requestUri,
+        TBody body, CancellationToken cancellationToken = default)
+    {
+        HttpContent content = new StringContent(JsonSerializer.Serialize(body, Options));
+        var response = await httpClient.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw CreateApiException(response);
         }
 
-        protected static async Task<T> HttpGet<T>(HttpClient httpClient, string requestUri, CancellationToken cancellationToken = default)
+        var respContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+        return JsonSerializer.Deserialize<TResult>(respContent, Options);
+    }
+
+    protected static async Task HttpPatch<TBody>(HttpClient httpClient, string requestUri, TBody body,
+        CancellationToken cancellationToken = default)
+    {
+        HttpContent content = new StringContent(JsonSerializer.Serialize(body, Options));
+        var request = new HttpRequestMessage(new HttpMethod("PATCH"), requestUri)
         {
-            var response = await httpClient.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
+            Content = content
+        };
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw CreateApiException(response);
-            }
+        var response = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<T>(responseContent);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw CreateApiException(response);
+        }
+    }
+
+    protected static async Task<TResult> HttpPatch<TBody, TResult>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
+    {
+        HttpContent reqContent = new StringContent(JsonSerializer.Serialize(body, Options));
+        var request = new HttpRequestMessage(new HttpMethod("PATCH"), requestUri)
+        {
+            Content = reqContent
+        };
+
+        var response = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw CreateApiException(response);
         }
 
-        protected static async Task HttpPost<TBody>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
-        {
-            
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
-            var response = await httpClient.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
+        var respContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+        return JsonSerializer.Deserialize<TResult>(respContent, Options);
+    }
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw CreateApiException(response);
-            }
+    protected static async Task<TResult> HttpPut<TBody, TResult>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
+    {
+        HttpContent reqContent = new StringContent(JsonSerializer.Serialize(body, Options));
+        var response = await httpClient.PutAsync(requestUri, reqContent, cancellationToken).ConfigureAwait(false);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw CreateApiException(response);
         }
 
-        protected static async Task<TResult> HttpPost<TBody, TResult>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
+        var respContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+        return JsonSerializer.Deserialize<TResult>(respContent, Options);
+    }
+
+    protected static async Task HttpPut<TBody>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
+    {
+        HttpContent reqContent = new StringContent(JsonSerializer.Serialize(body, Options));
+        var response = await httpClient.PutAsync(requestUri, reqContent, cancellationToken).ConfigureAwait(false);
+
+        if (!response.IsSuccessStatusCode)
         {
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
-            var response = await httpClient.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw CreateApiException(response);
-            }
-
-            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<TResult>(responseContent);
+            throw CreateApiException(response);
         }
+    }
 
-        protected static async Task HttpPatch<TBody>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
-            HttpRequestMessage msg = new HttpRequestMessage(new HttpMethod("PATCH"), requestUri)
-            {
-                Content = content
-            };
-            var response = await httpClient.SendAsync(msg).ConfigureAwait(false);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw CreateApiException(response);
-            }
+            HttpClient?.Dispose();
         }
+    }
 
-        protected static async Task<TResult> HttpPatch<TBody, TResult>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
-        {
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
-            HttpRequestMessage msg = new HttpRequestMessage(new HttpMethod("PATCH"), requestUri)
-            {
-                Content = content
-            };
-            var response = await httpClient.SendAsync(msg).ConfigureAwait(false);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw CreateApiException(response);
-            }
-
-            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<TResult>(responseContent);
-        }
-
-        protected static async Task<TResult> HttpPut<TBody, TResult>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
-        {
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
-            var response = await httpClient.PutAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw CreateApiException(response);
-            }
-
-            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<TResult>(responseContent);
-        }
-
-        protected static async Task HttpPut<TBody>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
-        {
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(body, JsonSerializerSettings));
-            var response = await httpClient.PutAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw CreateApiException(response);
-            }
-        }
-
-        protected static bool PropertyExists(JObject obj, string propertyName)
-        {
-            return obj.ContainsKey(propertyName);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                HttpClient?.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }
