@@ -99,8 +99,10 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="tokenApi">The token API implementation.</param>
         /// <param name="workspaceApi">The workspace API implementation.</param>
         /// <param name="instancePoolApi">The instance pool API implementation.</param>
+        /// <param name="permissionsApi">The permissions API implementation.</param>
         protected DatabricksClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi, ISecretsApi secretsApi,
-            IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi, IWorkspaceApi workspaceApi, IInstancePoolApi instancePoolApi)
+            IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi, IWorkspaceApi workspaceApi, IInstancePoolApi instancePoolApi
+            , IPermissionsApi permissionsApi)
         {
             this.Clusters = clusterApi;
             this.Jobs = jobsApi;
@@ -111,6 +113,7 @@ namespace Microsoft.Azure.Databricks.Client
             this.Token = tokenApi;
             this.Workspace = workspaceApi;
             this.InstancePool = instancePoolApi;
+            this.Permissions = permissionsApi;
         }
 
         /// <summary>
@@ -148,10 +151,10 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         public static DatabricksClient CreateClient(IClustersApi clusterApi, IJobsApi jobsApi, IDbfsApi dbfsApi,
             ISecretsApi secretsApi, IGroupsApi groupsApi, ILibrariesApi librariesApi, ITokenApi tokenApi,
-            IWorkspaceApi workspaceApi, IInstancePoolApi instancePoolApi)
+            IWorkspaceApi workspaceApi, IInstancePoolApi instancePoolApi, IPermissionsApi permissionsApi)
         {
             return new DatabricksClient(clusterApi, jobsApi, dbfsApi, secretsApi, groupsApi, librariesApi, tokenApi,
-                workspaceApi, instancePoolApi);
+                workspaceApi, instancePoolApi, permissionsApi);
         }
 
         public IClustersApi Clusters { get; }
