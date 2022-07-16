@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models;
@@ -33,7 +34,7 @@ public abstract record AclPermissionItem
     /// </summary>
     [JsonPropertyName("inherited_from_object")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string InheritedFromObject { get; set; }
+    public IEnumerable<string> InheritedFromObject { get; set; }
 }
 
 /// <summary>

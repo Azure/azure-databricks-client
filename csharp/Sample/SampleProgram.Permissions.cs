@@ -78,8 +78,14 @@ internal static partial class SampleProgram
         var aclItems = from level in allowedLevels
             select new UserAclItem {Principal = principal, PermissionLevel = level};
 
-        Console.WriteLine("Updating user permissions");
-        await funcUpdatePermissions(aclItems, resourceId, default);
+        foreach (var aclItem in aclItems.Where(item => item.PermissionLevel != PermissionLevel.IS_OWNER))
+        {
+            Console.WriteLine(
+                $"Updating permissions for principal {aclItem.Principal}, permission level {aclItem.PermissionLevel}"
+            );
+
+            await funcUpdatePermissions(new []{aclItem}, resourceId, default);
+        }
 
         Console.WriteLine("Resetting user permissions");
         await funcReplacePermissions(currentAclItems, resourceId, default);

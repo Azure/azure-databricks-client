@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models;
 using System;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Converters;
@@ -16,34 +17,34 @@ public class LibraryConverter : JsonConverter<Library>
 
     public override Library Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        var library = JsonDocument.ParseValue(ref reader).RootElement;
-            
-        if (library.TryGetProperty("jar", out _))
+        var library = JsonNode.Parse(ref reader)!.AsObject();
+        
+        if (library.TryGetPropertyValue("jar", out _))
         {
             return library.Deserialize<JarLibrary>();
         }
 
-        if (library.TryGetProperty("egg", out _))
+        if (library.TryGetPropertyValue("egg", out _))
         {
             return library.Deserialize<EggLibrary>();
         }
 
-        if (library.TryGetProperty("whl", out _))
+        if (library.TryGetPropertyValue("whl", out _))
         {
             return library.Deserialize<WheelLibrary>();
         }
 
-        if (library.TryGetProperty("maven", out _))
+        if (library.TryGetPropertyValue("maven", out _))
         {
             return library.Deserialize<MavenLibrary>();
         }
 
-        if (library.TryGetProperty("pypi", out _))
+        if (library.TryGetPropertyValue("pypi", out _))
         {
             return library.Deserialize<PythonPyPiLibrary>();
         }
 
-        if (library.TryGetProperty("cran", out _))
+        if (library.TryGetPropertyValue("cran", out _))
         {
             return library.Deserialize<RCranLibrary>();
         }

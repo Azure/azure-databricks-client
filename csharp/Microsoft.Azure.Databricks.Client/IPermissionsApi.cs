@@ -209,7 +209,7 @@ public interface IPermissionsApi : IDisposable
     Task ReplaceNotebookPermissions(IEnumerable<AclPermissionItem> accessControlList, string notebookId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously returns a list of <see cref="(PermissionLevel, string)"/> representing all possible
+    /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to the target directory
     /// </summary>
     /// <param name="directoryId">The id of the target directory</param>

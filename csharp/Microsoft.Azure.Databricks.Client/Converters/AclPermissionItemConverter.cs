@@ -1,8 +1,11 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Azure.Databricks.Client.Converters;
 
@@ -37,14 +40,14 @@ public class AclPermissionItemConverter : JsonConverter<AclPermissionItem>
         }
         else if (aclItemNode.TryGetPropertyValue("group_name", out var groupName))
         {
-            aclItem = new UserAclItem
+            aclItem = new GroupAclItem
             {
                 Principal = groupName!.GetValue<string>()
             };
         }
         else if (aclItemNode.TryGetPropertyValue("service_principal_name", out var servicePrincipalName))
         {
-            aclItem = new UserAclItem
+            aclItem = new ServicePrincipalAclItem
             {
                 Principal = servicePrincipalName!.GetValue<string>()
             };
@@ -58,17 +61,17 @@ public class AclPermissionItemConverter : JsonConverter<AclPermissionItem>
         if (aclItemNode.ContainsKey("all_permissions"))
         {
             var permissionNode = aclItemNode["all_permissions"]![0]!.AsObject();
-            aclItem.PermissionLevel = permissionNode["permission_level"]!.GetValue<PermissionLevel>();
+            aclItem.PermissionLevel = permissionNode["permission_level"]!.Deserialize<PermissionLevel>(options);
             aclItem.Inherited = permissionNode.TryGetPropertyValue("inherited", out var inherited) &&
                                 inherited!.GetValue<bool>();
             aclItem.InheritedFromObject =
                 permissionNode.TryGetPropertyValue("inherited_from_object", out var inheritedFrom)
-                    ? inheritedFrom!.GetValue<string>()
-                    : string.Empty;
+                    ? inheritedFrom!.Deserialize<IEnumerable<string>>(options)
+                    : Enumerable.Empty<string>();
         }
         else
         {
-            aclItem.PermissionLevel = aclItemNode["permission_level"]!.GetValue<PermissionLevel>();
+            aclItem.PermissionLevel = aclItemNode["permission_level"]!.Deserialize<PermissionLevel>(options);
         }
 
         return aclItem;

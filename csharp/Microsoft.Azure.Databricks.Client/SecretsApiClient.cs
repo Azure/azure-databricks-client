@@ -63,16 +63,13 @@ public class SecretsApiClient : ApiClient, ISecretsApi
 
     public async Task<IEnumerable<SecretScope>> ListScopes(CancellationToken cancellationToken = default)
     {
-        var scopeList = await HttpGet<JsonObject>(this.HttpClient, $"{ApiVersion}/secrets/scopes/list", cancellationToken).ConfigureAwait(false);
+        var scopeList =
+            await HttpGet<JsonObject>(this.HttpClient, $"{ApiVersion}/secrets/scopes/list", cancellationToken)
+                .ConfigureAwait(false);
 
-        if (scopeList.TryGetPropertyValue("scopes", out var scopes))
-        {
-            return scopes.Deserialize<IEnumerable<SecretScope>>(Options);
-        }
-        else
-        {
-            return Enumerable.Empty<SecretScope>();
-        }
+        return scopeList.TryGetPropertyValue("scopes", out var scopes)
+            ? scopes.Deserialize<IEnumerable<SecretScope>>(Options)
+            : Enumerable.Empty<SecretScope>();
     }
 
     public async Task PutSecret(string secretValue, string scope, string key, CancellationToken cancellationToken = default)
@@ -93,20 +90,16 @@ public class SecretsApiClient : ApiClient, ISecretsApi
         await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/delete", request, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<SecretMetadata>> ListSecrets(string scope, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<SecretMetadata>> ListSecrets(string scope,
+        CancellationToken cancellationToken = default)
     {
         var url = $"{ApiVersion}/secrets/list?scope={scope}";
         var secretList = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
-        if (secretList.TryGetPropertyValue("secrets", out var secrets))
-        {
-            return secrets.Deserialize<IEnumerable<SecretMetadata>>(Options);
-        }
-        else
-        {
-            return Enumerable.Empty<SecretMetadata>();
-        }
+        return secretList.TryGetPropertyValue("secrets", out var secrets)
+            ? secrets.Deserialize<IEnumerable<SecretMetadata>>(Options)
+            : Enumerable.Empty<SecretMetadata>();
     }
-
+    
     public async Task PutSecretAcl(string scope, string principal, PermissionLevelV1 permission, CancellationToken cancellationToken = default)
     {
         var request = new { scope, principal, permission };
@@ -125,17 +118,13 @@ public class SecretsApiClient : ApiClient, ISecretsApi
         return await HttpGet<AclPermissionItemV1>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<AclPermissionItemV1>> ListSecretAcl(string scope, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<AclPermissionItemV1>> ListSecretAcl(string scope,
+        CancellationToken cancellationToken = default)
     {
         var url = $"{ApiVersion}/secrets/acls/list?scope={scope}";
         var aclList = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
-        if (aclList.TryGetPropertyValue("items", out var items))
-        {
-            return items.Deserialize<IEnumerable<AclPermissionItemV1>>(Options);
-        }
-        else
-        {
-            return Enumerable.Empty<AclPermissionItemV1>();
-        }
+        return aclList.TryGetPropertyValue("items", out var items)
+            ? items.Deserialize<IEnumerable<AclPermissionItemV1>>(Options)
+            : Enumerable.Empty<AclPermissionItemV1>();
     }
 }
