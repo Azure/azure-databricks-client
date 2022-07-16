@@ -1,6 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
-
-namespace Microsoft.Azure.Databricks.Client.Models;
+﻿namespace Microsoft.Azure.Databricks.Client.Models;
 
 /// <summary>
 /// Indicates the service that created the cluster.

@@ -1,6 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
-
-namespace Microsoft.Azure.Databricks.Client.Models;
+﻿namespace Microsoft.Azure.Databricks.Client.Models;
 
 /// <summary>
 /// The state of a cluster. The current allowable state transitions are as follows:

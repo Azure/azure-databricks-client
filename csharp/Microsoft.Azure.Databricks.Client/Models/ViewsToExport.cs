@@ -1,5 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
-
+﻿
 namespace Microsoft.Azure.Databricks.Client.Models;
 
 /// <summary>

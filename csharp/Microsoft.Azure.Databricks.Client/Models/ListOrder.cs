@@ -1,6 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
-
-namespace Microsoft.Azure.Databricks.Client.Models;
+﻿namespace Microsoft.Azure.Databricks.Client.Models;
 
 /// <summary>
 /// A generic ordering enum for list-based queries.
