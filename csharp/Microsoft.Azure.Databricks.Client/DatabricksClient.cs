@@ -188,6 +188,7 @@ namespace Microsoft.Azure.Databricks.Client
             Token.Dispose();
             Workspace.Dispose();
             InstancePool.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

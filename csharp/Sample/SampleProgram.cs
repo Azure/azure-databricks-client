@@ -17,7 +17,7 @@ internal static partial class SampleProgram
             new MillisecondEpochDateTimeConverter(),
             new LibraryConverter(),
             new SecretScopeConverter(),
-            new AccessControlRequestConverter()
+            new AclPermissionItemConverter()
         }
     };
 
@@ -52,7 +52,7 @@ internal static partial class SampleProgram
             await TestGroupsApi(client);
             await TestDbfsApi(client);
             await TestJobsApi(client);
-
+            await TestPermissionsApi(client);
         }
 
         Console.WriteLine("Press enter to exit");

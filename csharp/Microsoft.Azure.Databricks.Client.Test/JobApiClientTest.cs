@@ -215,14 +215,14 @@ public class JobApiClientTest : ApiClientTest
             }
             ";
 
-    private static IEnumerable<AccessControlRequest> CreateDefaultAccessControlRequest()
+    private static IEnumerable<AclPermissionItem> CreateDefaultAccessControlRequest()
     {
-        return new AccessControlRequest[]
+        return new AclPermissionItem[]
         {
-            new AccessControlRequestForUser
-                {PermissionLevel = JobPermissionLevel.CAN_MANAGE, UserName = "jsmith@example.com"},
-            new AccessControlRequestForGroup
-                {PermissionLevel = JobPermissionLevel.CAN_VIEW, GroupName = "readonly-group@example.com"}
+            new UserAclItem
+                {PermissionLevel = PermissionLevel.CAN_MANAGE, Principal = "jsmith@example.com"},
+            new GroupAclItem
+                {PermissionLevel = PermissionLevel.CAN_VIEW, Principal = "readonly-group@example.com"}
         };
     }
 

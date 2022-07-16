@@ -129,7 +129,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// <param name="scope">The name of the scope to apply permissions to. This field is required.</param>
         /// <param name="principal">The principal to which the permission is applied. This field is required.</param>
         /// <param name="permission">The permission level applied to the principal. This field is required.</param>
-        Task PutSecretAcl(string scope, string principal, AclPermission permission, CancellationToken cancellationToken = default);
+        Task PutSecretAcl(string scope, string principal, PermissionLevelV1 permission, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes the given ACL on the given scope.
@@ -151,7 +151,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// </remarks>
         /// <param name="scope">The name of the scope to fetch ACL information from. This field is required.</param>
         /// <param name="principal">The principal to fetch ACL information for. This field is required.</param>
-        Task<AclItem> GetSecretAcl(string scope, string principal, CancellationToken cancellationToken = default);
+        Task<AclPermissionItemV1> GetSecretAcl(string scope, string principal, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Lists the ACLs set on the given scope.
@@ -161,6 +161,6 @@ namespace Microsoft.Azure.Databricks.Client
         /// Throws RESOURCE_DOES_NOT_EXIST if no such secret scope exists. Throws PERMISSION_DENIED if the user does not have permission to make this API call.
         /// </remarks>
         /// <param name="scope">The name of the scope to fetch ACL information from. This field is required.</param>
-        Task<IEnumerable<AclItem>> ListSecretAcl(string scope, CancellationToken cancellationToken = default);
+        Task<IEnumerable<AclPermissionItemV1>> ListSecretAcl(string scope, CancellationToken cancellationToken = default);
     }
 }

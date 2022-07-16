@@ -11,7 +11,7 @@ public interface IJobsApi : IDisposable
     /// <summary>
     /// Creates a new job with the provided settings.
     /// </summary>
-    Task<long> Create(JobSettings jobSettings, IEnumerable<AccessControlRequest> accessControlList = default,
+    Task<long> Create(JobSettings jobSettings, IEnumerable<AclPermissionItem> accessControlList = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -63,7 +63,7 @@ public interface IJobsApi : IDisposable
     /// <summary>
     /// Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job. Runs submitted using this endpoint don't display in the UI. Use the `jobs/runs/get` API to check the run state after the job is submitted.
     /// </summary>
-    Task<long> RunSubmit(RunSubmitSettings settings, IEnumerable<AccessControlRequest> accessControlList = default,
+    Task<long> RunSubmit(RunSubmitSettings settings, IEnumerable<AclPermissionItem> accessControlList = default,
         string idempotencyToken = default,
         CancellationToken cancellationToken = default);
 

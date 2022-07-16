@@ -1,6 +1,9 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,19 +15,34 @@ namespace Microsoft.Azure.Databricks.Client
         {
         }
 
-        public async Task<(string, PublicTokenInfo)> Create(long? lifetimeSeconds, string comment, CancellationToken cancellationToken = default)
+        public async Task<(string, PublicTokenInfo)> Create(long? lifetimeSeconds, string comment,
+            CancellationToken cancellationToken = default)
         {
-            var request = new {lifetime_seconds = lifetimeSeconds, comment};
-            var result = await HttpPost<dynamic, dynamic>(this.HttpClient, $"{ApiVersion}/token/create", request, cancellationToken)
-                .ConfigureAwait(false);
+            var request = JsonSerializer.SerializeToNode(new {lifetime_seconds = lifetimeSeconds, comment}, Options)!
+                .AsObject();
 
-            return (result.token_value.ToObject<string>(), result.token_info.ToObject<PublicTokenInfo>());
+            var result = await HttpPost<JsonObject, JsonObject>(
+                this.HttpClient,
+                $"{ApiVersion}/token/create",
+                request,
+                cancellationToken
+            ).ConfigureAwait(false);
+
+            return (
+                result["token_value"]!.GetValue<string>(),
+                result["token_info"]!.AsObject().Deserialize<PublicTokenInfo>(Options)
+            );
         }
 
         public async Task<IEnumerable<PublicTokenInfo>> List(CancellationToken cancellationToken = default)
         {
-            var result = await HttpGet<dynamic>(this.HttpClient, $"{ApiVersion}/token/list", cancellationToken).ConfigureAwait(false);
-            return result.token_infos.ToObject<IEnumerable<PublicTokenInfo>>();
+            var result = await HttpGet<JsonObject>(
+                this.HttpClient,
+                $"{ApiVersion}/token/list",
+                cancellationToken
+            ).ConfigureAwait(false);
+            return from token in result["token_infos"]!.AsArray()
+                select token.Deserialize<PublicTokenInfo>(Options);
         }
 
         public async Task Revoke(string tokenId, CancellationToken cancellationToken = default)

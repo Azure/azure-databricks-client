@@ -18,7 +18,7 @@ public class JobsApiClient : ApiClient, IJobsApi
     }
 
     public async Task<long> Create(JobSettings jobSettings,
-        IEnumerable<AccessControlRequest> accessControlList = default,
+        IEnumerable<AclPermissionItem> accessControlList = default,
         CancellationToken cancellationToken = default)
     {
         var request = JsonSerializer.SerializeToNode(jobSettings, Options)!.AsObject();
@@ -94,7 +94,7 @@ public class JobsApiClient : ApiClient, IJobsApi
     }
 
     public async Task<long> RunSubmit(RunSubmitSettings settings,
-        IEnumerable<AccessControlRequest> accessControlList = default, string idempotencyToken = default,
+        IEnumerable<AclPermissionItem> accessControlList = default, string idempotencyToken = default,
         CancellationToken cancellationToken = default)
     {
         var request = JsonSerializer.SerializeToNode(settings, Options)!.AsObject();

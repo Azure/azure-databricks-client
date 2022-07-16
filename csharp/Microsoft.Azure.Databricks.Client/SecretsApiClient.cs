@@ -107,9 +107,9 @@ namespace Microsoft.Azure.Databricks.Client
             }
         }
 
-        public async Task PutSecretAcl(string scope, string principal, AclPermission permission, CancellationToken cancellationToken = default)
+        public async Task PutSecretAcl(string scope, string principal, PermissionLevelV1 permission, CancellationToken cancellationToken = default)
         {
-            var request = new { scope, principal, permission = permission.ToString() };
+            var request = new { scope, principal, permission };
             await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/acls/put", request, cancellationToken).ConfigureAwait(false);
         }
 
@@ -119,23 +119,23 @@ namespace Microsoft.Azure.Databricks.Client
             await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/acls/delete", request, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<AclItem> GetSecretAcl(string scope, string principal, CancellationToken cancellationToken = default)
+        public async Task<AclPermissionItemV1> GetSecretAcl(string scope, string principal, CancellationToken cancellationToken = default)
         {
             var url = $"{ApiVersion}/secrets/acls/get?scope={scope}&principal={principal}";
-            return await HttpGet<AclItem>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
+            return await HttpGet<AclPermissionItemV1>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<AclItem>> ListSecretAcl(string scope, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<AclPermissionItemV1>> ListSecretAcl(string scope, CancellationToken cancellationToken = default)
         {
             var url = $"{ApiVersion}/secrets/acls/list?scope={scope}";
             var aclList = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
             if (aclList.TryGetPropertyValue("items", out var items))
             {
-                return items.Deserialize<IEnumerable<AclItem>>(Options);
+                return items.Deserialize<IEnumerable<AclPermissionItemV1>>(Options);
             }
             else
             {
-                return Enumerable.Empty<AclItem>();
+                return Enumerable.Empty<AclPermissionItemV1>();
             }
         }
     }
