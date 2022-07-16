@@ -22,10 +22,11 @@ public class JobsApiClient : ApiClient, IJobsApi
         CancellationToken cancellationToken = default)
     {
         var request = JsonSerializer.SerializeToNode(jobSettings, Options)!.AsObject();
-            
-        accessControlList.Iter(
-            acr => request.Add("access_control_list", JsonSerializer.SerializeToNode(acr, Options))
-        );
+
+        if (accessControlList != null)
+        {
+            request.Add("access_control_list", JsonSerializer.SerializeToNode(accessControlList, Options));
+        }
 
         var jobIdentifier =
             await HttpPost<JsonObject, JsonObject>(this.HttpClient, $"{ApiVersion}/jobs/create", request,
@@ -42,13 +43,8 @@ public class JobsApiClient : ApiClient, IJobsApi
             .ConfigureAwait(false);
 
         response.TryGetPropertyValue("jobs", out var jobsNode);
-        var jobs = jobsNode
-            .Map(node => node.Deserialize<IEnumerable<Job>>(Options))
-            .GetOrElse(Enumerable.Empty<Job>);
-
-        response.TryGetPropertyValue("has_more", out var hasMoreNode);
-        var hasMore = hasMoreNode.Exists(node => node.GetValue<bool>());
-            
+        var jobs = jobsNode?.Deserialize<IEnumerable<Job>>(Options) ?? Enumerable.Empty<Job>();
+        var hasMore = response.TryGetPropertyValue("has_more", out var hasMoreNode) && hasMoreNode!.GetValue<bool>();
         return new JobList {Jobs = jobs, HasMore = hasMore};
     }
 
@@ -81,10 +77,16 @@ public class JobsApiClient : ApiClient, IJobsApi
     public async Task<long> RunNow(long jobId, RunParameters runParams = default, string idempotencyToken = default,
         CancellationToken cancellationToken = default)
     {
-        var request = runParams.Map(p => JsonSerializer.SerializeToNode(p, Options)!.AsObject())
-            .GetOrElse(() => new JsonObject());
+        var request = runParams == null
+            ? new JsonObject()
+            : JsonSerializer.SerializeToNode(runParams, Options)!.AsObject();
+
         request.Add("job_id", jobId);
-        idempotencyToken.Iter(token => request.Add("idempotency_token", token));
+
+        if (!string.IsNullOrEmpty(idempotencyToken))
+        {
+            request.Add("idempotency_token", idempotencyToken);
+        }
 
         var result = await HttpPost<JsonObject, RunIdentifier>(
             this.HttpClient, $"{ApiVersion}/jobs/run-now", request, cancellationToken
@@ -98,11 +100,16 @@ public class JobsApiClient : ApiClient, IJobsApi
         CancellationToken cancellationToken = default)
     {
         var request = JsonSerializer.SerializeToNode(settings, Options)!.AsObject();
-        idempotencyToken.Iter(token => request.Add("idempotency_token", token));
-        accessControlList.Iter(
-            acr => request.Add("access_control_list", JsonSerializer.SerializeToNode(acr, Options))
-        );
+        if (!string.IsNullOrEmpty(idempotencyToken))
+        {
+            request.Add("idempotency_token", idempotencyToken);
+        }
 
+        if (accessControlList != null)
+        {
+            request.Add("access_control_list", JsonSerializer.SerializeToNode(accessControlList, Options));
+        }
+        
         var result = await HttpPost<JsonObject, RunIdentifier>(
             this.HttpClient, $"{ApiVersion}/jobs/runs/submit", request, cancellationToken
         ).ConfigureAwait(false);
@@ -123,17 +130,33 @@ public class JobsApiClient : ApiClient, IJobsApi
             );
         }
 
-        static string EmptyStr() => string.Empty;
-
         var url = $"{ApiVersion}/jobs/runs/list?limit={limit}&offset={offset}";
 
-        url += jobId.Map(id => $"&job_id={id}").GetOrElse(EmptyStr);
-        url += activeOnly ? "&active_only=true" : EmptyStr();
-        url += completedOnly ? "&completed_only=true" : EmptyStr();
-        url += runType.Map(type => $"&run_type={type}").GetOrElse(EmptyStr);
-        url += expandTasks ? "&expand_task=true" : EmptyStr();
-        url += startTimeFrom.Map(time => $"&start_time_from={time.ToUnixTimeMilliseconds()}").GetOrElse(EmptyStr);
-        url += startTimeTo.Map(time => $"&start_time_to={time.ToUnixTimeMilliseconds()}").GetOrElse(EmptyStr);
+        if (jobId.HasValue)
+        {
+            url += $"&job_id={jobId.Value}";
+        }
+        
+        url += activeOnly ? "&active_only=true" : string.Empty;
+        url += completedOnly ? "&completed_only=true" : string.Empty;
+
+        if (runType.HasValue)
+        {
+            url += $"&run_type={runType.Value}";
+        }
+        
+        url += expandTasks ? "&expand_task=true" : string.Empty;
+
+        if (startTimeFrom.HasValue)
+        {
+            url += $"&start_time_from={startTimeFrom.Value.ToUnixTimeMilliseconds()}";
+        }
+
+        if (startTimeTo.HasValue)
+        {
+            url += $"&start_time_to={startTimeTo.Value.ToUnixTimeMilliseconds()}";
+        }
+
         return await HttpGet<RunList>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
     }
 
@@ -163,8 +186,9 @@ public class JobsApiClient : ApiClient, IJobsApi
         var url = $"{ApiVersion}/jobs/runs/export?run_id={runId}&views_to_export={viewsToExport}";
         var viewItemList = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
 
-        viewItemList.TryGetPropertyValue("views", out var views);
-        return views.Map(v => v.Deserialize<IEnumerable<ViewItem>>(Options)).GetOrElse(Enumerable.Empty<ViewItem>);
+        return viewItemList.TryGetPropertyValue("views", out var views)
+            ? views!.Deserialize<IEnumerable<ViewItem>>(Options)
+            : Enumerable.Empty<ViewItem>();
     }
 
     public async Task<RunOutput> RunsGetOutput(long runId, CancellationToken cancellationToken = default)

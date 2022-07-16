@@ -18,8 +18,11 @@ public class MillisecondEpochDateTimeConverter : JsonConverter<DateTimeOffset?>
         return null;
     }
 
-    public override void Write(Utf8JsonWriter writer, DateTimeOffset? value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, DateTimeOffset? dto, JsonSerializerOptions options)
     {
-        value.Iter(v => writer.WriteNumberValue(v.ToUnixTimeMilliseconds()));
+        if (dto.HasValue)
+        {
+            writer.WriteNumberValue(dto.Value.ToUnixTimeMilliseconds());
+        }
     }
 }

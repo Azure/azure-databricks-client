@@ -96,9 +96,7 @@ public class ClustersApiClient : ApiClient, IClustersApi
 
         clusterList.TryGetPropertyValue("clusters", out var clustersNode);
 
-        return clustersNode
-            .Map(node => node.Deserialize<IEnumerable<ClusterInfo>>(Options))
-            .GetOrElse(Enumerable.Empty<ClusterInfo>);
+        return clustersNode?.Deserialize<IEnumerable<ClusterInfo>>(Options) ?? Enumerable.Empty<ClusterInfo>();
     }
 
     public async Task Pin(string clusterId, CancellationToken cancellationToken = default)

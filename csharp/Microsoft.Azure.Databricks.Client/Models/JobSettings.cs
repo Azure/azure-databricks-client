@@ -23,7 +23,7 @@ public abstract record JobRunBaseSettings<TTaskSetting> : IJsonOnDeserialized
         foreach (var task in this.Tasks.Where(task => task.DependsOn != null))
         {
             task.DependsOn =
-                from dep in task.DependsOn.GetOrElse(Enumerable.Empty<HasTaskKey>)
+                from dep in task.DependsOn ?? Enumerable.Empty<HasTaskKey>()
                 select taskMap[dep.TaskKey];
         }
     }
