@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Databricks.Client.Models;
 
@@ -9,13 +10,16 @@ internal static partial class SampleProgram
     private static async Task TestGroupsApi(DatabricksClient client)
     {
         Console.WriteLine("Listing groups");
-        var groupsList = await client.Groups.List();
+        var groupsList = (await client.Groups.List()).ToList();
         foreach (var group in groupsList)
         {
             Console.WriteLine("Group name: {0}", group);
         }
 
         const string newGroupName = "sample group";
+
+        if (groupsList.Contains(newGroupName))
+            await client.Groups.Delete(newGroupName);
 
         Console.WriteLine("Creating new group \"{0}\"", newGroupName);
         await client.Groups.Create(newGroupName);

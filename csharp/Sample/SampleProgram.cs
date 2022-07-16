@@ -25,7 +25,6 @@ internal static partial class SampleProgram
     /// Must be an existing user in the databricks environment, otherwise you will get a "DIRECTORY_PROTECTED" error.
     /// </summary>
     private const string DatabricksUserName = "user@company.com";
-
     private const string SampleWorkspacePath = $"/Users/{DatabricksUserName}/SampleWorkspace";
     private const string SampleNotebookPath = $"{SampleWorkspacePath}/Quick Start Using Scala";
 

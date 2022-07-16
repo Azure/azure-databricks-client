@@ -96,14 +96,9 @@ public sealed class DbfsApiClient : ApiClient, IDbfsApi
         var encodedPath = WebUtility.UrlEncode(path);
         var url = $"{ApiVersion}/dbfs/list?path={encodedPath}";
         var result = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
-        if (result.TryGetPropertyValue("files", out var files))
-        {
-            return files.Deserialize<IEnumerable<FileInfo>>();
-        }
-        else
-        {
-            return Enumerable.Empty<FileInfo>();
-        }
+        return result.TryGetPropertyValue("files", out var files)
+            ? files.Deserialize<IEnumerable<FileInfo>>()
+            : Enumerable.Empty<FileInfo>();
     }
 
     public async Task Mkdirs(string path, CancellationToken cancellationToken = default)

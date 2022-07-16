@@ -24,7 +24,7 @@ public class InstancePoolApiClient : ApiClient, IInstancePoolApi
                 this.HttpClient,
                 $"{ApiVersion}/instance-pools/create",
                 poolAttributes, cancellationToken).ConfigureAwait(false);
-        return poolIdentifier["instance_pool_id"].GetValue<string>();
+        return poolIdentifier["instance_pool_id"]!.GetValue<string>();
     }
 
     /// <inheritdoc />
@@ -60,15 +60,10 @@ public class InstancePoolApiClient : ApiClient, IInstancePoolApi
     /// <inheritdoc />
     public async Task<IEnumerable<InstancePoolInfo>> List(CancellationToken cancellationToken = default)
     {
-        string requestUri = $"{ApiVersion}/instance-pools/list";
+        var requestUri = $"{ApiVersion}/instance-pools/list";
         var poolList = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
-        if (poolList.TryGetPropertyValue("instance_pools", out var instance_pools))
-        {
-            return instance_pools.Deserialize<IEnumerable<InstancePoolInfo>>();
-        }
-        else
-        {
-            return Enumerable.Empty<InstancePoolInfo>();
-        }
+        return poolList.TryGetPropertyValue("instance_pools", out var instancePools)
+            ? instancePools.Deserialize<IEnumerable<InstancePoolInfo>>()
+            : Enumerable.Empty<InstancePoolInfo>();
     }
 }
