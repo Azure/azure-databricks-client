@@ -28,6 +28,30 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
             select (permLevel, desc);
     }
 
+    private async Task<IEnumerable<AclPermissionItem>> GetPermissions(string apiUri,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await HttpGet<JsonObject>(HttpClient, apiUri, cancellationToken);
+        return from aclItemNode in result["access_control_list"]!.AsArray()
+            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+    }
+
+    private async Task<IEnumerable<AclPermissionItem>> PutPermissions<TBody>(string apiUri, TBody requestBody,
+        CancellationToken cancellationToken)
+    {
+        var result = await HttpPut<TBody, JsonObject>(HttpClient, apiUri, requestBody, cancellationToken);
+        return from aclItemNode in result["access_control_list"]!.AsArray()
+            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+    }
+
+    private async Task<IEnumerable<AclPermissionItem>> PatchPermissions<TBody>(string apiUri, TBody requestBody,
+        CancellationToken cancellationToken)
+    {
+        var result = await HttpPatch<TBody, JsonObject>(HttpClient, apiUri, requestBody, cancellationToken);
+        return from aclItemNode in result["access_control_list"]!.AsArray()
+            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+    }
+
     public async Task<IEnumerable<(PermissionLevel, string)>> GetClusterPermissionLevels(string clusterId,
         CancellationToken cancellationToken = default)
     {
@@ -39,9 +63,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/clusters/{clusterId}";
-        var result = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-        return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<(PermissionLevel, string)>> GetDirectoryPermissionLevels(string directoryId,
@@ -55,9 +77,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/directories/{directoryId}";
-        var result = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-        return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<(PermissionLevel, string)>> GetExperimentPermissionLevels(string experimentId,
@@ -71,9 +91,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/experiments/{experimentId}";
-        var result = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-        return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<(PermissionLevel, string)>> GetInstancePoolPermissionLevels(string instancePoolId,
@@ -87,9 +105,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/instance-pools/{instancePoolId}";
-        var result = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-        return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<(PermissionLevel, string)>> GetJobPermissionLevels(string jobId,
@@ -103,9 +119,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/jobs/{jobId}";
-        var result = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-        return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<(PermissionLevel, string)>> GetNotebookPermissionLevels(string notebookId,
@@ -119,9 +133,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/notebooks/{notebookId}";
-        var result = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-        return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<(PermissionLevel, string)>> GetPipelinePermissionLevels(string pipelineId,
@@ -135,9 +147,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/pipelines/{pipelineId}";
-        var result = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-        return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<(PermissionLevel, string)>> GetRegisteredModelPermissionLevels(
@@ -151,9 +161,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/registered-models/{registeredModelId}";
-        var result = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-        return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<(PermissionLevel, string)>> GetRepoPermissionLevels(string repoId,
@@ -167,9 +175,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/repos/{repoId}";
-        var result = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-        return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<(PermissionLevel, string)>> GetSqlWarehousePermissionLevels(string endpointId,
@@ -183,9 +189,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/sql/endpoints/{endpointId}";
-        var result = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-        return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<(PermissionLevel, string)>> GetTokenPermissionLevels(
@@ -199,184 +203,207 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/authorization/tokens";
-        var result = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-        return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ReplaceClusterPermissions(IEnumerable<AclPermissionItem> accessControlList, string clusterId,
+
+
+    public async Task<IEnumerable<AclPermissionItem>> ReplaceClusterPermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string clusterId,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/clusters/{clusterId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPut(HttpClient, requestUri, body, cancellationToken);
+
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ReplaceDirectoryPermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> ReplaceDirectoryPermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string directoryId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/directories/{directoryId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPut(HttpClient, requestUri, body, cancellationToken);
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ReplaceExperimentPermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> ReplaceExperimentPermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string experimentId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/experiments/{experimentId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPut(HttpClient, requestUri, body, cancellationToken);
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ReplaceInstancePoolPermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> ReplaceInstancePoolPermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string instancePoolId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/instance-pools/{instancePoolId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPut(HttpClient, requestUri, body, cancellationToken);
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ReplaceJobPermissions(IEnumerable<AclPermissionItem> accessControlList, string jobId,
+    public async Task<IEnumerable<AclPermissionItem>> ReplaceJobPermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string jobId,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/jobs/{jobId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPut(HttpClient, requestUri, body, cancellationToken);
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ReplaceNotebookPermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> ReplaceNotebookPermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string notebookId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/notebooks/{notebookId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPut(HttpClient, requestUri, body, cancellationToken);
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ReplacePipelinePermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> ReplacePipelinePermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string pipelineId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/pipelines/{pipelineId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPut(HttpClient, requestUri, body, cancellationToken);
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ReplaceRegisteredModelPermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> ReplaceRegisteredModelPermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string registeredModelId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/registered-models/{registeredModelId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPut(HttpClient, requestUri, body, cancellationToken);
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ReplaceRepoPermissions(IEnumerable<AclPermissionItem> accessControlList, string repoId,
+    public async Task<IEnumerable<AclPermissionItem>> ReplaceRepoPermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string repoId,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/repos/{repoId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPut(HttpClient, requestUri, body, cancellationToken);
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ReplaceSqlWarehousePermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> ReplaceSqlWarehousePermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string endpointId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/sql/endpoints/{endpointId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPut(HttpClient, requestUri, body, cancellationToken);
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task ReplaceTokenPermissionsForWorkspace(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> ReplaceTokenPermissionsForWorkspace(
+        IEnumerable<AclPermissionItem> accessControlList,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/authorization/tokens";
         var body = new {access_control_list = accessControlList};
-        await HttpPut(HttpClient, requestUri, body, cancellationToken);
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task UpdateClusterPermissions(IEnumerable<AclPermissionItem> accessControlList, string clusterId,
+    public async Task<IEnumerable<AclPermissionItem>> UpdateClusterPermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string clusterId,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/clusters/{clusterId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPatch(HttpClient, requestUri, body, cancellationToken);
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task UpdateDirectoryPermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> UpdateDirectoryPermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string directoryId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/directories/{directoryId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPatch(HttpClient, requestUri, body, cancellationToken);
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task UpdateExperimentPermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> UpdateExperimentPermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string experimentId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/experiments/{experimentId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPatch(HttpClient, requestUri, body, cancellationToken);
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task UpdateInstancePoolPermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> UpdateInstancePoolPermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string instancePoolId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/instance-pools/{instancePoolId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPatch(HttpClient, requestUri, body, cancellationToken);
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task UpdateJobPermissions(IEnumerable<AclPermissionItem> accessControlList, string jobId,
+    public async Task<IEnumerable<AclPermissionItem>> UpdateJobPermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string jobId,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/jobs/{jobId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPatch(HttpClient, requestUri, body, cancellationToken);
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task UpdateNotebookPermissions(IEnumerable<AclPermissionItem> accessControlList, string notebookId,
+    public async Task<IEnumerable<AclPermissionItem>> UpdateNotebookPermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string notebookId,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/notebooks/{notebookId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPatch(HttpClient, requestUri, body, cancellationToken);
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task UpdatePipelinePermissions(IEnumerable<AclPermissionItem> accessControlList, string pipelineId,
+    public async Task<IEnumerable<AclPermissionItem>> UpdatePipelinePermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string pipelineId,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/pipelines/{pipelineId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPatch(HttpClient, requestUri, body, cancellationToken);
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task UpdateRegisteredModelPermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> UpdateRegisteredModelPermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string registeredModelId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/registered-models/{registeredModelId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPatch(HttpClient, requestUri, body, cancellationToken);
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task UpdateRepoPermissions(IEnumerable<AclPermissionItem> accessControlList, string repoId,
+    public async Task<IEnumerable<AclPermissionItem>> UpdateRepoPermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string repoId,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/repos/{repoId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPatch(HttpClient, requestUri, body, cancellationToken);
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task UpdateSqlWarehousePermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> UpdateSqlWarehousePermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         string endpointId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/sql/endpoints/{endpointId}";
         var body = new {access_control_list = accessControlList};
-        await HttpPatch(HttpClient, requestUri, body, cancellationToken);
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task UpdateTokenPermissions(IEnumerable<AclPermissionItem> accessControlList,
+    public async Task<IEnumerable<AclPermissionItem>> UpdateTokenPermissions(
+        IEnumerable<AclPermissionItem> accessControlList,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/authorization/tokens";
         var body = new {access_control_list = accessControlList};
-        await HttpPatch(HttpClient, requestUri, body, cancellationToken);
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 }

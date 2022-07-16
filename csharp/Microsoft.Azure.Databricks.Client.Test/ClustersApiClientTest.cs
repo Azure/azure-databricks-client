@@ -160,7 +160,7 @@ public class ClustersApiClientTest: ApiClientTest
             .Or<ClientApiException>(e => e.StatusCode == HttpStatusCode.ServiceUnavailable)
             .Or<ClientApiException>(e => e.Message.Contains("\"error_code\":\"TEMPORARILY_UNAVAILABLE\""))
             .Or<TaskCanceledException>(e => !e.CancellationToken.IsCancellationRequested) // web request timeout
-            .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(1.0));
+            .WaitAndRetryForeverAsync(_ => TimeSpan.Zero);
 
         var clusterId = await retryPolicy.ExecuteAsync(async () => await client.Create(clusterInfo, idempotencyToken));
         Assert.AreEqual(expectedResponse.cluster_id, clusterId);

@@ -18,7 +18,6 @@ public class AclPermissionItemConverter : JsonConverter<AclPermissionItem>
 
     private static readonly JsonSerializerOptions EnumOptions = new()
     {
-        // DefaultIgnoreCondition = JsonIgnoreCondition.Never,
         Converters = {new JsonStringEnumConverter()}
     };
 
