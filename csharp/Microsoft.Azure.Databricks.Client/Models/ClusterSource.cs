@@ -1,25 +1,24 @@
 ﻿// ReSharper disable InconsistentNaming
 
-namespace Microsoft.Azure.Databricks.Client.Models
+namespace Microsoft.Azure.Databricks.Client.Models;
+
+/// <summary>
+/// Indicates the service that created the cluster.
+/// </summary>
+public enum ClusterSource
 {
     /// <summary>
-    /// Indicates the service that created the cluster.
+    /// Cluster created through the UI.
     /// </summary>
-    public enum ClusterSource
-    {
-        /// <summary>
-        /// Cluster created through the UI.
-        /// </summary>
-        UI,
+    UI,
 
-        /// <summary>
-        /// Cluster created by the Databricks Job Scheduler.
-        /// </summary>
-        JOB,
+    /// <summary>
+    /// Cluster created by the Databricks Job Scheduler.
+    /// </summary>
+    JOB,
 
-        /// <summary>
-        /// Cluster created through an API call.
-        /// </summary>
-        API
-    }
+    /// <summary>
+    /// Cluster created through an API call.
+    /// </summary>
+    API
 }

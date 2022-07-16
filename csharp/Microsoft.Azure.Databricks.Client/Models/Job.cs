@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models;
 
-public class Job
+public record Job
 {
     /// <summary>
     /// The canonical identifier for this job.
