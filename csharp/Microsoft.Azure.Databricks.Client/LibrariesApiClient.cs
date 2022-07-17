@@ -22,8 +22,8 @@ public class LibrariesApiClient : ApiClient, ILibrariesApi
 
         if (result.TryGetPropertyValue("statuses", out var statuses))
         {
-            return statuses
-                .Deserialize<IEnumerable<JsonObject>>(Options)
+            return statuses!
+                .Deserialize<IEnumerable<JsonObject>>(Options)!
                 .ToDictionary(
                     e => e["cluster_id"].Deserialize<string>(Options),
                     e => e["library_statuses"].Deserialize<IEnumerable<LibraryFullStatus>>(Options)
@@ -35,19 +35,15 @@ public class LibrariesApiClient : ApiClient, ILibrariesApi
         }
     }
 
-    public async Task<IEnumerable<LibraryFullStatus>> ClusterStatus(string clusterId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<LibraryFullStatus>> ClusterStatus(string clusterId,
+        CancellationToken cancellationToken = default)
     {
         var url = $"{ApiVersion}/libraries/cluster-status?cluster_id={clusterId}";
         var result = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
 
-        if (result.TryGetPropertyValue("library_statuses", out var library_statuses))
-        {
-            return library_statuses.Deserialize<IEnumerable<LibraryFullStatus>>();
-        }
-        else
-        {
-            return Enumerable.Empty<LibraryFullStatus>();
-        }
+        return result.TryGetPropertyValue("library_statuses", out var libraryStatuses)
+            ? libraryStatuses.Deserialize<IEnumerable<LibraryFullStatus>>()
+            : Enumerable.Empty<LibraryFullStatus>();
     }
 
     public async Task Install(string clusterId, IEnumerable<Library> libraries, CancellationToken cancellationToken = default)
