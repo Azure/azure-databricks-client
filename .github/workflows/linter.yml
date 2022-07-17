@@ -1,0 +1,18 @@
+name: Linter
+
+on:
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Super-Linter
+        uses: github/super-linter@v4.9.4
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          VALIDATE_JSCPD: false
+          VALIDATE_NATURAL_LANGUAGE: false

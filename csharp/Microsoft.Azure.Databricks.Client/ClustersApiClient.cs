@@ -37,7 +37,7 @@ public class ClustersApiClient : ApiClient, IClustersApi
 
     public async Task Start(string clusterId, CancellationToken cancellationToken = default)
     {
-        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/start", new {cluster_id = clusterId},
+        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/start", new { cluster_id = clusterId },
             cancellationToken).ConfigureAwait(false);
     }
 
@@ -52,20 +52,20 @@ public class ClustersApiClient : ApiClient, IClustersApi
 
     public async Task Restart(string clusterId, CancellationToken cancellationToken = default)
     {
-        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/restart", new {cluster_id = clusterId},
+        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/restart", new { cluster_id = clusterId },
             cancellationToken).ConfigureAwait(false);
     }
 
     public async Task Resize(string clusterId, int numWorkers, CancellationToken cancellationToken = default)
     {
-        var request = new {cluster_id = clusterId, num_workers = numWorkers};
+        var request = new { cluster_id = clusterId, num_workers = numWorkers };
         await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/resize", request, cancellationToken)
             .ConfigureAwait(false);
     }
 
     public async Task Resize(string clusterId, AutoScale autoScale, CancellationToken cancellationToken = default)
     {
-        var request = new {cluster_id = clusterId, autoscale = autoScale};
+        var request = new { cluster_id = clusterId, autoscale = autoScale };
         await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/resize", request, cancellationToken)
             .ConfigureAwait(false);
     }
@@ -78,13 +78,13 @@ public class ClustersApiClient : ApiClient, IClustersApi
 
     public async Task Terminate(string clusterId, CancellationToken cancellationToken = default)
     {
-        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/delete", new {cluster_id = clusterId},
+        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/delete", new { cluster_id = clusterId },
             cancellationToken).ConfigureAwait(false);
     }
 
     public async Task Delete(string clusterId, CancellationToken cancellationToken = default)
     {
-        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/permanent-delete", new {cluster_id = clusterId},
+        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/permanent-delete", new { cluster_id = clusterId },
             cancellationToken).ConfigureAwait(false);
     }
 
@@ -101,13 +101,13 @@ public class ClustersApiClient : ApiClient, IClustersApi
 
     public async Task Pin(string clusterId, CancellationToken cancellationToken = default)
     {
-        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/pin", new {cluster_id = clusterId},
+        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/pin", new { cluster_id = clusterId },
             cancellationToken).ConfigureAwait(false);
     }
 
     public async Task Unpin(string clusterId, CancellationToken cancellationToken = default)
     {
-        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/unpin", new {cluster_id = clusterId},
+        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/unpin", new { cluster_id = clusterId },
             cancellationToken).ConfigureAwait(false);
     }
 

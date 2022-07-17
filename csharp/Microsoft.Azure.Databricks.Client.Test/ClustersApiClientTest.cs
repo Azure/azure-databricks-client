@@ -10,7 +10,7 @@ using Polly;
 namespace Microsoft.Azure.Databricks.Client.Test;
 
 [TestClass]
-public class ClustersApiClientTest: ApiClientTest
+public class ClustersApiClientTest : ApiClientTest
 {
     private static readonly Uri ClusterApiUri = new(BaseApiUri, "2.0/clusters/");
 
@@ -20,7 +20,7 @@ public class ClustersApiClientTest: ApiClientTest
         var apiUri = new Uri(ClusterApiUri, "create");
         const string expectedRequest = "{\"cluster_name\": \"my-cluster\",\"spark_version\": \"7.3.x-scala2.12\",\"node_type_id\": \"Standard_D3_v2\",\"spark_conf\": {\"spark.speculation\": \"true\"},\"num_workers\": 25}";
         var expectedResponse = new { cluster_id = "1234-567890-cited123" };
-            
+
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Post, apiUri)
@@ -167,7 +167,7 @@ public class ClustersApiClientTest: ApiClientTest
 
         handler.VerifyRequest(HttpMethod.Post, apiUri, GetMatcher(expectedRequest), Times.Exactly(4));
     }
-    
+
     [TestMethod]
     public async Task TestEdit()
     {
@@ -189,7 +189,7 @@ public class ClustersApiClientTest: ApiClientTest
             .WithNodeType("Standard_D3_v2");
 
         await client.Edit("1202-211320-brick1", clusterInfo);
-            
+
         handler.VerifyRequest(
             HttpMethod.Post,
             apiUri,

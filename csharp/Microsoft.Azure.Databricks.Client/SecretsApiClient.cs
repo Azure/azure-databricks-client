@@ -30,7 +30,7 @@ public class SecretsApiClient : ApiClient, ISecretsApi
     public async Task CreateDatabricksBackedScope(string scope, string initialManagePrincipal,
         CancellationToken cancellationToken = default)
     {
-        var request = new {scope, initial_manage_principal = initialManagePrincipal};
+        var request = new { scope, initial_manage_principal = initialManagePrincipal };
         await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/scopes/create", request, cancellationToken).ConfigureAwait(false);
     }
 
@@ -57,7 +57,7 @@ public class SecretsApiClient : ApiClient, ISecretsApi
 
     public async Task DeleteScope(string scope, CancellationToken cancellationToken = default)
     {
-        var request = new {scope};
+        var request = new { scope };
         await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/scopes/delete", request, cancellationToken).ConfigureAwait(false);
     }
 
@@ -74,7 +74,7 @@ public class SecretsApiClient : ApiClient, ISecretsApi
 
     public async Task PutSecret(string secretValue, string scope, string key, CancellationToken cancellationToken = default)
     {
-        var request = new {scope, key, string_value = secretValue};
+        var request = new { scope, key, string_value = secretValue };
         await HttpPost(this.HttpClient, $"{ApiVersion}/secrets/put", request, cancellationToken).ConfigureAwait(false);
     }
 
@@ -99,7 +99,7 @@ public class SecretsApiClient : ApiClient, ISecretsApi
             ? secrets.Deserialize<IEnumerable<SecretMetadata>>(Options)
             : Enumerable.Empty<SecretMetadata>();
     }
-    
+
     public async Task PutSecretAcl(string scope, string principal, PermissionLevelV1 permission, CancellationToken cancellationToken = default)
     {
         var request = new { scope, principal, permission };

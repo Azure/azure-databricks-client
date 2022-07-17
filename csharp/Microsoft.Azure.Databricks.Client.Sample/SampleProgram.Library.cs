@@ -53,7 +53,7 @@ internal static partial class SampleProgram
     private static async Task TestInstallUninstallLibrary(DatabricksClient client, Library library, string clusterId)
     {
         Console.WriteLine("Installing library {0}", library);
-        await client.Libraries.Install(clusterId, new[] {library});
+        await client.Libraries.Install(clusterId, new[] { library });
 
         while (true)
         {
@@ -83,7 +83,7 @@ internal static partial class SampleProgram
         }
 
         Console.WriteLine("Uninstalling library {0}", library);
-        await client.Libraries.Uninstall(clusterId, new[] {library});
+        await client.Libraries.Uninstall(clusterId, new[] { library });
 
         var s = await client.Libraries.ClusterStatus(clusterId);
         var uninstalledLib = s.Single(status => status.Library.Equals(library));

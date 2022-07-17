@@ -91,7 +91,7 @@ public class TokenApiClientTest : ApiClientTest
 
         var tokenInfoList = await client.List();
 
-        AssertJsonDeepEquals(expectedResponse, JsonSerializer.Serialize(new {token_infos = tokenInfoList}, Options));
+        AssertJsonDeepEquals(expectedResponse, JsonSerializer.Serialize(new { token_infos = tokenInfoList }, Options));
 
         handler.VerifyRequest(
             HttpMethod.Get,

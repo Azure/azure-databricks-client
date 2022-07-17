@@ -46,7 +46,7 @@ public class InstancePoolApiClient : ApiClient, IInstancePoolApi
     /// <inheritdoc />
     public async Task Delete(string poolId, CancellationToken cancellationToken = default)
     {
-        await HttpPost(this.HttpClient, $"{ApiVersion}/instance-pools/delete", new {instance_pool_id = poolId}, cancellationToken)
+        await HttpPost(this.HttpClient, $"{ApiVersion}/instance-pools/delete", new { instance_pool_id = poolId }, cancellationToken)
             .ConfigureAwait(false);
     }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client;
 
-public interface IInstancePoolApi: IDisposable
+public interface IInstancePoolApi : IDisposable
 {
     /// <summary>
     /// Create an instance pool.

@@ -29,7 +29,7 @@ public class GroupsApiClient : ApiClient, IGroupsApi
 
     public async Task<string> Create(string groupName, CancellationToken cancellationToken = default)
     {
-        var request = new {group_name = groupName};
+        var request = new { group_name = groupName };
         var response =
             await HttpPost<dynamic, JsonObject>(this.HttpClient, $"{ApiVersion}/groups/create", request,
                     cancellationToken)
@@ -85,7 +85,7 @@ public class GroupsApiClient : ApiClient, IGroupsApi
 
     public async Task Delete(string groupName, CancellationToken cancellationToken = default)
     {
-        var request = new {group_name = groupName};
+        var request = new { group_name = groupName };
         await HttpPost(this.HttpClient, $"{ApiVersion}/groups/delete", request, cancellationToken).ConfigureAwait(false);
     }
 }

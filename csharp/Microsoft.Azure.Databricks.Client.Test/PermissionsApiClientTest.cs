@@ -48,8 +48,8 @@ public class PermissionsApiClientTest : ApiClientTest
         using var client = new PermissionsApiClient(hc);
 
         var permissionLevels = from level in await client.GetClusterPermissionLevels(clusterId)
-            select new {permission_level = level.Item1, description = level.Item2};
-        var actual = JsonSerializer.Serialize(new {permission_levels = permissionLevels}, Options);
+                               select new { permission_level = level.Item1, description = level.Item2 };
+        var actual = JsonSerializer.Serialize(new { permission_levels = permissionLevels }, Options);
         AssertJsonDeepEquals(expectedResponse, actual);
         handler.VerifyRequest(
             HttpMethod.Get,
@@ -107,7 +107,7 @@ public class PermissionsApiClientTest : ApiClientTest
         Assert.AreEqual("jsmith@example.com", aclItems[0].Principal);
         Assert.AreEqual(PermissionLevel.CAN_RESTART, aclItems[0].PermissionLevel);
         Assert.IsTrue(aclItems[0].Inherited);
-        CollectionAssert.AreEquivalent(new [] {"/clusters/"}, aclItems[0].InheritedFromObject.ToArray());
+        CollectionAssert.AreEquivalent(new[] { "/clusters/" }, aclItems[0].InheritedFromObject.ToArray());
 
         Assert.IsInstanceOfType(aclItems[1], typeof(GroupAclItem));
         Assert.AreEqual("admin_group", aclItems[1].Principal);
@@ -252,7 +252,7 @@ public class PermissionsApiClientTest : ApiClientTest
         Assert.AreEqual("jsmith@example.com", aclItems[0].Principal);
         Assert.AreEqual(PermissionLevel.CAN_RESTART, aclItems[0].PermissionLevel);
         Assert.IsTrue(aclItems[0].Inherited);
-        CollectionAssert.AreEquivalent(new[] {"/clusters/"}, aclItems[0].InheritedFromObject.ToArray());
+        CollectionAssert.AreEquivalent(new[] { "/clusters/" }, aclItems[0].InheritedFromObject.ToArray());
 
         handler.VerifyRequest(
             HttpMethod.Put,

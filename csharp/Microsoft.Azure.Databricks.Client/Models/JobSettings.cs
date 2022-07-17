@@ -44,7 +44,8 @@ public abstract record JobRunBaseSettings<TTaskSetting> : IJsonOnDeserialized
     public TTaskSetting AddTask(string taskKey, SparkJarTask task,
         IEnumerable<HasTaskKey> dependsOn = default, int? timeoutSeconds = default)
     {
-        var taskSetting = new TTaskSetting {
+        var taskSetting = new TTaskSetting
+        {
             TaskKey = taskKey,
             SparkJarTask = task,
             DependsOn = dependsOn,
@@ -58,8 +59,9 @@ public abstract record JobRunBaseSettings<TTaskSetting> : IJsonOnDeserialized
     public TTaskSetting AddTask(string taskKey, SparkPythonTask task,
         IEnumerable<HasTaskKey> dependsOn = default, int? timeoutSeconds = default)
     {
-        var taskSetting = new TTaskSetting { 
-            TaskKey = taskKey, 
+        var taskSetting = new TTaskSetting
+        {
+            TaskKey = taskKey,
             SparkPythonTask = task,
             DependsOn = dependsOn,
             TimeoutSeconds = timeoutSeconds
@@ -72,8 +74,9 @@ public abstract record JobRunBaseSettings<TTaskSetting> : IJsonOnDeserialized
     public TTaskSetting AddTask(string taskKey, NotebookTask task,
         IEnumerable<HasTaskKey> dependsOn = default, int? timeoutSeconds = default)
     {
-        var taskSetting = new TTaskSetting { 
-            TaskKey = taskKey, 
+        var taskSetting = new TTaskSetting
+        {
+            TaskKey = taskKey,
             NotebookTask = task,
             DependsOn = dependsOn,
             TimeoutSeconds = timeoutSeconds
@@ -84,7 +87,8 @@ public abstract record JobRunBaseSettings<TTaskSetting> : IJsonOnDeserialized
     public TTaskSetting AddTask(string taskKey, SparkSubmitTask task,
         IEnumerable<HasTaskKey> dependsOn = default, int? timeoutSeconds = default)
     {
-        var taskSetting = new TTaskSetting {
+        var taskSetting = new TTaskSetting
+        {
             TaskKey = taskKey,
             SparkSubmitTask = task,
             DependsOn = dependsOn,
@@ -98,7 +102,8 @@ public abstract record JobRunBaseSettings<TTaskSetting> : IJsonOnDeserialized
     public TTaskSetting AddTask(string taskKey, PipelineTask task,
         IEnumerable<HasTaskKey> dependsOn = default, int? timeoutSeconds = default)
     {
-        var taskSetting = new TTaskSetting {
+        var taskSetting = new TTaskSetting
+        {
             TaskKey = taskKey,
             PipelineTask = task,
             DependsOn = dependsOn,
@@ -146,7 +151,7 @@ public enum JobFormat
 /// <summary>
 /// Settings for a job. These settings can be updated using the resetJob method.
 /// </summary>
-public record JobSettings: JobRunBaseSettings<JobTaskSettings>
+public record JobSettings : JobRunBaseSettings<JobTaskSettings>
 {
     /// <summary>
     /// Adds a cron schedule to a job

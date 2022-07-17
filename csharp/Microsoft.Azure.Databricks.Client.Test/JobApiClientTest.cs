@@ -234,7 +234,7 @@ public class JobApiClientTest : ApiClientTest
             .WithAutoScale(2, 16);
         cluster.SparkConfiguration = new Dictionary<string, string> { { "spark.speculation", "true" } };
         cluster.AzureAttributes = new AzureAttributes
-            { Availability = AzureAvailability.ON_DEMAND_AZURE, FirstOnDemand = 0, SpotBidMaxPrice = -1 };
+        { Availability = AzureAvailability.ON_DEMAND_AZURE, FirstOnDemand = 0, SpotBidMaxPrice = -1 };
         return cluster;
     }
 
@@ -250,22 +250,22 @@ public class JobApiClientTest : ApiClientTest
         var sessionizeTask = new SparkJarTask
         {
             MainClassName = "com.databricks.Sessionize",
-            Parameters = new List<string> {"--data", "dbfs:/path/to/data.json"}
+            Parameters = new List<string> { "--data", "dbfs:/path/to/data.json" }
         };
 
         var task1 = runSubmit.AddTask("Sessionize", sessionizeTask, timeoutSeconds: 86400)
-            .AttachLibrary(new JarLibrary {Jar = "dbfs:/mnt/databricks/Sessionize.jar"})
+            .AttachLibrary(new JarLibrary { Jar = "dbfs:/mnt/databricks/Sessionize.jar" })
             .WithExistingClusterId("0923-164208-meows279");
 
         var ingestTask = new SparkJarTask
         {
             MainClassName = "com.databricks.OrdersIngest",
-            Parameters = new List<string> {"--data", "dbfs:/path/to/order-data.json"}
+            Parameters = new List<string> { "--data", "dbfs:/path/to/order-data.json" }
         };
 
 
         var task2 = runSubmit.AddTask("Orders_Ingest", ingestTask, timeoutSeconds: 86400)
-            .AttachLibrary(new JarLibrary {Jar = "dbfs:/mnt/databricks/OrderIngest.jar"})
+            .AttachLibrary(new JarLibrary { Jar = "dbfs:/mnt/databricks/OrderIngest.jar" })
             .WithExistingClusterId("0923-164208-meows279");
 
         var matchTask = new NotebookTask
@@ -277,7 +277,7 @@ public class JobApiClientTest : ApiClientTest
             }
         };
 
-        runSubmit.AddTask("Match", matchTask, new[] {task2, task1}, timeoutSeconds: 86400)
+        runSubmit.AddTask("Match", matchTask, new[] { task2, task1 }, timeoutSeconds: 86400)
             .WithNewCluster(cluster);
 
         return runSubmit;
@@ -290,7 +290,7 @@ public class JobApiClientTest : ApiClientTest
         var job = new JobSettings
         {
             Name = "A multitask job",
-            Tags = new Dictionary<string, string> {{"cost-center", "engineering"}, {"team", "jobs"}},
+            Tags = new Dictionary<string, string> { { "cost-center", "engineering" }, { "team", "jobs" } },
             JobClusters = new List<JobCluster>
             {
                 new()
@@ -302,9 +302,9 @@ public class JobApiClientTest : ApiClientTest
             EmailNotifications = new JobEmailNotifications
             {
                 NoAlertForSkippedRuns = false,
-                OnStart = new[] {"user.name@databricks.com"},
-                OnFailure = new[] {"user.name@databricks.com"},
-                OnSuccess = new[] {"user.name@databricks.com"}
+                OnStart = new[] { "user.name@databricks.com" },
+                OnFailure = new[] { "user.name@databricks.com" },
+                OnSuccess = new[] { "user.name@databricks.com" }
             },
             TimeoutSeconds = 86400,
             Schedule = new CronSchedule
@@ -325,7 +325,7 @@ public class JobApiClientTest : ApiClientTest
 
         var task1 = job.AddTask("Sessionize", sessionizeTask, timeoutSeconds: 86400)
             .WithRetry(3, 2000, false)
-            .AttachLibrary(new JarLibrary {Jar = "dbfs:/mnt/databricks/Sessionize.jar"})
+            .AttachLibrary(new JarLibrary { Jar = "dbfs:/mnt/databricks/Sessionize.jar" })
             .WithExistingClusterId("0923-164208-meows279")
             .WithDescription("Extracts session data from events");
 
@@ -357,7 +357,7 @@ public class JobApiClientTest : ApiClientTest
 
         return job;
     }
-    
+
     #endregion
 
     [TestMethod]
@@ -406,15 +406,15 @@ public class JobApiClientTest : ApiClientTest
         hc.BaseAddress = BaseApiUri;
 
         using var client = new JobsApiClient(hc);
-        
+
         var job = CreateDefaultJobSettings();
 
         await client.Reset(11223344, job);
 
         var jobReset = JsonNode.Parse(MultiTaskJobJson)!.AsObject();
         jobReset.Remove("access_control_list");
-        var request = new JsonObject {new("job_id", JsonValue.Create(11223344)), new("new_settings", jobReset)};
-            
+        var request = new JsonObject { new("job_id", JsonValue.Create(11223344)), new("new_settings", jobReset) };
+
         handler.VerifyRequest(
             HttpMethod.Post,
             apiUri,
@@ -441,7 +441,7 @@ public class JobApiClientTest : ApiClientTest
 
         var job = CreateDefaultJobSettings();
 
-        await client.Update(11223344, job, new []{ "libraries", "schedule" });
+        await client.Update(11223344, job, new[] { "libraries", "schedule" });
 
         var jobReset = JsonNode.Parse(MultiTaskJobJson)!.AsObject();
         jobReset.Remove("access_control_list");
@@ -535,8 +535,8 @@ public class JobApiClientTest : ApiClientTest
         var apiUri = new Uri(JobsApiUri, "list");
 
         var expectedResponse = new JobList
-            {
-                Jobs = new[]
+        {
+            Jobs = new[]
                 {
                     new Job
                     {
@@ -547,8 +547,8 @@ public class JobApiClientTest : ApiClientTest
                         Settings = CreateDefaultJobSettings()
                     }
                 },
-                HasMore = false
-            };
+            HasMore = false
+        };
 
         var handler = CreateMockHandler();
         handler
@@ -617,11 +617,11 @@ public class JobApiClientTest : ApiClientTest
 
         var runParams = new RunParameters
         {
-            JarParams = new List<string> {"john", "doe", "35"},
-            NotebookParams = new Dictionary<string, string> {{"name", "john doe"}, {"age", "35"}},
-            PythonParams = new List<string> {"john doe", "35"},
-            SparkSubmitParams = new List<string> {"--class", "org.apache.spark.examples.SparkPi"},
-            PythonNamedParams = new Dictionary<string, string> {{"name", "task"}, {"data", "dbfs:/path/to/data.json"}}
+            JarParams = new List<string> { "john", "doe", "35" },
+            NotebookParams = new Dictionary<string, string> { { "name", "john doe" }, { "age", "35" } },
+            PythonParams = new List<string> { "john doe", "35" },
+            SparkSubmitParams = new List<string> { "--class", "org.apache.spark.examples.SparkPi" },
+            PythonNamedParams = new Dictionary<string, string> { { "name", "task" }, { "data", "dbfs:/path/to/data.json" } }
         };
 
         var handler = CreateMockHandler();
@@ -918,7 +918,7 @@ public class JobApiClientTest : ApiClientTest
     public async Task TestRunsList()
     {
         var apiUri = new Uri(JobsApiUri, "runs/list");
-        
+
         var expectedRequestUrl = new Uri(apiUri,
             "?limit=25&offset=0&job_id=11223344&active_only=true&run_type=JOB_RUN&start_time_from=1642521600000&start_time_to=1642608000000");
         const string response = @"
@@ -984,7 +984,7 @@ public class JobApiClientTest : ApiClientTest
 
         using var client = new JobsApiClient(hc);
         var views = await client.RunsExport(455644833, ViewsToExport.DASHBOARDS);
-        var wrapped = new {views};
+        var wrapped = new { views };
         AssertJsonDeepEquals(response, JsonSerializer.Serialize(wrapped, Options));
         handler.VerifyRequest(HttpMethod.Get, expectedRequestUri, Times.Once());
     }
@@ -1122,12 +1122,12 @@ public class JobApiClientTest : ApiClientTest
         {
             LatestRepairId = 734650698524280,
             RunId = 455644833,
-            RerunTasks = new[] {"task0", "task1"}
+            RerunTasks = new[] { "task0", "task1" }
         };
 
         var repairParam = new RunParameters
         {
-            JarParams = new List<string> {"john", "doe", "35"}
+            JarParams = new List<string> { "john", "doe", "35" }
         };
 
         var repairId = await client.RunsRepair(repairInput, repairParam);
