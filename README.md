@@ -6,9 +6,9 @@
 [![NuGet version ()](https://img.shields.io/badge/nuget-blue.svg)](https://www.nuget.org/packages/Microsoft.Azure.Databricks.Client/)
 [![Version 1.1 ()](https://img.shields.io/badge/1.1%20release-informational.svg)](https://github.com/Azure/azure-databricks-client/tree/releases/1.1)
 
-The Azure Databricks Client Library offers a convenient interface for automating your Azure Databricks workspace through Azure Databricks REST Api.
+The Azure Databricks Client Library offers a convenient interface for automating your Azure Databricks workspace through Azure Databricks REST API.
 
-The implementation of this library is based on [REST Api version 2.0 and above](https://docs.azuredatabricks.net/api/latest/index.html#).  
+The implementation of this library is based on [REST API version 2.0 and above](https://docs.azuredatabricks.net/api/latest/index.html#).  
 
 ## Requirements
 
@@ -187,7 +187,7 @@ var clusterId = await retryPolicy.ExecuteAsync(async () => await client.Clusters
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
+the rights to use your contribution. For details, visit [Microsoft Contributor License Agreement (CLA)](https://cla.microsoft.com).
 
 When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
