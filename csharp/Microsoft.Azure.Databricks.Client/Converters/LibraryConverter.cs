@@ -18,7 +18,7 @@ public class LibraryConverter : JsonConverter<Library>
     public override Library Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var library = JsonNode.Parse(ref reader)!.AsObject();
-        
+
         if (library.TryGetPropertyValue("jar", out _))
         {
             return library.Deserialize<JarLibrary>();

@@ -35,7 +35,7 @@ internal static partial class SampleProgram
             await Console.Error.WriteLineAsync("Usage: <Azure databricks base url> <access token>");
             return;
         }
-            
+
         var baseUrl = args[0];
         var token = args[1];
 

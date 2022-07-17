@@ -79,7 +79,7 @@ public sealed class DbfsApiClient : ApiClient, IDbfsApi
 
     public async Task Delete(string path, bool recursive, CancellationToken cancellationToken = default)
     {
-        var request = new {path, recursive };
+        var request = new { path, recursive };
         await HttpPost(this.HttpClient, $"{ApiVersion}/dbfs/delete", request, cancellationToken).ConfigureAwait(false);
     }
 

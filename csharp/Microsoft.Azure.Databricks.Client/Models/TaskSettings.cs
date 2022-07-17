@@ -24,7 +24,7 @@ public abstract record BaseTask : HasTaskKey
     [JsonPropertyName("existing_cluster_id")]
     public string ExistingClusterId { get; set; }
 
-    [JsonPropertyName("new_cluster")] 
+    [JsonPropertyName("new_cluster")]
     public ClusterAttributes NewCluster { get; set; }
 
     /// <summary>

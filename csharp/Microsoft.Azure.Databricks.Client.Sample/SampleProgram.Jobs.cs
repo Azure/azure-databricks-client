@@ -50,7 +50,7 @@ internal static partial class SampleProgram
         jobSettings.AddTask("task3", new NotebookTask { NotebookPath = SampleNotebookPath }, new[] { task1, task2 })
             .WithDescription("Sample Job - task3")
             .WithNewCluster(newCluster);
-            
+
         Console.WriteLine("Creating new job");
         var jobId = await client.Jobs.Create(jobSettings);
         Console.WriteLine("Job created: {0}", jobId);

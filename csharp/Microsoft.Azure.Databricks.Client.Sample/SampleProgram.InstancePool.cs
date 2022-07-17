@@ -19,7 +19,7 @@ internal static partial class SampleProgram
             NodeTypeId = NodeTypes.Standard_D3_v2,
             EnableElasticDisk = true,
             DiskSpec = new DiskSpec
-                { DiskCount = 2, DiskSize = 64, DiskType = DiskType.FromAzureDisk(AzureDiskVolumeType.STANDARD_LRS) },
+            { DiskCount = 2, DiskSize = 64, DiskType = DiskType.FromAzureDisk(AzureDiskVolumeType.STANDARD_LRS) },
             PreloadedDockerImages = new[]
             {
                 new DockerImage {Url = "databricksruntime/standard:latest"}

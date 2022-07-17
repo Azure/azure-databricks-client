@@ -234,7 +234,7 @@ public record Run : RunIdentifier
     /// </summary>
     [JsonPropertyName("git_source")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public GitSource GitSource { get; set; }    
+    public GitSource GitSource { get; set; }
 
     /// <summary>
     /// The parameters used for this run.

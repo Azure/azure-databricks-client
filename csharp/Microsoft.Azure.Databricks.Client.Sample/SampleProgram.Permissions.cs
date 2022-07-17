@@ -64,7 +64,7 @@ internal static partial class SampleProgram
         }
 
         var allowedLevels = (from p in permissionLevels
-            select p.Item1).ToList();
+                             select p.Item1).ToList();
 
         Console.WriteLine($"Getting and displaying current access levels for resource {resourceId}");
 
@@ -76,7 +76,7 @@ internal static partial class SampleProgram
         }
 
         var aclItems = from level in allowedLevels
-            select new UserAclItem {Principal = principal, PermissionLevel = level};
+                       select new UserAclItem { Principal = principal, PermissionLevel = level };
 
         foreach (var aclItem in aclItems.Where(item => item.PermissionLevel != PermissionLevel.IS_OWNER))
         {
@@ -84,7 +84,7 @@ internal static partial class SampleProgram
                 $"Updating permissions for principal {aclItem.Principal}, permission level {aclItem.PermissionLevel}"
             );
 
-            await funcUpdatePermissions(new []{aclItem}, resourceId, default);
+            await funcUpdatePermissions(new[] { aclItem }, resourceId, default);
         }
 
         Console.WriteLine("Resetting user permissions");
@@ -95,11 +95,11 @@ internal static partial class SampleProgram
     {
         Console.WriteLine("Creating a new workspace...");
         await client.Workspace.Mkdirs(SampleWorkspacePath);
-        
+
         var dirInfo = await client.Workspace.GetStatus(SampleWorkspacePath);
 
         await TestPermissions(
-            dirInfo.ObjectId.ToString(), 
+            dirInfo.ObjectId.ToString(),
             DatabricksUserName,
             client.Permissions.GetDirectoryPermissionLevels,
             client.Permissions.GetDirectoryPermissions,
@@ -117,7 +117,7 @@ internal static partial class SampleProgram
         //the token that we are currently using to connect in the first place.
         Console.WriteLine("Getting and displaying the allowable permission levels for databricks tokens...");
         var allowablePermissions = await client.Permissions.GetTokenPermissionLevels();
-        
+
         foreach (var (permissionLevel, description) in allowablePermissions)
         {
             Console.WriteLine($"{permissionLevel}: {description}");
@@ -162,16 +162,16 @@ internal static partial class SampleProgram
         var poolAttributes = new InstancePoolAttributes
         {
             PoolName = "Sample pool",
-            PreloadedSparkVersions = new[] {RuntimeVersions.Runtime_10_5},
+            PreloadedSparkVersions = new[] { RuntimeVersions.Runtime_10_5 },
             MinIdleInstances = 2,
             MaxCapacity = 100,
             IdleInstanceAutoTerminationMinutes = 15,
             NodeTypeId = NodeTypes.Standard_D3_v2,
             EnableElasticDisk = true,
             DiskSpec = new DiskSpec
-                {DiskCount = 2, DiskSize = 64, DiskType = DiskType.FromAzureDisk(AzureDiskVolumeType.STANDARD_LRS)},
+            { DiskCount = 2, DiskSize = 64, DiskType = DiskType.FromAzureDisk(AzureDiskVolumeType.STANDARD_LRS) },
             AzureAttributes = new InstancePoolAzureAttributes
-                {Availability = AzureAvailability.SPOT_AZURE, SpotBidMaxPrice = -1}
+            { Availability = AzureAvailability.SPOT_AZURE, SpotBidMaxPrice = -1 }
         };
 
         var poolId = await client.InstancePool.Create(poolAttributes).ConfigureAwait(false);
@@ -184,7 +184,7 @@ internal static partial class SampleProgram
             client.Permissions.UpdateInstancePoolPermissions,
             client.Permissions.ReplaceInstancePoolPermissions
         );
-        
+
         Console.WriteLine("Deleting Sample pool");
         await client.InstancePool.Delete(poolId);
     }
@@ -207,8 +207,8 @@ internal static partial class SampleProgram
             .WithNodeType(NodeTypes.Standard_D3_v2)
             .WithRuntimeVersion(RuntimeVersions.Runtime_10_4);
 
-        var jobSettings = new JobSettings {MaxConcurrentRuns = 1, Name = "Sample Job"};
-        jobSettings.AddTask("task1", new NotebookTask {NotebookPath = SampleNotebookPath})
+        var jobSettings = new JobSettings { MaxConcurrentRuns = 1, Name = "Sample Job" };
+        jobSettings.AddTask("task1", new NotebookTask { NotebookPath = SampleNotebookPath })
             .WithDescription("Sample Job - task1")
             .WithNewCluster(newCluster);
 

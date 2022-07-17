@@ -21,7 +21,7 @@ public enum ClusterMode
     SingleNode
 }
 
-public record ClusterAttributes: ClusterSize
+public record ClusterAttributes : ClusterSize
 {
     /// <summary>
     /// Cluster name requested by the user. This doesn’t have to be unique. If not specified at creation, the cluster name will be an empty string.
@@ -320,11 +320,11 @@ public record ClusterAttributes: ClusterSize
     public ClusterAttributes WithDockerImage(string url, (string, string)? basicAuth = default)
     {
         DockerImage = basicAuth == null
-            ? new DockerImage {Url = url}
+            ? new DockerImage { Url = url }
             : new DockerImage
             {
                 Url = url,
-                BasicAuth = new DockerBasicAuth {UserName = basicAuth.Value.Item1, Password = basicAuth.Value.Item2}
+                BasicAuth = new DockerBasicAuth { UserName = basicAuth.Value.Item1, Password = basicAuth.Value.Item2 }
             };
 
         return this;

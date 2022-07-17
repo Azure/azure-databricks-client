@@ -18,7 +18,7 @@ public class TokenApiClient : ApiClient, ITokenApi
     public async Task<(string, PublicTokenInfo)> Create(long? lifetimeSeconds, string comment,
         CancellationToken cancellationToken = default)
     {
-        var request = JsonSerializer.SerializeToNode(new {lifetime_seconds = lifetimeSeconds, comment}, Options)!
+        var request = JsonSerializer.SerializeToNode(new { lifetime_seconds = lifetimeSeconds, comment }, Options)!
             .AsObject();
 
         var result = await HttpPost<JsonObject, JsonObject>(
@@ -42,12 +42,12 @@ public class TokenApiClient : ApiClient, ITokenApi
             cancellationToken
         ).ConfigureAwait(false);
         return from token in result["token_infos"]!.AsArray()
-            select token.Deserialize<PublicTokenInfo>(Options);
+               select token.Deserialize<PublicTokenInfo>(Options);
     }
 
     public async Task Revoke(string tokenId, CancellationToken cancellationToken = default)
     {
-        var request = new {token_id = tokenId};
+        var request = new { token_id = tokenId };
         await HttpPost(this.HttpClient, $"{ApiVersion}/token/delete", request, cancellationToken).ConfigureAwait(false);
     }
 }

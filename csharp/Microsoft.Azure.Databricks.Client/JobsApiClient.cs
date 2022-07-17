@@ -45,7 +45,7 @@ public class JobsApiClient : ApiClient, IJobsApi
         response.TryGetPropertyValue("jobs", out var jobsNode);
         var jobs = jobsNode?.Deserialize<IEnumerable<Job>>(Options) ?? Enumerable.Empty<Job>();
         var hasMore = response.TryGetPropertyValue("has_more", out var hasMoreNode) && hasMoreNode!.GetValue<bool>();
-        return new JobList {Jobs = jobs, HasMore = hasMore};
+        return new JobList { Jobs = jobs, HasMore = hasMore };
     }
 
     public async Task Delete(long jobId, CancellationToken cancellationToken = default)
@@ -109,7 +109,7 @@ public class JobsApiClient : ApiClient, IJobsApi
         {
             request.Add("access_control_list", JsonSerializer.SerializeToNode(accessControlList, Options));
         }
-        
+
         var result = await HttpPost<JsonObject, RunIdentifier>(
             this.HttpClient, $"{ApiVersion}/jobs/runs/submit", request, cancellationToken
         ).ConfigureAwait(false);
@@ -136,7 +136,7 @@ public class JobsApiClient : ApiClient, IJobsApi
         {
             url += $"&job_id={jobId.Value}";
         }
-        
+
         url += activeOnly ? "&active_only=true" : string.Empty;
         url += completedOnly ? "&completed_only=true" : string.Empty;
 
@@ -144,7 +144,7 @@ public class JobsApiClient : ApiClient, IJobsApi
         {
             url += $"&run_type={runType.Value}";
         }
-        
+
         url += expandTasks ? "&expand_task=true" : string.Empty;
 
         if (startTimeFrom.HasValue)
@@ -207,7 +207,7 @@ public class JobsApiClient : ApiClient, IJobsApi
         {
             if (kvp.Value == null)
                 continue;
-            
+
             var node = kvp.Value!.ToJsonString(Options);
             inputNode.Add(kvp.Key, JsonNode.Parse(node));
         }

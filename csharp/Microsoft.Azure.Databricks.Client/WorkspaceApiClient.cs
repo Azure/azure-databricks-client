@@ -17,7 +17,7 @@ public class WorkspaceApiClient : ApiClient, IWorkspaceApi
 
     public async Task Delete(string path, bool recursive, CancellationToken cancellationToken = default)
     {
-        var request = JsonSerializer.SerializeToNode(new {path, recursive}, Options)!.AsObject();
+        var request = JsonSerializer.SerializeToNode(new { path, recursive }, Options)!.AsObject();
         await HttpPost(this.HttpClient, $"{ApiVersion}/workspace/delete", request, cancellationToken)
             .ConfigureAwait(false);
     }
@@ -39,7 +39,7 @@ public class WorkspaceApiClient : ApiClient, IWorkspaceApi
         CancellationToken cancellationToken = default)
     {
         var request = JsonSerializer.SerializeToNode(new
-            {path, format = format.ToString(), language = language?.ToString(), content, overwrite})!.AsObject();
+        { path, format = format.ToString(), language = language?.ToString(), content, overwrite })!.AsObject();
 
         await HttpPost(this.HttpClient, $"{ApiVersion}/workspace/import", request, cancellationToken)
             .ConfigureAwait(false);
@@ -57,7 +57,7 @@ public class WorkspaceApiClient : ApiClient, IWorkspaceApi
 
     public async Task Mkdirs(string path, CancellationToken cancellationToken = default)
     {
-        var request = JsonSerializer.SerializeToNode(new {path}, Options)!.AsObject();
+        var request = JsonSerializer.SerializeToNode(new { path }, Options)!.AsObject();
         await HttpPost(this.HttpClient,
             $"{ApiVersion}/workspace/mkdirs",
             request,

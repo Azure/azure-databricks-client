@@ -11,27 +11,27 @@ public record RunParameters
 {
     public static RunParameters CreateJarParams(IEnumerable<string> jarParams)
     {
-        return new RunParameters {JarParams = jarParams.ToList()};
+        return new RunParameters { JarParams = jarParams.ToList() };
     }
 
     public static RunParameters CreateNotebookParams(Dictionary<string, string> notebookParams)
     {
-        return new RunParameters {NotebookParams = notebookParams};
+        return new RunParameters { NotebookParams = notebookParams };
     }
 
     public static RunParameters CreatePythonParams(IEnumerable<string> pythonParams)
     {
-        return new RunParameters {PythonParams = pythonParams.ToList()};
+        return new RunParameters { PythonParams = pythonParams.ToList() };
     }
 
     public static RunParameters CreateSparkSubmitParams(IEnumerable<string> sparkSubmitParams)
     {
-        return new RunParameters {SparkSubmitParams = sparkSubmitParams.ToList()};
+        return new RunParameters { SparkSubmitParams = sparkSubmitParams.ToList() };
     }
 
     public static RunParameters CreatePythonNamedParams(Dictionary<string, string> pythonNamedParams)
     {
-        return new RunParameters {PythonNamedParams = pythonNamedParams};
+        return new RunParameters { PythonNamedParams = pythonNamedParams };
     }
 
     /// <summary>

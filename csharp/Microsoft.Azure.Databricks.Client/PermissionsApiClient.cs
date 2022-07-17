@@ -23,9 +23,9 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         result.TryGetPropertyValue("permission_levels", out var permissionLevelsNode);
 
         return from node in permissionLevelsNode!.AsArray()
-            let permLevel = node!["permission_level"]!.Deserialize<PermissionLevel>(Options)
-            let desc = node!["description"]?.GetValue<string>() ?? string.Empty
-            select (permLevel, desc);
+               let permLevel = node!["permission_level"]!.Deserialize<PermissionLevel>(Options)
+               let desc = node!["description"]?.GetValue<string>() ?? string.Empty
+               select (permLevel, desc);
     }
 
     private async Task<IEnumerable<AclPermissionItem>> GetPermissions(string apiUri,
@@ -33,7 +33,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
     {
         var result = await HttpGet<JsonObject>(HttpClient, apiUri, cancellationToken);
         return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+               select aclItemNode.Deserialize<AclPermissionItem>(Options);
     }
 
     private async Task<IEnumerable<AclPermissionItem>> PutPermissions<TBody>(string apiUri, TBody requestBody,
@@ -41,7 +41,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
     {
         var result = await HttpPut<TBody, JsonObject>(HttpClient, apiUri, requestBody, cancellationToken);
         return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+               select aclItemNode.Deserialize<AclPermissionItem>(Options);
     }
 
     private async Task<IEnumerable<AclPermissionItem>> PatchPermissions<TBody>(string apiUri, TBody requestBody,
@@ -49,7 +49,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
     {
         var result = await HttpPatch<TBody, JsonObject>(HttpClient, apiUri, requestBody, cancellationToken);
         return from aclItemNode in result["access_control_list"]!.AsArray()
-            select aclItemNode.Deserialize<AclPermissionItem>(Options);
+               select aclItemNode.Deserialize<AclPermissionItem>(Options);
     }
 
     public async Task<IEnumerable<(PermissionLevel, string)>> GetClusterPermissionLevels(string clusterId,
@@ -213,7 +213,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/clusters/{clusterId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
 
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
@@ -223,7 +223,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string directoryId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/directories/{directoryId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -232,7 +232,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string experimentId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/experiments/{experimentId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -241,7 +241,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string instancePoolId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/instance-pools/{instancePoolId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -250,7 +250,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/jobs/{jobId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -259,7 +259,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string notebookId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/notebooks/{notebookId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -268,7 +268,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string pipelineId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/pipelines/{pipelineId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -277,7 +277,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string registeredModelId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/registered-models/{registeredModelId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -286,7 +286,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/repos/{repoId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -295,7 +295,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string endpointId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/sql/endpoints/{endpointId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -304,7 +304,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/authorization/tokens";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -313,7 +313,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/clusters/{clusterId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -322,7 +322,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string directoryId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/directories/{directoryId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -331,7 +331,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string experimentId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/experiments/{experimentId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -340,7 +340,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string instancePoolId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/instance-pools/{instancePoolId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -349,7 +349,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/jobs/{jobId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -358,7 +358,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/notebooks/{notebookId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -367,7 +367,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/pipelines/{pipelineId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -376,7 +376,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string registeredModelId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/registered-models/{registeredModelId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -385,7 +385,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/repos/{repoId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -394,7 +394,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         string endpointId, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/sql/endpoints/{endpointId}";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -403,7 +403,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/authorization/tokens";
-        var body = new {access_control_list = accessControlList};
+        var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 }
