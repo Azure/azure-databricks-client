@@ -36,7 +36,7 @@ You must have personal access tokens (PAT) or Azure Active Directory tokens (AAD
 
 Check out the Sample project for more detailed usages.
 
-In the following examples, the ```baseUrl``` variable should be set to the workspace base URL, which looks like "https://adb-\<workspace-id\>.\<random-number\>.azuredatabricks.net", and ```token``` variable should be set to your Databricks personal access token.
+In the following examples, the `baseUrl` variable should be set to the workspace base URL, which looks like `https://adb-<workspace-id>.<random-number>.azuredatabricks.net`, and `token` variable should be set to your Databricks personal access token.
 
 ### Creating client
 

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.Models;
 
@@ -27,7 +24,7 @@ public record RepairHistoryItem
     /// </summary>
     [JsonPropertyName("type")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public RepairHistoryItemType @Type { get; set; }
+    public RepairHistoryItemType Type { get; set; }
 
     /// <summary>
     /// The start time of the (repaired) run.
