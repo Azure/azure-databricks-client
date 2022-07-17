@@ -142,6 +142,37 @@ var secretName = "secretkey.bin";
 await client.Secrets.PutSecret(new byte[]{0x01, 0x02, 0x03, 0x04}, scope, secretName);
 ```
 
+### Resiliency
+
+The `clusters/create`, `jobs/run-now` and `jobs/runs/submit` APIs support idempotency token. It is optional token to guarantee the idempotency of requests. If a resource (a cluster or a run) with the provided token already exists, the request does not create a new resource but returns the ID of the existing resource instead.
+
+If you specify the idempotency token, upon failure you can retry until the request succeeds. Databricks guarantees that exactly one resource is launched with that idempotency token.
+
+The following code illustrates how to use [Polly](https://github.com/App-vNext/Polly) to retry the request with `idempotency_token` if the request fails.
+
+```cs
+using Polly;
+
+double retryIntervalSec = 15;
+string idempotencyToken = Guid.NewGuid().ToString();
+
+var clusterInfo = ClusterAttributes.GetNewClusterConfiguration("my-cluster")
+    .WithNodeType("Standard_D3_v2")
+    .WithNumberOfWorkers(25)
+    .WithRuntimeVersion(RuntimeVersions.Runtime_7_3);
+
+var retryPolicy = Policy.Handle<WebException>()
+    .Or<ClientApiException>(e => e.StatusCode == HttpStatusCode.BadGateway)
+    .Or<ClientApiException>(e => e.StatusCode == HttpStatusCode.InternalServerError)
+    .Or<ClientApiException>(e => e.StatusCode == HttpStatusCode.ServiceUnavailable)
+    .Or<ClientApiException>(e => e.Message.Contains("\"error_code\":\"TEMPORARILY_UNAVAILABLE\""))
+    .Or<TaskCanceledException>(e => !e.CancellationToken.IsCancellationRequested)
+    .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(retryIntervalSec));
+
+var clusterId = await retryPolicy.ExecuteAsync(async () => await client.Clusters.Create(clusterInfo, idempotencyToken));
+
+```
+
 ## Breaking changes
 
 - The v2 of the library targets .NET 6 runtime.
