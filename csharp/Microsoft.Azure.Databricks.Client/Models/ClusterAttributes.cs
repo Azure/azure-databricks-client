@@ -350,7 +350,7 @@ public record ClusterAttributes : ClusterSize
         SparkConfiguration ??= new Dictionary<string, string>();
         SparkConfiguration["spark.databricks.passthrough.enabled"] = enabled ? "true" : "false";
         this.SingleUserName = enabled ? singleUserName : null;
-        
+
         return this;
     }
 }
