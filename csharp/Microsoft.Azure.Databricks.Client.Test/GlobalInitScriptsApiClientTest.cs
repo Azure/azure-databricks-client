@@ -17,7 +17,8 @@ public class GlobalInitScriptsApiClientTest : ApiClientTest
     public async Task TestList()
     {
         const string expectedResponse = @"
-            [
+        {
+            ""scripts"": [
               {
                 ""created_at"": 1594437249910,
                 ""created_by"": ""john.doe@databricks.com"",
@@ -29,6 +30,7 @@ public class GlobalInitScriptsApiClientTest : ApiClientTest
                 ""updated_by"": ""jane.smith@example.com""
               }
             ]
+        }
         ";
 
         var handler = CreateMockHandler();
@@ -42,7 +44,7 @@ public class GlobalInitScriptsApiClientTest : ApiClientTest
 
         using var client = new GlobalInitScriptsApi(hc);
 
-        var scriptsList = await client.List();
+        var scriptsList = new {scripts = await client.List()};
 
         AssertJsonDeepEquals(expectedResponse, JsonSerializer.Serialize(scriptsList, Options));
 
