@@ -1,10 +1,13 @@
-﻿using Microsoft.Azure.Databricks.Client.Models;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using Castle.Core.Internal;
+using Microsoft.Azure.Databricks.Client.Models;
+using Moq;
 using Moq.Contrib.HttpClient;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Castle.Core.Internal;
-using Moq;
 
 namespace Microsoft.Azure.Databricks.Client.Test;
 

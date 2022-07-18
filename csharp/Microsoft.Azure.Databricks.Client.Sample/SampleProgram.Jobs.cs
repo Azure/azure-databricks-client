@@ -1,8 +1,11 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 using Microsoft.Azure.Databricks.Client.Models;
 using Polly;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 using Policy = Polly.Policy;
 
 namespace Microsoft.Azure.Databricks.Client.Sample;

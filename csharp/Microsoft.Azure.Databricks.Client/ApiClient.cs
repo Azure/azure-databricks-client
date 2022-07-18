@@ -1,4 +1,7 @@
-﻿using Microsoft.Azure.Databricks.Client.Converters;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using Microsoft.Azure.Databricks.Client.Converters;
 using System;
 using System.Net.Http;
 using System.Text.Json;
@@ -83,7 +86,7 @@ public abstract class ApiClient : IDisposable
         CancellationToken cancellationToken = default)
     {
         HttpContent content = new StringContent(JsonSerializer.Serialize(body, Options));
-        var request = new HttpRequestMessage(new HttpMethod("PATCH"), requestUri)
+        var request = new HttpRequestMessage(HttpMethod.Patch, requestUri)
         {
             Content = content
         };
@@ -99,7 +102,7 @@ public abstract class ApiClient : IDisposable
     protected static async Task<TResult> HttpPatch<TBody, TResult>(HttpClient httpClient, string requestUri, TBody body, CancellationToken cancellationToken = default)
     {
         HttpContent reqContent = new StringContent(JsonSerializer.Serialize(body, Options));
-        var request = new HttpRequestMessage(new HttpMethod("PATCH"), requestUri)
+        var request = new HttpRequestMessage(HttpMethod.Patch, requestUri)
         {
             Content = reqContent
         };
@@ -134,6 +137,16 @@ public abstract class ApiClient : IDisposable
         HttpContent reqContent = new StringContent(JsonSerializer.Serialize(body, Options));
         var response = await httpClient.PutAsync(requestUri, reqContent, cancellationToken).ConfigureAwait(false);
 
+        if (!response.IsSuccessStatusCode)
+        {
+            throw CreateApiException(response);
+        }
+    }
+
+    protected static async Task HttpDelete(HttpClient httpClient, string requestUri,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await httpClient.DeleteAsync(requestUri, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
             throw CreateApiException(response);

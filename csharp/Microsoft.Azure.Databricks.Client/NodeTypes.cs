@@ -1,4 +1,7 @@
-﻿// ReSharper disable InconsistentNaming
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+// ReSharper disable InconsistentNaming
 
 namespace Microsoft.Azure.Databricks.Client;
 

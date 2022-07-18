@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -24,6 +27,7 @@ public class DatabricksClient : IDisposable
         this.InstancePool = new InstancePoolApiClient(httpClient);
         this.Permissions = new PermissionsApiClient(httpClient);
         this.ClusterPolicies = new ClusterPoliciesApiClient(httpClient);
+        this.GlobalInitScriptsApi = new GlobalInitScriptsApi(httpClient);
     }
 
     /// <summary>
@@ -146,6 +150,8 @@ public class DatabricksClient : IDisposable
 
     public IClusterPoliciesApi ClusterPolicies { get; }
 
+    public IGlobalInitScriptsApi GlobalInitScriptsApi { get; }
+
     public void Dispose()
     {
         Clusters.Dispose();
@@ -158,6 +164,7 @@ public class DatabricksClient : IDisposable
         Workspace.Dispose();
         InstancePool.Dispose();
         ClusterPolicies.Dispose();
+        GlobalInitScriptsApi.Dispose();
         GC.SuppressFinalize(this);
     }
 }

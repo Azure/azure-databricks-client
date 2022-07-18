@@ -1,6 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 using Microsoft.Azure.Databricks.Client.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.Sample;
 
