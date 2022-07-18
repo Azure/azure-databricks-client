@@ -44,7 +44,7 @@ public class GlobalInitScriptsApiClientTest : ApiClientTest
 
         using var client = new GlobalInitScriptsApi(hc);
 
-        var scriptsList = new {scripts = await client.List()};
+        var scriptsList = new { scripts = await client.List() };
 
         AssertJsonDeepEquals(expectedResponse, JsonSerializer.Serialize(scriptsList, Options));
 
