@@ -74,7 +74,8 @@ internal static partial class SampleProgram
             .WithClusterLogConf("dbfs:/logs/")
             .WithNodeType(NodeTypes.Standard_D3_v2)
             .WithClusterMode(ClusterMode.SingleNode)
-            .WithDockerImage("databricksruntime/standard:latest");
+            .WithDockerImage("databricksruntime/standard:latest")
+            .WithCredentialPassThrough(true, DatabricksUserName);
 
         var clusterId = await client.Clusters.Create(clusterConfig);
 
@@ -84,7 +85,8 @@ internal static partial class SampleProgram
 
         Console.WriteLine($"Editing cluster {clusterId}");
         createdCluster.CustomTags = new Dictionary<string, string> { { "TestingTagKey", "TestingTagValue" } };
-        await client.Clusters.Edit(clusterId, clusterConfig);
+        createdCluster.WithCredentialPassThrough(false);
+        await client.Clusters.Edit(clusterId, createdCluster);
         await WaitForCluster(client.Clusters, clusterId);
 
         Console.WriteLine("Deleting cluster {0}", clusterId);
