@@ -1,4 +1,7 @@
-﻿namespace Microsoft.Azure.Databricks.Client.Models;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+namespace Microsoft.Azure.Databricks.Client.Models;
 
 /// <summary>
 /// The state of a cluster. The current allowable state transitions are as follows:

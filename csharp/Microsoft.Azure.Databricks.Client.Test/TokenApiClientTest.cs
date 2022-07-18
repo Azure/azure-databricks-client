@@ -1,7 +1,10 @@
-﻿using System.Net;
-using System.Text.Json;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 using Moq;
 using Moq.Contrib.HttpClient;
+using System.Net;
+using System.Text.Json;
 
 namespace Microsoft.Azure.Databricks.Client.Test;
 

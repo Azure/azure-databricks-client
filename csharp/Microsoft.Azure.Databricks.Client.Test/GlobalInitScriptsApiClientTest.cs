@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 using Moq;
 using Moq.Contrib.HttpClient;
+using System.Net;
+using System.Text.Json;
 
 namespace Microsoft.Azure.Databricks.Client.Test;
 

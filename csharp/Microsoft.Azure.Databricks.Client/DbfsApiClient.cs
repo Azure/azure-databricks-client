@@ -1,14 +1,17 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using Microsoft.Azure.Databricks.Client.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Net;
-using System.Text.Json.Nodes;
-using System.Text.Json;
-using Microsoft.Azure.Databricks.Client.Models;
 using FileInfo = Microsoft.Azure.Databricks.Client.Models.FileInfo;
 
 namespace Microsoft.Azure.Databricks.Client;

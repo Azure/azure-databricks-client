@@ -1,4 +1,7 @@
-﻿using Microsoft.Azure.Databricks.Client.Converters;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using Microsoft.Azure.Databricks.Client.Converters;
 using System;
 using System.Net.Http;
 using System.Text.Json;
