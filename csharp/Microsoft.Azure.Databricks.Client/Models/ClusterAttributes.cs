@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -156,6 +157,12 @@ public record ClusterAttributes : ClusterSize
     /// </summary>
     [JsonPropertyName("runtime_engine")]
     public RuntimeEngine RuntimeEngine { get; set; }
+
+    /// <summary>
+    /// Specifies the single user's AAD user name, who is allowed to run commands on this cluster when Credential Passthrough is enabled.
+    /// </summary>
+    [JsonPropertyName("single_user_name")]
+    public string SingleUserName { get; set; }
 
     public static ClusterAttributes GetNewClusterConfiguration(string clusterName = null)
     {
@@ -329,6 +336,20 @@ public record ClusterAttributes : ClusterSize
                 Url = url,
                 BasicAuth = new DockerBasicAuth { UserName = basicAuth.Value.Item1, Password = basicAuth.Value.Item2 }
             };
+
+        return this;
+    }
+
+    public ClusterAttributes WithCredentialPassThrough(bool enabled, string singleUserName = default)
+    {
+        if (enabled && singleUserName == null)
+        {
+            throw new ArgumentException("When credential pass-through is enabled, you must specify a single user name.");
+        }
+
+        SparkConfiguration ??= new Dictionary<string, string>();
+        SparkConfiguration["spark.databricks.passthrough.enabled"] = enabled ? "true" : "false";
+        this.SingleUserName = enabled ? singleUserName : null;
 
         return this;
     }
