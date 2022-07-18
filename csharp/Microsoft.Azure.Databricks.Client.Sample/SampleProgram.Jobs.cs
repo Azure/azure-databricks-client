@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Azure.Databricks.Client.Models;
+using Polly;
+using System;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.Azure.Databricks.Client.Models;
-using Polly;
 using Policy = Polly.Policy;
 
 namespace Microsoft.Azure.Databricks.Client.Sample;

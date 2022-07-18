@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Azure.Databricks.Client.Models;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Azure.Databricks.Client.Models;
 
 namespace Microsoft.Azure.Databricks.Client.Sample;
 

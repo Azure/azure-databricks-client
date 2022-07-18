@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.Azure.Databricks.Client.Converters;
+using System;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Microsoft.Azure.Databricks.Client.Converters;
 
 namespace Microsoft.Azure.Databricks.Client.Sample;
 
@@ -42,6 +42,7 @@ internal static partial class SampleProgram
         Console.WriteLine("Creating client");
         using (var client = DatabricksClient.CreateClient(baseUrl, token))
         {
+            await TestGlobalInitScriptsApi(client);
             await TestClusterPoliciesApi(client);
             await TestWorkspaceApi(client);
             await TestLibrariesApi(client);
