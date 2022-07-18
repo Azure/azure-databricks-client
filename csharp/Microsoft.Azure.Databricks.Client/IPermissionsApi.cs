@@ -12,7 +12,8 @@ public interface IPermissionsApi : IDisposable
     /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to tokens
     /// </summary>
-    Task<IEnumerable<(PermissionLevel, string)>> GetTokenPermissionLevels(CancellationToken cancellationToken = default);
+    Task<IEnumerable<(PermissionLevel, string)>>
+        GetTokenPermissionLevels(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
@@ -32,7 +33,8 @@ public interface IPermissionsApi : IDisposable
     /// </summary>
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
-    Task<IEnumerable<AclPermissionItem>> UpdateTokenPermissions(IEnumerable<AclPermissionItem> accessControlList, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> UpdateTokenPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update all token permissions for all users, groups, and service principals for 
@@ -46,21 +48,24 @@ public interface IPermissionsApi : IDisposable
     /// </summary>
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
-    Task<IEnumerable<AclPermissionItem>> ReplaceTokenPermissionsForWorkspace(IEnumerable<AclPermissionItem> accessControlList, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> ReplaceTokenPermissionsForWorkspace(
+        IEnumerable<AclPermissionItem> accessControlList, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously returns a list of <see cref="(PermissionLevel, string)"/> representing all possible
+    /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to the target cluster
     /// </summary>
     /// <param name="clusterId">The id of the target cluster</param>
-    Task<IEnumerable<(PermissionLevel, string)>> GetClusterPermissionLevels(string clusterId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<(PermissionLevel, string)>> GetClusterPermissionLevels(string clusterId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
     /// permissions that are applied to the target cluster
     /// </summary>
     /// <param name="clusterId">The id of the target cluster</param>
-    Task<IEnumerable<AclPermissionItem>> GetClusterPermissions(string clusterId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> GetClusterPermissions(string clusterId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Grant cluster permissions for one or more users, groups, or service principals.
@@ -69,7 +74,8 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="clusterId">The id of the target cluster</param>
-    Task<IEnumerable<AclPermissionItem>> UpdateClusterPermissions(IEnumerable<AclPermissionItem> accessControlList, string clusterId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> UpdateClusterPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string clusterId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update all clusters permissions for a specific cluster, specifying all users, groups, or service principal.
@@ -78,21 +84,24 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="clusterId">The id of the target cluster</param>
-    Task<IEnumerable<AclPermissionItem>> ReplaceClusterPermissions(IEnumerable<AclPermissionItem> accessControlList, string clusterId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> ReplaceClusterPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string clusterId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously returns a list of <see cref="(PermissionLevel, string)"/> representing all possible
+    /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to the target instance pool
     /// </summary>
     /// <param name="instancePoolId">The id of the target instance pool</param>
-    Task<IEnumerable<(PermissionLevel, string)>> GetInstancePoolPermissionLevels(string instancePoolId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<(PermissionLevel, string)>> GetInstancePoolPermissionLevels(string instancePoolId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
     /// permissions that are applied to the target instance pool
     /// </summary>
     /// <param name="instancePoolId">The id of the target instance pool</param>
-    Task<IEnumerable<AclPermissionItem>> GetInstancePoolPermissions(string instancePoolId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> GetInstancePoolPermissions(string instancePoolId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Grant pool permissions for one or more users, groups, or service principal.
@@ -101,7 +110,8 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="instancePoolId">The id of the target instance pool</param>
-    Task<IEnumerable<AclPermissionItem>> UpdateInstancePoolPermissions(IEnumerable<AclPermissionItem> accessControlList, string instancePoolId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> UpdateInstancePoolPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string instancePoolId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update all pool permissions for all users, groups, or service principal for a specific pool.
@@ -110,14 +120,17 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="instancePoolId">The id of the target instance pool</param>
-    Task<IEnumerable<AclPermissionItem>> ReplaceInstancePoolPermissions(IEnumerable<AclPermissionItem> accessControlList, string instancePoolId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> ReplaceInstancePoolPermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string instancePoolId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously returns a list of <see cref="(PermissionLevel, string)"/> representing all possible
+    /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to the target job
     /// </summary>
     /// <param name="jobId">The id of the target job</param>
-    Task<IEnumerable<(PermissionLevel, string)>> GetJobPermissionLevels(string jobId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<(PermissionLevel, string)>> GetJobPermissionLevels(string jobId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
@@ -133,7 +146,8 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="jobId">The id of the target job</param>
-    Task<IEnumerable<AclPermissionItem>> UpdateJobPermissions(IEnumerable<AclPermissionItem> accessControlList, string jobId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> UpdateJobPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string jobId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update all jobs permissions for all users, groups, or service principal for a specific job.
@@ -142,21 +156,24 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="jobId">The id of the target job</param>
-    Task<IEnumerable<AclPermissionItem>> ReplaceJobPermissions(IEnumerable<AclPermissionItem> accessControlList, string jobId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> ReplaceJobPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string jobId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously returns a list of <see cref="(PermissionLevel, string)"/> representing all possible
+    /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to the target pipeline
     /// </summary>
     /// <param name="pipelineId">The id of the target pipeline</param>
-    Task<IEnumerable<(PermissionLevel, string)>> GetPipelinePermissionLevels(string pipelineId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<(PermissionLevel, string)>> GetPipelinePermissionLevels(string pipelineId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
     /// permissions that are applied to the target pipeline
     /// </summary>
     /// <param name="pipelineId">The id of the target pipeline</param>
-    Task<IEnumerable<AclPermissionItem>> GetPipelinePermissions(string pipelineId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> GetPipelinePermissions(string pipelineId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Grant permissions on a pipeline for one or more users, groups, or service principals.
@@ -165,7 +182,8 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="pipelineId">The id of the target pipeline</param>
-    Task<IEnumerable<AclPermissionItem>> UpdatePipelinePermissions(IEnumerable<AclPermissionItem> accessControlList, string pipelineId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> UpdatePipelinePermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string pipelineId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update permissions granted to users, groups and service principals on the specified pipeline.
@@ -174,21 +192,24 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="pipelineId">The id of the target pipeline</param>
-    Task<IEnumerable<AclPermissionItem>> ReplacePipelinePermissions(IEnumerable<AclPermissionItem> accessControlList, string pipelineId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> ReplacePipelinePermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string pipelineId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously returns a list of <see cref="(PermissionLevel, string)"/> representing all possible
+    /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to the target notebook
     /// </summary>
     /// <param name="notebookId">The id of the target notebook</param>
-    Task<IEnumerable<(PermissionLevel, string)>> GetNotebookPermissionLevels(string notebookId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<(PermissionLevel, string)>> GetNotebookPermissionLevels(string notebookId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
     /// permissions that are applied to the target notebook
     /// </summary>
     /// <param name="notebookId">The id of the target notebook</param>
-    Task<IEnumerable<AclPermissionItem>> GetNotebookPermissions(string notebookId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> GetNotebookPermissions(string notebookId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Grant a notebook new permissions for one or more users, groups, or service principals.
@@ -197,7 +218,8 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="notebookId">The id of the target notebook</param>
-    Task<IEnumerable<AclPermissionItem>> UpdateNotebookPermissions(IEnumerable<AclPermissionItem> accessControlList, string notebookId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> UpdateNotebookPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string notebookId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update all notebooks permissions for all users, groups, or service principal for a specific notebook.
@@ -206,21 +228,24 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="notebookId">The id of the target notebook</param>
-    Task<IEnumerable<AclPermissionItem>> ReplaceNotebookPermissions(IEnumerable<AclPermissionItem> accessControlList, string notebookId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> ReplaceNotebookPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string notebookId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to the target directory
     /// </summary>
     /// <param name="directoryId">The id of the target directory</param>
-    Task<IEnumerable<(PermissionLevel, string)>> GetDirectoryPermissionLevels(string directoryId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<(PermissionLevel, string)>> GetDirectoryPermissionLevels(string directoryId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
     /// permissions that are applied to the target directory
     /// </summary>
     /// <param name="directoryId">The id of the target directory</param>
-    Task<IEnumerable<AclPermissionItem>> GetDirectoryPermissions(string directoryId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> GetDirectoryPermissions(string directoryId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Grant a directory new permissions for one or more users, groups, or service principals.
@@ -229,7 +254,8 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="directoryId">The id of the target directory</param>
-    Task<IEnumerable<AclPermissionItem>> UpdateDirectoryPermissions(IEnumerable<AclPermissionItem> accessControlList, string directoryId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> UpdateDirectoryPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string directoryId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update all directory permissions for all users, groups, or service principal for a specific directory.
@@ -238,21 +264,24 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="directoryId">The id of the target directory</param>
-    Task<IEnumerable<AclPermissionItem>> ReplaceDirectoryPermissions(IEnumerable<AclPermissionItem> accessControlList, string directoryId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> ReplaceDirectoryPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string directoryId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously returns a list of <see cref="(PermissionLevel, string)"/> representing all possible
+    /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to the target ML Flow experiment
     /// </summary>
     /// <param name="experimentId">The id of the target ML Flow experiment</param>
-    Task<IEnumerable<(PermissionLevel, string)>> GetExperimentPermissionLevels(string experimentId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<(PermissionLevel, string)>> GetExperimentPermissionLevels(string experimentId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
     /// permissions that are applied to the target ML Flow experiment
     /// </summary>
     /// <param name="experimentId">The id of the target ML Flow experiment</param>
-    Task<IEnumerable<AclPermissionItem>> GetExperimentPermissions(string experimentId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> GetExperimentPermissions(string experimentId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Grant an experiment new permissions for one or more users, groups, or service principals.
@@ -261,7 +290,8 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="experimentId">The id of the target ML Flow experiment</param>
-    Task<IEnumerable<AclPermissionItem>> UpdateExperimentPermissions(IEnumerable<AclPermissionItem> accessControlList, string experimentId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> UpdateExperimentPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string experimentId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update all experiment permissions for all users, groups or service principal for a specific experiment.
@@ -270,21 +300,24 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="experimentId">The id of the target ML Flow experiment</param>
-    Task<IEnumerable<AclPermissionItem>> ReplaceExperimentPermissions(IEnumerable<AclPermissionItem> accessControlList, string experimentId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> ReplaceExperimentPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string experimentId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously returns a list of <see cref="(PermissionLevel, string)"/> representing all possible
+    /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to the target ML Flow registered model
     /// </summary>
     /// <param name="registeredModelId">The id of the target ML Flow registered model</param>
-    Task<IEnumerable<(PermissionLevel, string)>> GetRegisteredModelPermissionLevels(string registeredModelId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<(PermissionLevel, string)>> GetRegisteredModelPermissionLevels(string registeredModelId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
     /// permissions that are applied to the target ML Flow registered model
     /// </summary>
     /// <param name="registeredModelId">The id of the target ML Flow registered model</param>
-    Task<IEnumerable<AclPermissionItem>> GetRegisteredModelPermissions(string registeredModelId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> GetRegisteredModelPermissions(string registeredModelId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Grant MLflow registered model permissions for one or more users, groups, or service principals.
@@ -292,7 +325,9 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="registeredModelId">The id of the target Ml Flow registered model</param>
-    Task<IEnumerable<AclPermissionItem>> UpdateRegisteredModelPermissions(IEnumerable<AclPermissionItem> accessControlList, string registeredModelId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> UpdateRegisteredModelPermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string registeredModelId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update all MLflow registered model permissions for all users, groups, or service principal for a specific registered model.
@@ -301,21 +336,25 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="registeredModelId">The id of the target Ml Flow registered model</param>
-    Task<IEnumerable<AclPermissionItem>> ReplaceRegisteredModelPermissions(IEnumerable<AclPermissionItem> accessControlList, string registeredModelId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> ReplaceRegisteredModelPermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string registeredModelId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously returns a list of <see cref="(PermissionLevel, string)"/> representing all possible
+    /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to the target Sql warehouse
     /// </summary>
     /// <param name="endpointId">The endpoint id of the target Sql warehouse</param>
-    Task<IEnumerable<(PermissionLevel, string)>> GetSqlWarehousePermissionLevels(string endpointId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<(PermissionLevel, string)>> GetSqlWarehousePermissionLevels(string endpointId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
-    /// permissions that are applied to the target Sql warehous
+    /// permissions that are applied to the target Sql warehouse
     /// </summary>
     /// <param name="endpointId">The endpoint id of the target Sql warehouse</param>
-    Task<IEnumerable<AclPermissionItem>> GetSqlWarehousePermissions(string endpointId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> GetSqlWarehousePermissions(string endpointId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Grant SQL warehouse permissions for one or more users, groups, or service principals.
@@ -323,8 +362,9 @@ public interface IPermissionsApi : IDisposable
     /// </summary>
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
-    /// <param name="endpointId">The id of the target Sql warehous</param>
-    Task<IEnumerable<AclPermissionItem>> UpdateSqlWarehousePermissions(IEnumerable<AclPermissionItem> accessControlList, string endpointId, CancellationToken cancellationToken = default);
+    /// <param name="endpointId">The id of the target Sql warehouse</param>
+    Task<IEnumerable<AclPermissionItem>> UpdateSqlWarehousePermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string endpointId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update all permissions for a specific SQL warehouse, specifying all users, groups or service principal.
@@ -332,22 +372,26 @@ public interface IPermissionsApi : IDisposable
     /// </summary>
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
-    /// <param name="endpointId">The id of the target Sql warehous</param>
-    Task<IEnumerable<AclPermissionItem>> ReplaceSqlWarehousePermissions(IEnumerable<AclPermissionItem> accessControlList, string endpointId, CancellationToken cancellationToken = default);
+    /// <param name="endpointId">The id of the target Sql warehouse</param>
+    Task<IEnumerable<AclPermissionItem>> ReplaceSqlWarehousePermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string endpointId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously returns a list of <see cref="(PermissionLevel, string)"/> representing all possible
+    /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
     /// <see cref="PermissionLevel"/> values that can be applied to the target repository
     /// </summary>
     /// <param name="repoId">The id of the target repository</param>
-    Task<IEnumerable<(PermissionLevel, string)>> GetRepoPermissionLevels(string repoId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<(PermissionLevel, string)>> GetRepoPermissionLevels(string repoId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
     /// permissions that are applied to the target repository
     /// </summary>
     /// <param name="repoId">The id of the target repository</param>
-    Task<IEnumerable<AclPermissionItem>> GetRepoPermissions(string repoId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> GetRepoPermissions(string repoId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Grant a repo new permissions for one or more users, groups, or service principals.
@@ -356,7 +400,8 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="repoId">The id of the target repository</param>
-    Task<IEnumerable<AclPermissionItem>> UpdateRepoPermissions(IEnumerable<AclPermissionItem> accessControlList, string repoId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> UpdateRepoPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string repoId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update all repos permissions for all users, groups or service principal for a specific repo.
@@ -365,5 +410,33 @@ public interface IPermissionsApi : IDisposable
     /// <param name="accessControlList">A collection of <see cref="AclPermissionItem"/>
     /// representing the permissions to be updated</param>
     /// <param name="repoId">The id of the target repository</param>
-    Task<IEnumerable<AclPermissionItem>> ReplaceRepoPermissions(IEnumerable<AclPermissionItem> accessControlList, string repoId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<AclPermissionItem>> ReplaceRepoPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string repoId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Asynchronously returns a list of <see cref="PermissionLevel"/> representing all possible
+    /// <see cref="PermissionLevel"/> values that can be applied to the target cluster policy.
+    /// </summary>
+    Task<IEnumerable<(PermissionLevel, string)>> GetClusterPolicyPermissionLevels(string policyId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Asynchronously returns a list of <see cref="AclPermissionItem"/> representing all current
+    /// permissions that are applied to the target cluster policy.
+    /// </summary>
+    Task<IEnumerable<AclPermissionItem>> GetClusterPolicyPermissions(string policyId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Grant a cluster policy new permissions for one or more users, groups, or service principals.
+    /// This request only grants (adds) permissions. To revoke, use <see cref="ReplaceClusterPolicyPermissions"/>.
+    /// </summary>
+    Task<IEnumerable<AclPermissionItem>> UpdateClusterPolicyPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string repoId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Update permissions for all users, groups or service principal for a specific cluster policy.
+    /// WARNING: This request overwrites all existing direct permissions on the cluster policy and replaces it with the new permissions specified in the request body.
+    /// </summary>
+    Task<IEnumerable<AclPermissionItem>> ReplaceClusterPolicyPermissions(IEnumerable<AclPermissionItem> accessControlList,
+        string repoId, CancellationToken cancellationToken = default);
 }
