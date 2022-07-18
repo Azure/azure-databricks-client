@@ -42,6 +42,7 @@ internal static partial class SampleProgram
         Console.WriteLine("Creating client");
         using (var client = DatabricksClient.CreateClient(baseUrl, token))
         {
+            await TestClusterPoliciesApi(client);
             await TestWorkspaceApi(client);
             await TestLibrariesApi(client);
             await TestSecretsApi(client);

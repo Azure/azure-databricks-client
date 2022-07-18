@@ -29,6 +29,8 @@ internal static partial class SampleProgram
     // for a repository in your workspace
     private static readonly string RepositoryId = null;
 
+    private static readonly string ClusterPolicyId = null;
+
     private static async Task TestPermissionsApi(DatabricksClient client)
     {
         await DirectoryPermissions(client);
@@ -42,6 +44,7 @@ internal static partial class SampleProgram
         await RegisteredModelsPermissions(client);
         await SqlWarehousePermissions(client);
         await RepoPermissions(client);
+        await ClusterPolicyPermissions(client);
     }
 
     private static async Task TestPermissions(string resourceId, string principal,
@@ -314,6 +317,18 @@ internal static partial class SampleProgram
             client.Permissions.GetRepoPermissions,
             client.Permissions.UpdateRepoPermissions,
             client.Permissions.ReplaceRepoPermissions
+        );
+    }
+
+    private static async Task ClusterPolicyPermissions(DatabricksClient client)
+    {
+        await TestPermissions(
+            ClusterPolicyId,
+            DatabricksUserName,
+            client.Permissions.GetClusterPolicyPermissionLevels,
+            client.Permissions.GetClusterPolicyPermissions,
+            client.Permissions.UpdateClusterPolicyPermissions,
+            client.Permissions.ReplaceClusterPolicyPermissions
         );
     }
 }

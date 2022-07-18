@@ -6,6 +6,7 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Polly;
+using Policy = Polly.Policy;
 
 namespace Microsoft.Azure.Databricks.Client.Test;
 

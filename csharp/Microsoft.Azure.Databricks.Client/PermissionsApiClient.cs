@@ -66,6 +66,18 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<IEnumerable<(PermissionLevel, string)>> GetClusterPolicyPermissionLevels(string policyId, CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{ApiVersion}/permissions/cluster-policies/{policyId}/permissionLevels";
+        return await GetPermissionLevels(requestUri, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<IEnumerable<AclPermissionItem>> GetClusterPolicyPermissions(string policyId, CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{ApiVersion}/permissions/cluster-policies/{policyId}";
+        return await GetPermissions(requestUri, cancellationToken).ConfigureAwait(false);
+    }
+
     public async Task<IEnumerable<(PermissionLevel, string)>> GetDirectoryPermissionLevels(string directoryId,
         CancellationToken cancellationToken = default)
     {
@@ -218,6 +230,16 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<IEnumerable<AclPermissionItem>> ReplaceClusterPolicyPermissions(
+        IEnumerable<AclPermissionItem> accessControlList, string policyId,
+        CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{ApiVersion}/permissions/cluster-policies/{policyId}";
+        var body = new { access_control_list = accessControlList };
+
+        return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
+    }
+
     public async Task<IEnumerable<AclPermissionItem>> ReplaceDirectoryPermissions(
         IEnumerable<AclPermissionItem> accessControlList,
         string directoryId, CancellationToken cancellationToken = default)
@@ -290,6 +312,7 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         return await PutPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
 
+
     public async Task<IEnumerable<AclPermissionItem>> ReplaceSqlWarehousePermissions(
         IEnumerable<AclPermissionItem> accessControlList,
         string endpointId, CancellationToken cancellationToken = default)
@@ -313,6 +336,14 @@ public class PermissionsApiClient : ApiClient, IPermissionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/permissions/clusters/{clusterId}";
+        var body = new { access_control_list = accessControlList };
+        return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<IEnumerable<AclPermissionItem>> UpdateClusterPolicyPermissions(IEnumerable<AclPermissionItem> accessControlList, string policyId,
+        CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{ApiVersion}/permissions/cluster-policies/{policyId}";
         var body = new { access_control_list = accessControlList };
         return await PatchPermissions(requestUri, body, cancellationToken).ConfigureAwait(false);
     }
