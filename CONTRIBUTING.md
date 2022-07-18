@@ -1,6 +1,6 @@
 # Contributing Guideline
 
-## You can contribute in many ways:
+## You can contribute in many ways
 
 Use the library and give feedback: report bugs, request features.
 Fix bugs and issues.
