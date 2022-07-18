@@ -18,9 +18,9 @@
     <RepositoryType>git</RepositoryType>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-	<VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>2.0.0</VersionPrefix>
   </PropertyGroup>
-
+  <Import Project="../../ReleaseNotes.props" />
   <ItemGroup>
     <None Include="..\..\README.md">
       <Pack>True</Pack>
