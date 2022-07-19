@@ -1,7 +1,7 @@
 # Azure Databricks Client Library
 
 ----------
-[![Build Status](https://microsoft.visualstudio.com/Data%20Science/_apis/build/status/azure-databricks-client-2.0?branchName=master)](https://microsoft.visualstudio.com/Data%20Science/_build/latest?definitionId=87621&branchName=master)
+[![Build Status](https://dev.azure.com/microsoft/Data%20Science/_apis/build/status/azure-databricks-client-2.0?branchName=master)](https://dev.azure.com/microsoft/Data%20Science/_build/latest?definitionId=87621&branchName=master)
 [![CodeQL](https://github.com/Azure/azure-databricks-client/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Azure/azure-databricks-client/actions/workflows/codeql-analysis.yml)
 [![NuGet version ()](https://img.shields.io/badge/nuget-blue.svg)](https://www.nuget.org/packages/Microsoft.Azure.Databricks.Client/)
 [![Version 1.1 ()](https://img.shields.io/badge/1.1%20release-informational.svg)](https://github.com/Azure/azure-databricks-client/tree/releases/1.1)
