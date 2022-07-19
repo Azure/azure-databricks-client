@@ -1,0 +1,17 @@
+<Project>
+    <PropertyGroup>
+        <PackageReleaseNotes Condition="'$(VersionPrefix)' == '2.0.0'">
+            - The v2 library targets .NET 6 runtime.
+            - The v2 library migrated the underlying JSON parsing library from [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/) to [System.Text.Json](https://www.nuget.org/packages/System.Text.Json/).
+            - The Jobs API was redesigned to support the version 2.1 of the REST API.
+            - Added support for ClusterPolicies API.
+            - Added support for Global Init Scripts API.
+            - Added support for creating clusters with credential pass-through.
+            - Added unit tests.
+        </PackageReleaseNotes>
+        <PackageReleaseNotes>
+        Changes in $(VersionPrefix): $(PackageReleaseNotes)
+        </PackageReleaseNotes>
+        <PackageReleaseNotes>$(PackageReleaseNotes.Trim())</PackageReleaseNotes>
+    </PropertyGroup>
+</Project>

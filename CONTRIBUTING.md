@@ -1,6 +1,7 @@
 # Contributing Guideline
 
-## You can contribute in many ways:
+## You can contribute in many ways
+
 Use the library and give feedback: report bugs, request features.
 Fix bugs and issues.
 Add new features for Databricks REST APIs that haven't been supported by this library.
@@ -24,7 +25,7 @@ If you want to add code, examples or documentation to the repository, follow thi
 3. Create unit tests to test the serialization and deserialization logic.
 4. Write sample code to test the contribution against a real Databricks REST API server. In many cases, we noticed the Databricks REST API documentation differs from the real API server's behavior, so it is important to test the implementation in real environment.
 5. Run `dotnet format whitespace` from the `csharp` folder to auto-format your code.
- 
+
 ### Open a pull request
 
 - Open a pull request, and link it to the discussion issue you created earlier.
@@ -33,6 +34,7 @@ If you want to add code, examples or documentation to the repository, follow thi
 - Fix issues found in code review and re-iterate.
 
 ### Build and check-in
+
 - Wait for a team member to merge your code in.
 
 If in doubt about how to do something, see how it was done in existing code or pull requests, and don't hesitate to ask.
