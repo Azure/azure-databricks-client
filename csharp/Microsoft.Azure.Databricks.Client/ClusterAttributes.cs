@@ -129,5 +129,11 @@ namespace Microsoft.Azure.Databricks.Client
         /// </summary>
         [JsonProperty(PropertyName = "azure_attributes")]
         public AzureAttributes AzureAttributes { get; set; }
+
+        /// <summary>
+        /// Specifies the single user's AAD user name, who is allowed to run commands on this cluster when Credential Passthrough is enabled.
+        /// </summary>
+        [JsonProperty(PropertyName = "single_user_name")]
+        public string SingleUserName { get; set; }
     }
 }
