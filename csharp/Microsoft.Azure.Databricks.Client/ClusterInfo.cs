@@ -344,5 +344,19 @@ namespace Microsoft.Azure.Databricks.Client
                 new ClusterLogConf {Dbfs = new DbfsStorageInfo {Destination = dbfsDestination}};
             return this;
         }
+
+        public ClusterAttributes WithCredentialPassThrough(bool enabled, string singleUserName = default)
+        {
+            if (enabled && singleUserName == null)
+            {
+                throw new ArgumentException("When credential pass-through is enabled, you must specify a single user name.");
+            }
+
+            SparkConfiguration = SparkConfiguration ?? new Dictionary<string, string>();
+            SparkConfiguration["spark.databricks.passthrough.enabled"] = enabled ? "true" : "false";
+            this.SingleUserName = enabled ? singleUserName : null;
+
+            return this;
+        }
     }
 }
