@@ -77,7 +77,7 @@ public class DatabricksClient : IDisposable
 
         httpClientConfig?.Invoke(httpClient);
 
-        SetDefaultHttpHeaders(httpClient);        
+        SetDefaultHttpHeaders(httpClient);
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", beareToken);
         return httpClient;
     }
@@ -128,7 +128,7 @@ public class DatabricksClient : IDisposable
     /// <param name="managementToken">The AAD token for Azure management API (resource to claim: "https://management.core.windows.net/").</param>
     /// <param name="timeoutSeconds">The timeout in seconds for the http requests.</param>
     /// <param name="httpClientConfig">A custom function to configure the HttpClient object.</param>
-    public static DatabricksClient CreateClient(string baseUrl, string workspaceResourceId, string databricksToken, string managementToken, long timeoutSeconds = 30, 
+    public static DatabricksClient CreateClient(string baseUrl, string workspaceResourceId, string databricksToken, string managementToken, long timeoutSeconds = 30,
         Action<HttpClient> httpClientConfig = default)
     {
         return new DatabricksClient(baseUrl, workspaceResourceId, databricksToken, managementToken, timeoutSeconds, httpClientConfig);
