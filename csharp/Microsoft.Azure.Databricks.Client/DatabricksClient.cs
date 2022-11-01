@@ -36,8 +36,9 @@ public class DatabricksClient : IDisposable
     /// <param name="baseUrl">The base URL of the databricks portal. ex. https://southcentralus.azuredatabricks.net</param>
     /// <param name="token">The access token.</param>
     /// <param name="timeoutSeconds">The timeout in seconds for the http requests.</param>
-    protected DatabricksClient(string baseUrl, string token, long timeoutSeconds = 30)
-        : this(CreateHttpClient(baseUrl, token, timeoutSeconds))
+    /// <param name="httpClientConfig">A custom function to configure the HttpClient object.</param>
+    protected DatabricksClient(string baseUrl, string token, long timeoutSeconds = 30, Action<HttpClient> httpClientConfig = default)
+        : this(CreateHttpClient(baseUrl, token, timeoutSeconds, httpClientConfig))
     {
     }
 
@@ -52,13 +53,14 @@ public class DatabricksClient : IDisposable
     /// <param name="databricksToken">The AAD token used to access the global databricks application (2ff814a6-3304-4ab8-85cb-cd0e6f879c1d).</param>
     /// <param name="managementToken">The AAD token for Azure management API (https://management.core.windows.net/).</param>
     /// <param name="timeoutSeconds">The timeout in seconds for the http requests.</param>
+    /// <param name="httpClientConfig">A custom function to configure the HttpClient object.</param>
     protected DatabricksClient(string baseUrl, string workspaceResourceId, string databricksToken,
-        string managementToken, long timeoutSeconds = 30)
-        : this(CreateHttpClient(baseUrl, workspaceResourceId, databricksToken, managementToken, timeoutSeconds))
+        string managementToken, long timeoutSeconds = 30, Action<HttpClient> httpClientConfig = default)
+        : this(CreateHttpClient(baseUrl, workspaceResourceId, databricksToken, managementToken, timeoutSeconds, httpClientConfig))
     {
     }
 
-    private static HttpClient CreateHttpClient(string baseUrl, string beareToken, long timeoutSeconds = 30)
+    private static HttpClient CreateHttpClient(string baseUrl, string beareToken, long timeoutSeconds = 30, Action<HttpClient> httpClientConfig = default)
     {
         var apiUrl = new Uri(new Uri(baseUrl), "api/");
 
@@ -73,16 +75,17 @@ public class DatabricksClient : IDisposable
             Timeout = TimeSpan.FromSeconds(timeoutSeconds)
         };
 
-        SetDefaultHttpHeaders(httpClient);
+        httpClientConfig?.Invoke(httpClient);
 
+        SetDefaultHttpHeaders(httpClient);
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", beareToken);
         return httpClient;
     }
 
     private static HttpClient CreateHttpClient(string baseUrl, string workspaceResourceId, string databricksToken,
-        string managementToken, long timeoutSeconds = 30)
+        string managementToken, long timeoutSeconds = 30, Action<HttpClient> httpClientConfig = default)
     {
-        var httpClient = CreateHttpClient(baseUrl, databricksToken, timeoutSeconds);
+        var httpClient = CreateHttpClient(baseUrl, databricksToken, timeoutSeconds, httpClientConfig);
         httpClient.DefaultRequestHeaders.Add("X-Databricks-Azure-SP-Management-Token", managementToken);
         httpClient.DefaultRequestHeaders.Add("X-Databricks-Azure-Workspace-Resource-Id", workspaceResourceId);
         return httpClient;
@@ -104,9 +107,10 @@ public class DatabricksClient : IDisposable
     /// <param name="baseUrl">Base URL for the databricks resource. For example: https://southcentralus.azuredatabricks.net</param>
     /// <param name="token">The access token. To generate a token, refer to this document: https://docs.databricks.com/api/latest/authentication.html#generate-a-token </param>
     /// <param name="timeoutSeconds">Web request time out in seconds</param>
-    public static DatabricksClient CreateClient(string baseUrl, string token, long timeoutSeconds = 30)
+    /// <param name="httpClientConfig">A custom function to configure the HttpClient object.</param>
+    public static DatabricksClient CreateClient(string baseUrl, string token, long timeoutSeconds = 30, Action<HttpClient> httpClientConfig = default)
     {
-        return new DatabricksClient(baseUrl, token, timeoutSeconds);
+        return new DatabricksClient(baseUrl, token, timeoutSeconds, httpClientConfig);
     }
 
     /// <summary>
@@ -123,9 +127,11 @@ public class DatabricksClient : IDisposable
     /// <param name="databricksToken">The AAD token used to access the global databricks application (resource to claim: "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d").</param>
     /// <param name="managementToken">The AAD token for Azure management API (resource to claim: "https://management.core.windows.net/").</param>
     /// <param name="timeoutSeconds">The timeout in seconds for the http requests.</param>
-    public static DatabricksClient CreateClient(string baseUrl, string workspaceResourceId, string databricksToken, string managementToken, long timeoutSeconds = 30)
+    /// <param name="httpClientConfig">A custom function to configure the HttpClient object.</param>
+    public static DatabricksClient CreateClient(string baseUrl, string workspaceResourceId, string databricksToken, string managementToken, long timeoutSeconds = 30,
+        Action<HttpClient> httpClientConfig = default)
     {
-        return new DatabricksClient(baseUrl, workspaceResourceId, databricksToken, managementToken, timeoutSeconds);
+        return new DatabricksClient(baseUrl, workspaceResourceId, databricksToken, managementToken, timeoutSeconds, httpClientConfig);
     }
 
     public IClustersApi Clusters { get; }
