@@ -17,3 +17,4 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_JSCPD: false
           VALIDATE_NATURAL_LANGUAGE: false
+          FILTER_REGEX_EXCLUDE: SECURITY.md
