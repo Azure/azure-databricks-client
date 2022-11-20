@@ -21,5 +21,10 @@ public enum ClusterSource
     /// <summary>
     /// Cluster created through an API call.
     /// </summary>
-    API
+    API,
+
+    /// <summary>
+    /// Cluster created through Pipeline.
+    /// </summary>
+    PIPELINE
 }
