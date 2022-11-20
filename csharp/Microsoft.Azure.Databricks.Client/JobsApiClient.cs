@@ -41,7 +41,17 @@ public class JobsApiClient : ApiClient, IJobsApi
     public async Task<JobList> List(int limit = 20, int offset = 0, bool expandTasks = false,
         CancellationToken cancellationToken = default)
     {
-        var requestUri = $"{ApiVersion}/jobs/list";
+        if (limit < 1 || limit > 25)
+        {
+            throw new ArgumentOutOfRangeException(nameof(limit), "limit must be between 1 and 25");
+        }
+
+        if (offset < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(offset), "offset must be greater than or equal to 0");
+        }
+
+        var requestUri = $"{ApiVersion}/jobs/list?limit={limit}&offset={offset}&expand_tasks={expandTasks.ToString().ToLowerInvariant()}";
         var response = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken)
             .ConfigureAwait(false);
 

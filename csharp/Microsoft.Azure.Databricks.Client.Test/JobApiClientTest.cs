@@ -536,6 +536,7 @@ public class JobApiClientTest : ApiClientTest
     public async Task TestList()
     {
         var apiUri = new Uri(JobsApiUri, "list");
+        var requestUri = new Uri(apiUri, "?limit=20&offset=0&expand_tasks=false");
 
         var expectedResponse = new JobList
         {
@@ -555,7 +556,7 @@ public class JobApiClientTest : ApiClientTest
 
         var handler = CreateMockHandler();
         handler
-            .SetupRequest(HttpMethod.Get, apiUri)
+            .SetupRequest(HttpMethod.Get, requestUri)
             .ReturnsResponse(HttpStatusCode.OK, JsonSerializer.Serialize(expectedResponse, Options), "application/json")
             .Verifiable();
 
@@ -573,7 +574,7 @@ public class JobApiClientTest : ApiClientTest
 
         handler.VerifyRequest(
             HttpMethod.Get,
-            apiUri,
+            requestUri,
             Times.Once()
         );
     }
