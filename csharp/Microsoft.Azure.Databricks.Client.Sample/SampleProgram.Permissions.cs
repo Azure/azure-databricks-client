@@ -142,7 +142,7 @@ internal static partial class SampleProgram
         Console.WriteLine("Creating standard cluster");
 
         var clusterConfig = ClusterAttributes.GetNewClusterConfiguration("Sample cluster")
-            .WithRuntimeVersion(RuntimeVersions.Runtime_10_5)
+            .WithRuntimeVersion(RuntimeVersions.Runtime_11_3)
             .WithAutoTermination(20)
             .WithNodeType(NodeTypes.Standard_D3_v2)
             .WithClusterMode(ClusterMode.SingleNode);
@@ -168,7 +168,7 @@ internal static partial class SampleProgram
         var poolAttributes = new InstancePoolAttributes
         {
             PoolName = "Sample pool",
-            PreloadedSparkVersions = new[] { RuntimeVersions.Runtime_10_5 },
+            PreloadedSparkVersions = new[] { RuntimeVersions.Runtime_11_3 },
             MinIdleInstances = 2,
             MaxCapacity = 100,
             IdleInstanceAutoTerminationMinutes = 15,
