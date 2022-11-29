@@ -44,6 +44,7 @@ public record InstancePoolInfo : InstancePoolAttributes
     /// Current state of the instance pool.
     /// </summary>
     [JsonPropertyName("state")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public InstancePoolState State { get; set; }
 
     /// <summary>

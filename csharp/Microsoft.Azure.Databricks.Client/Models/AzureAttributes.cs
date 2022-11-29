@@ -11,6 +11,7 @@ public record InstancePoolAzureAttributes
     /// Availability type used for all subsequent nodes past the `first_on_demand` ones.
     /// </summary>
     [JsonPropertyName("availability")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public AzureAvailability? Availability { get; set; }
 
     /// <summary>
