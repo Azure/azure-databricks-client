@@ -316,9 +316,9 @@ public class JobApiClientTest : ApiClientTest
             },
             WebhookNotifications = new JobWebhookNotifications
             {
-                OnStart = new[] {new JobWebhookSetting() { Id = "1234567"} },
-                OnFailure = new[] {new JobWebhookSetting() { Id = "1234567" } },
-                OnSuccess = new[] {new JobWebhookSetting() { Id = "1234567" } },
+                OnStart = new[] { new JobWebhookSetting() { Id = "1234567" } },
+                OnFailure = new[] { new JobWebhookSetting() { Id = "1234567" } },
+                OnSuccess = new[] { new JobWebhookSetting() { Id = "1234567" } },
             },
             TimeoutSeconds = 86400,
             Schedule = new CronSchedule
