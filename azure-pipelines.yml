@@ -97,14 +97,14 @@ jobs:
                     }
                     ],
                     "toolName": "sign",
-                    "toolVersion": "1.0"
+                    "toolVersion": "6.2.9304.0"
                 },
                 {
                     "keyCode": "CP-230012",
                     "operationSetCode": "SigntoolVerify",
                     "parameters": [ ],
                     "toolName": "sign",
-                    "toolVersion": "1.0"
+                    "toolVersion": "6.2.9304.0"
                 }
             ]
           SessionTimeout: "60"
