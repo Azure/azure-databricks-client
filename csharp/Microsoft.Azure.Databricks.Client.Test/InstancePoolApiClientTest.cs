@@ -68,7 +68,7 @@ public class InstancePoolApiClientTest : ApiClientTest
         hc.BaseAddress = BaseApiUri;
 
         using var client = new InstancePoolApiClient(hc);
-        var actual = (await client.List()).ToList();    
+        var actual = (await client.List()).ToList();
 
         var actualJson = JsonSerializer.Serialize(new { instance_pools = actual }, Options);
         var expectedJson = JsonSerializer.Serialize(new { instance_pools = expected }, Options);
