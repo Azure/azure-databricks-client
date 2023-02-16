@@ -59,8 +59,9 @@ jobs:
         displayName: Install NetCore 2.1.0
         condition: ne(variables['Build.Reason'], 'PullRequest')
         inputs:
-          packageType: sdk
+          packageType: 'sdk'
           version: '2.1.0'
+          includePreviewVersions: true
       - task: EsrpCodeSigning@1
         displayName: code sign dll
         condition: ne(variables['Build.Reason'], 'PullRequest')
