@@ -56,6 +56,7 @@ jobs:
           projects: "$(solution)"
           arguments: "-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)"
       - task: UseDotNet@2
+        displayName: Use .NET 6 for ESRP
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
         inputs:
           version: '6.0.x'
