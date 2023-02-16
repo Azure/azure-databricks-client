@@ -135,14 +135,14 @@ jobs:
                     "operationSetCode": "NuGetSign",
                     "parameters": [ ],
                     "toolName": "sign",
-                    "toolVersion": "1.0"
+                    "toolVersion": "6.2.9304.0"
                 },
                 {
                     "keyCode": "CP-401405",
                     "operationSetCode": "NuGetVerify",
                     "parameters": [ ],
                     "toolName": "sign",
-                    "toolVersion": "1.0"
+                    "toolVersion": "6.2.9304.0"
                 }
             ]
           SessionTimeout: "60"
