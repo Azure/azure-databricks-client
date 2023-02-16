@@ -56,6 +56,8 @@ jobs:
           projects: "$(solution)"
           arguments: "-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)"
       - task: UseDotNet@2
+        displayName: Install NetCore 2.1.0
+        condition: ne(variables['Build.Reason'], 'PullRequest')
         inputs:
           packageType: 'runtime'
           version: '2.1.0'
