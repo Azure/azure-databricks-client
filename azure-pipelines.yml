@@ -55,6 +55,10 @@ jobs:
           command: "test"
           projects: "$(solution)"
           arguments: "-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)"
+      - task: UseDotNet@2
+        inputs:
+          packageType: 'runtime'
+          version: '2.1.0'
       - task: EsrpCodeSigning@1
         displayName: code sign dll
         condition: ne(variables['Build.Reason'], 'PullRequest')
