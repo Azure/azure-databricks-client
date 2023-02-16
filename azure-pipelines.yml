@@ -55,9 +55,14 @@ jobs:
           command: "test"
           projects: "$(solution)"
           arguments: "-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)"
+      - task: UseDotNet@2
+        displayName: Use .NET 6 for ESRP
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+        inputs:
+          version: '6.0.x'
       - task: EsrpCodeSigning@1
         displayName: code sign dll
-        condition: ne(variables['Build.Reason'], 'PullRequest')
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
         inputs:
           ConnectedServiceName: "ESRP Code Signing"
           FolderPath: 'csharp\Microsoft.Azure.Databricks.Client\bin\$(buildConfiguration)'
@@ -91,14 +96,14 @@ jobs:
                     }
                     ],
                     "toolName": "sign",
-                    "toolVersion": "1.0"
+                    "toolVersion": "6.2.9304.0"
                 },
                 {
                     "keyCode": "CP-230012",
                     "operationSetCode": "SigntoolVerify",
                     "parameters": [ ],
                     "toolName": "sign",
-                    "toolVersion": "1.0"
+                    "toolVersion": "6.2.9304.0"
                 }
             ]
           SessionTimeout: "60"
@@ -129,14 +134,14 @@ jobs:
                     "operationSetCode": "NuGetSign",
                     "parameters": [ ],
                     "toolName": "sign",
-                    "toolVersion": "1.0"
+                    "toolVersion": "6.2.9304.0"
                 },
                 {
                     "keyCode": "CP-401405",
                     "operationSetCode": "NuGetVerify",
                     "parameters": [ ],
                     "toolName": "sign",
-                    "toolVersion": "1.0"
+                    "toolVersion": "6.2.9304.0"
                 }
             ]
           SessionTimeout: "60"
