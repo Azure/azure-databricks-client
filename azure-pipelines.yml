@@ -57,10 +57,8 @@ jobs:
           arguments: "-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)"
       - task: UseDotNet@2
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-        displayName: 'Use .Net Core sdk 2.1.x'
         inputs:
-          packageType: 'runtime'
-          version: '2.1.x'
+          version: '6.0'
       - task: EsrpCodeSigning@1
         displayName: code sign dll
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
