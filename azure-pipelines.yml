@@ -56,15 +56,14 @@ jobs:
           projects: "$(solution)"
           arguments: "-p:Version=$(Build.BuildNumber) -p:Configuration=$(buildConfiguration)"
       - task: UseDotNet@2
-        displayName: Install NetCore 2.1.0
-        condition: ne(variables['Build.Reason'], 'PullRequest')
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+        displayName: 'Use .Net Core sdk 2.1.x'
         inputs:
-          packageType: 'sdk'
-          version: '2.1.0'
-          includePreviewVersions: true
+          packageType: 'runtime'
+          version: '2.1.x'
       - task: EsrpCodeSigning@1
         displayName: code sign dll
-        condition: ne(variables['Build.Reason'], 'PullRequest')
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
         inputs:
           ConnectedServiceName: "ESRP Code Signing"
           FolderPath: 'csharp\Microsoft.Azure.Databricks.Client\bin\$(buildConfiguration)'
