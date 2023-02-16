@@ -58,7 +58,7 @@ jobs:
       - task: UseDotNet@2
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
         inputs:
-          version: '6.0'
+          version: '6.0.x'
       - task: EsrpCodeSigning@1
         displayName: code sign dll
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
