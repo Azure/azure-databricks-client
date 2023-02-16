@@ -120,6 +120,11 @@ public class JobApiClientTest : ApiClientTest
                     ""on_failure"": [""user.name@databricks.com""],
                     ""no_alert_for_skipped_runs"": false
                 },
+                ""webhook_notifications"": {
+                    ""on_start"": [{""id"":""1234567""}],
+                    ""on_success"": [{""id"":""1234567""}],
+                    ""on_failure"": [{""id"":""1234567""}]
+                },
                 ""timeout_seconds"": 86400,
                 ""schedule"": {
                     ""quartz_cron_expression"": ""20 30 * * * ?"",
@@ -308,6 +313,12 @@ public class JobApiClientTest : ApiClientTest
                 OnStart = new[] { "user.name@databricks.com" },
                 OnFailure = new[] { "user.name@databricks.com" },
                 OnSuccess = new[] { "user.name@databricks.com" }
+            },
+            WebhookNotifications = new JobWebhookNotifications
+            {
+                OnStart = new[] { new JobWebhookSetting() { Id = "1234567" } },
+                OnFailure = new[] { new JobWebhookSetting() { Id = "1234567" } },
+                OnSuccess = new[] { new JobWebhookSetting() { Id = "1234567" } },
             },
             TimeoutSeconds = 86400,
             Schedule = new CronSchedule
