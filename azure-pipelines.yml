@@ -27,7 +27,7 @@ variables:
   major: 2
   minor: 0
   patch: 0
-  suffix: -rc.3
+  suffix: -rc.4
 
 jobs:
   - job: Build
