@@ -38,7 +38,7 @@ public class JobsApiClient : ApiClient, IJobsApi
         return jobIdentifier["job_id"]!.GetValue<long>();
     }
 
-    public async Task<JobList> List(int limit = 20, int offset = 0, bool expandTasks = false,
+    public async Task<JobList> List(int limit = 20, int offset = 0, string name = default, bool expandTasks = false,
         CancellationToken cancellationToken = default)
     {
         if (limit < 1 || limit > 25)
@@ -52,6 +52,12 @@ public class JobsApiClient : ApiClient, IJobsApi
         }
 
         var requestUri = $"{ApiVersion}/jobs/list?limit={limit}&offset={offset}&expand_tasks={expandTasks.ToString().ToLowerInvariant()}";
+
+        if (name is not null)
+        {
+            requestUri += $"&name={name}";
+        }
+
         var response = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken)
             .ConfigureAwait(false);
 
