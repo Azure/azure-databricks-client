@@ -22,8 +22,9 @@ public interface IJobsApi : IDisposable
     /// </summary>
     /// <param name="limit">The number of jobs to return. This value must be greater than 0 and less or equal to 25. The default value is 20.</param>
     /// <param name="offset">The offset of the first job to return, relative to the most recently created job.</param>
+    /// <param name="name">A filter on the list based on the exact (case insensitive) job name.</param>
     /// <param name="expandTasks">Whether to include task and cluster details in the response.</param>
-    Task<JobList> List(int limit = 20, int offset = 0, bool expandTasks = false,
+    Task<JobList> List(int limit = 20, int offset = 0, string name = default, bool expandTasks = false,
         CancellationToken cancellationToken = default);
 
     /// <summary>
