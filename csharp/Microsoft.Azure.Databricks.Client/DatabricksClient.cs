@@ -69,7 +69,7 @@ public class DatabricksClient : IDisposable
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
         };
 
-        var httpClient = new HttpClient(handler)
+        var httpClient = new HttpClient(handler, false)
         {
             BaseAddress = apiUrl,
             Timeout = TimeSpan.FromSeconds(timeoutSeconds)
