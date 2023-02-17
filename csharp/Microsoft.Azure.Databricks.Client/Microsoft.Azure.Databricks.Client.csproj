@@ -19,6 +19,8 @@
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <VersionPrefix>2.0.0</VersionPrefix>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <Import Project="../../ReleaseNotes.props" />
   <ItemGroup>
