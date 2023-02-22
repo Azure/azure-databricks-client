@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.Azure.Databricks.Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -29,7 +30,7 @@ public class WorkspaceApiClient : ApiClient, IWorkspaceApi
     {
         var url = $"{ApiVersion}/workspace/export?path={path}&format={format}";
         var result = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
-        return result["content"]!.AsValue().GetValue<byte[]>();
+        return Convert.FromBase64String(result["content"]!.GetValue<string>());
     }
 
     public async Task<ObjectInfo> GetStatus(string path, CancellationToken cancellationToken = default)
