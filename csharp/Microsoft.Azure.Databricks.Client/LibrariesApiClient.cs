@@ -29,7 +29,7 @@ public class LibrariesApiClient : ApiClient, ILibrariesApi
                 .Deserialize<IEnumerable<JsonObject>>(Options)!
                 .ToDictionary(
                     e => e["cluster_id"].Deserialize<string>(Options),
-                    e => e["library_statuses"].Deserialize<IEnumerable<LibraryFullStatus>>(Options)
+                    e => e["library_statuses"].Deserialize<IEnumerable<LibraryFullStatus>>()
                 );
         }
         else
@@ -45,7 +45,7 @@ public class LibrariesApiClient : ApiClient, ILibrariesApi
         var result = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
 
         return result.TryGetPropertyValue("library_statuses", out var libraryStatuses)
-            ? libraryStatuses.Deserialize<IEnumerable<LibraryFullStatus>>()
+            ? libraryStatuses.Deserialize<IEnumerable<LibraryFullStatus>>(Options)
             : Enumerable.Empty<LibraryFullStatus>();
     }
 
