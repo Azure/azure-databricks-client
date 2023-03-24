@@ -27,7 +27,7 @@ public enum ObjectType
     /// MLflow Experiment
     /// </summary>
     MLFLOW_EXPERIMENT,
-    
+
     /// <summary>
     /// Git Repository
     /// </summary>
