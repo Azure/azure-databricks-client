@@ -226,6 +226,30 @@ public class ClustersApiClientTest : ApiClientTest
     }
 
     [TestMethod]
+    public async Task TestChangeOwner()
+    {
+        var apiUri = new Uri(ClusterApiUri, "change-owner");
+        const string expectedRequest = "{\"cluster_id\":\"1234-567890-reef123\",\"owner_username\": \"someone@example.com\"}";
+        var handler = CreateMockHandler();
+        handler
+            .SetupRequest(HttpMethod.Post, apiUri)
+            .ReturnsResponse(HttpStatusCode.OK);
+
+        var hc = handler.CreateClient();
+        hc.BaseAddress = BaseApiUri;
+
+        using var client = new ClustersApiClient(hc);
+        await client.ChangeOwner("1234-567890-reef123", "someone@example.com");
+
+        handler.VerifyRequest(
+            HttpMethod.Post,
+            apiUri,
+            GetMatcher(expectedRequest),
+            Times.Once()
+        );
+    }
+
+    [TestMethod]
     public async Task TestRetart()
     {
         var apiUri = new Uri(ClusterApiUri, "restart");
