@@ -29,7 +29,7 @@ public class LibrariesApiClient : ApiClient, ILibrariesApi
                 .Deserialize<IEnumerable<JsonObject>>(Options)!
                 .ToDictionary(
                     e => e["cluster_id"].Deserialize<string>(Options),
-                    e => e["library_statuses"].Deserialize<IEnumerable<LibraryFullStatus>>()
+                    e => e["library_statuses"].Deserialize<IEnumerable<LibraryFullStatus>>(Options)
                 );
         }
         else
