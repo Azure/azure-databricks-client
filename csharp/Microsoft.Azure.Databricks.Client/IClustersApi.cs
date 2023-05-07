@@ -23,6 +23,13 @@ public interface IClustersApi : IDisposable
     Task<string> Create(ClusterAttributes clusterAttributes, string idempotencyToken = default, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Changes a cluster’s owner. The new owner must be an admin.
+    /// </summary>
+    /// <param name="clusterId">The cluster whose owner you want to change. This field is required.</param>
+    /// <param name="ownerUserName">The username of the cluster’s new owner. This field is required.</param>
+    Task ChangeOwner(string clusterId, string ownerUserName, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Starts a terminated Spark cluster given its ID. This is similar to createCluster, except:
     ///     The previous cluster id and attributes are preserved.
     ///     The cluster starts with the last specified cluster size. If the previous cluster was an auto-scaling cluster, the current cluster starts with the minimum number of nodes.

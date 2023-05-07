@@ -44,6 +44,12 @@ public class ClustersApiClient : ApiClient, IClustersApi
             cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task ChangeOwner(string clusterId, string ownerUserName, CancellationToken cancellationToken = default)
+    {
+        await HttpPost(this.HttpClient, $"{ApiVersion}/clusters/change-owner", new { cluster_id = clusterId, owner_username = ownerUserName },
+            cancellationToken).ConfigureAwait(false);
+    }
+
     public async Task Edit(string clusterId, ClusterAttributes clusterConfig,
         CancellationToken cancellationToken = default)
     {
