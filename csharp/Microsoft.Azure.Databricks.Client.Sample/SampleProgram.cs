@@ -67,7 +67,7 @@ internal static partial class SampleProgram
     {
         using var httpClient = new HttpClient();
         var content = await httpClient.GetByteArrayAsync(
-            "https://docs.databricks.com/_static/notebooks/getting-started/quickstartusingscala.html"
+            "https://docs.databricks.com/_extras/notebooks/source/mlflow/mlflow-quick-start-scala.html"
         );
 
         return content;

@@ -55,7 +55,7 @@ public class WorkspaceApiClient : ApiClient, IWorkspaceApi
         var result = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
 
         return result.TryGetPropertyValue("objects", out var objects)
-            ? from obj in objects!.AsArray() select obj.Deserialize<ObjectInfo>()
+            ? from obj in objects!.AsArray() select obj.Deserialize<ObjectInfo>(Options)
             : Enumerable.Empty<ObjectInfo>();
     }
 
