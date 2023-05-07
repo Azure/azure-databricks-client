@@ -37,6 +37,19 @@ public interface ISecretsApi : IDisposable
     /// <param name="initialManagePrincipal">The principal that is initially granted MANAGE permission to the created scope.</param>
     Task CreateDatabricksBackedScope(string scope, string initialManagePrincipal, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Creates a new Azure KeyVault-backed secret scope.
+    /// The scope name must be unique within a workspace, must consist of alphanumeric characters, dashes, underscores, and periods, and may not exceed 128 characters.The maximum number of scopes in a workspace is 100.
+    /// </summary>
+    /// <remarks>
+    /// Throws RESOURCE_ALREADY_EXISTS if a scope with the given name already exists.Throws RESOURCE_LIMIT_EXCEEDED if maximum number of scopes in the workspace is exceeded.Throws INVALID_PARAMETER_VALUE if the scope name is invalid.
+    /// </remarks>
+    /// <param name="scope">Scope name requested by the user. Scope names are unique. This field is required.</param>
+    /// <param name="azureKeyVaultDnsName">The Azure KeyVault DNS name, expressed as URL.</param>
+    /// <param name="azureKeyVaultResourceId">The Azure KeyVault Resource ID.</param>
+    Task CreateAzureKeyVaultBackedScope(string scope, string azureKeyVaultDnsName, string azureKeyVaultResourceId,
+        CancellationToken cancellationToken = default);
+
     /*
      This API call is currently not working per https://github.com/MicrosoftDocs/azure-docs/issues/65000. Comment out for now.
     /// <summary>
