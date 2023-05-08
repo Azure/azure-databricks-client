@@ -45,18 +45,18 @@ internal static partial class SampleProgram
         Console.WriteLine("Creating client");
         using (var client = DatabricksClient.CreateClient(baseUrl, token))
         {
-            await TestGlobalInitScriptsApi(client);
+            //await TestGlobalInitScriptsApi(client);
             await TestClusterPoliciesApi(client);
-            await TestWorkspaceApi(client);
-            await TestLibrariesApi(client);
-            await TestSecretsApi(client);
-            await TestTokenApi(client);
-            await TestInstancePoolApi(client);
-            await TestClustersApi(client);
-            await TestGroupsApi(client);
-            await TestDbfsApi(client);
-            await TestJobsApi(client);
-            await TestPermissionsApi(client);
+            //await TestWorkspaceApi(client);
+            //await TestLibrariesApi(client);
+            //await TestSecretsApi(client);
+            //await TestTokenApi(client);
+            //await TestInstancePoolApi(client);
+            //await TestClustersApi(client);
+            //await TestGroupsApi(client);
+            //await TestDbfsApi(client);
+            //await TestJobsApi(client);
+            //await TestPermissionsApi(client);
         }
 
         Console.WriteLine("Press enter to exit");

@@ -157,4 +157,68 @@ public class ClusterPoliciesApiClientTest : ApiClientTest
         await client.Delete("ABCD000000000000");
         handler.VerifyRequest(HttpMethod.Post, apiUri, GetMatcher(expectedRequest), Times.Once());
     }
+
+    [TestMethod]
+    public async Task TestGetPolicyFamily()
+    {
+        var apiUri = new Uri(BaseApiUri, "2.0/policy-families/personal-vm");
+        const string expectedResponse = @"
+            {
+              ""policy_family_id"": ""personal-vm"",
+              ""name"": ""Personal Compute"",
+              ""description"":""Use with small-to-medium data or libraries like pandas and scikit-learn. Spark runs in local mode."",
+              ""definition"": ""{}"",
+              ""version"": 1
+            }
+        ";
+
+        var handler = CreateMockHandler();
+        handler
+            .SetupRequest(HttpMethod.Get, apiUri)
+            .ReturnsResponse(HttpStatusCode.OK, expectedResponse, "application/json");
+
+        var hc = handler.CreateClient();
+        hc.BaseAddress = BaseApiUri;
+
+        using var client = new ClusterPoliciesApiClient(hc);
+        var policy = await client.GetPolicyFamily("personal-vm");
+        var policyJson = JsonSerializer.Serialize(policy, Options);
+        AssertJsonDeepEquals(expectedResponse, policyJson);
+
+        handler.VerifyRequest(HttpMethod.Get, apiUri, Times.Once());
+    }
+
+    [TestMethod]
+    public async Task TestListPolicyFamilies()
+    {
+        var apiUri = new Uri(BaseApiUri, "2.0/policy-families?max_results=20");
+        const string expectedResponse = @"
+            {
+              ""policy_families"": [
+                  {
+                    ""policy_family_id"": ""personal-vm"",
+                    ""name"": ""Personal Compute"",
+                    ""description"":""Use with small-to-medium data or libraries like pandas and scikit-learn. Spark runs in local mode."",
+                    ""definition"": ""{}"",
+                    ""version"": 1
+                  }
+              ]
+            }
+        ";
+
+        var handler = CreateMockHandler();
+        handler
+            .SetupRequest(HttpMethod.Get, apiUri)
+            .ReturnsResponse(HttpStatusCode.OK, expectedResponse, "application/json");
+
+        var hc = handler.CreateClient();
+        hc.BaseAddress = BaseApiUri;
+
+        using var client = new ClusterPoliciesApiClient(hc);
+        var policyFamilies = (await client.ListPolicyFamily()).Item1;
+        var policyJson = JsonSerializer.Serialize(new { policy_families = policyFamilies }, Options);
+        AssertJsonDeepEquals(expectedResponse, policyJson);
+
+        handler.VerifyRequest(HttpMethod.Get, apiUri, Times.Once());
+    }
 }

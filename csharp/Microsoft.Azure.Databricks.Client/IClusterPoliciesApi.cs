@@ -25,15 +25,32 @@ public interface IClusterPoliciesApi : IDisposable
     /// <summary>
     /// Create a new policy with a given name and definition.
     /// </summary>
-    Task<string> Create(string name, string definition, CancellationToken cancellationToken = default);
+    Task<string> Create(string name, string definition, long? maxClustersPerUser = default, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Create a new policy with a given name and policy family id.
+    /// </summary>
+    Task<string> CreateWithPoiclyFamily(string name, string policyFamilyId, string policyFamilyDefinitionOverrides = default, long? maxClustersPerUser = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update an existing policy. This may make some clusters governed by this policy invalid. For such clusters the next cluster edit must provide a confirming configuration, but otherwise they can continue to run.
     /// </summary>
-    Task Edit(string policyId, string name, string definition, CancellationToken cancellationToken = default);
+    Task Edit(string policyId, string name, string definition, long? maxClustersPerUser = default, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Update an existing policy. This may make some clusters governed by this policy invalid. For such clusters the next cluster edit must provide a confirming configuration, but otherwise they can continue to run.
+    /// </summary>
+    Task EditWithPoiclyFamily(string policyId, string name, string policyFamilyId, string policyFamilyDefinitionOverrides = default, long? maxClustersPerUser = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Delete a policy. Clusters governed by this policy can still run, but cannot be edited.
     /// </summary>
     Task Delete(string policyId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get policy family.
+    /// </summary>
+    Task<PolicyFamily> GetPolicyFamily(string id, CancellationToken cancellationToken = default);
+
+    Task<(IEnumerable<PolicyFamily>, string)> ListPolicyFamily(int maxResults, string pageToken = default, CancellationToken cancellationToken = default);
 }

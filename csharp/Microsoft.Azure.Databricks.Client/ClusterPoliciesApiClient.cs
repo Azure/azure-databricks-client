@@ -41,21 +41,43 @@ public class ClusterPoliciesApiClient : ApiClient, IClusterPoliciesApi
         return policiesNode?.Deserialize<IEnumerable<Policy>>(Options) ?? Enumerable.Empty<Policy>();
     }
 
-    public async Task<string> Create(string name, string definition, CancellationToken cancellationToken = default)
+    public async Task<string> Create(string name, string definition, long? maxClustersPerUser = default, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/policies/clusters/create";
         var clusterIdentifier =
-            await HttpPost<dynamic, JsonObject>(this.HttpClient, requestUri, new { name, definition }, cancellationToken)
+            await HttpPost<dynamic, JsonObject>(this.HttpClient, requestUri, new { name, definition, max_clusters_per_user = maxClustersPerUser }, cancellationToken)
                 .ConfigureAwait(false);
         return clusterIdentifier["policy_id"]!.GetValue<string>();
     }
 
-    public async Task Edit(string policyId, string name, string definition,
-        CancellationToken cancellationToken = default)
+    public async Task<string> CreateWithPoiclyFamily(string name, string policyFamilyId, string policyFamilyDefinitionOverrides = default, long? maxClustersPerUser = default, CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{ApiVersion}/policies/clusters/create";
+        var clusterIdentifier = await HttpPost<dynamic, JsonObject>(
+                this.HttpClient,
+                requestUri,
+                new { name, policy_family_id = policyFamilyId, policy_family_definition_overrides = policyFamilyDefinitionOverrides, max_clusters_per_user = maxClustersPerUser },
+                cancellationToken
+        ).ConfigureAwait(false);
+        return clusterIdentifier["policy_id"]!.GetValue<string>();
+    }
+
+    public async Task Edit(string policyId, string name, string definition, long? maxClustersPerUser = null, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/policies/clusters/edit";
-        await HttpPost(this.HttpClient, requestUri, new { policy_id = policyId, name, definition }, cancellationToken)
+        await HttpPost(this.HttpClient, requestUri, new { policy_id = policyId, name, definition, max_clusters_per_user = maxClustersPerUser }, cancellationToken)
             .ConfigureAwait(false);
+    }
+
+    public async Task EditWithPoiclyFamily(string policyId, string name, string policyFamilyId, string policyFamilyDefinitionOverrides = null, long? maxClustersPerUser = null, CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{ApiVersion}/policies/clusters/edit";
+        await HttpPost(
+            this.HttpClient,
+            requestUri,
+            new { policy_id = policyId, name, policy_family_id = policyFamilyId, policy_family_definition_overrides = policyFamilyDefinitionOverrides, max_clusters_per_user = maxClustersPerUser },
+            cancellationToken
+        ).ConfigureAwait(false);
     }
 
     public async Task Delete(string policyId, CancellationToken cancellationToken = default)
@@ -63,5 +85,31 @@ public class ClusterPoliciesApiClient : ApiClient, IClusterPoliciesApi
         var requestUri = $"{ApiVersion}/policies/clusters/delete";
         await HttpPost(this.HttpClient, requestUri, new { policy_id = policyId }, cancellationToken)
             .ConfigureAwait(false);
+    }
+
+    public async Task<PolicyFamily> GetPolicyFamily(string id, CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{ApiVersion}/policy-families/{id}";
+        return await HttpGet<PolicyFamily>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<(IEnumerable<PolicyFamily>, string)> ListPolicyFamily(int maxResults = 20, string pageToken = default, CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{ApiVersion}/policy-families?max_results={maxResults}";
+
+        if (!string.IsNullOrEmpty(pageToken))
+        {
+            requestUri += $"&page_token={pageToken}";
+        }
+
+        var response = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+
+        response.TryGetPropertyValue("policy_families", out var familiesNode);
+        response.TryGetPropertyValue("next_page_token", out var nextPageTokenNode);
+
+        var families = familiesNode?.Deserialize<IEnumerable<PolicyFamily>>(Options) ?? Enumerable.Empty<PolicyFamily>();
+        var nextPageToken = nextPageTokenNode?.GetValue<string>() ?? string.Empty;
+
+        return (families, nextPageToken);
     }
 }
