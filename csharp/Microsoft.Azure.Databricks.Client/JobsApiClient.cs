@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
@@ -136,11 +137,8 @@ public class JobsApiClient : ApiClient, IJobsApi
         return result.RunId;
     }
 
-    public async Task<RunList> RunsList(long? jobId = default, int offset = 0, int limit = 25,
-        bool activeOnly = default, bool completedOnly = default,
-        RunType? runType = default, bool expandTasks = default, DateTimeOffset? startTimeFrom = default,
-        DateTimeOffset? startTimeTo = default,
-        CancellationToken cancellationToken = default)
+    private string BuildRunsListUrl(long? jobId = default, int limit = 25, bool activeOnly = default, bool completedOnly = default,
+        RunType? runType = default, bool expandTasks = default, DateTimeOffset? startTimeFrom = default, DateTimeOffset? startTimeTo = default)
     {
         if (activeOnly && completedOnly)
         {
@@ -149,33 +147,52 @@ public class JobsApiClient : ApiClient, IJobsApi
             );
         }
 
-        var url = $"{ApiVersion}/jobs/runs/list?limit={limit}&offset={offset}";
+        StringBuilder url = new($"{ApiVersion}/jobs/runs/list?limit={limit}");
 
         if (jobId.HasValue)
         {
-            url += $"&job_id={jobId.Value}";
+            url.Append($"&job_id={jobId.Value}");
         }
 
-        url += activeOnly ? "&active_only=true" : string.Empty;
-        url += completedOnly ? "&completed_only=true" : string.Empty;
+        url.Append(activeOnly ? "&active_only=true" : string.Empty);
+        url.Append(completedOnly ? "&completed_only=true" : string.Empty);
 
         if (runType.HasValue)
         {
-            url += $"&run_type={runType.Value}";
+            url.Append($"&run_type={runType.Value}");
         }
 
-        url += expandTasks ? "&expand_task=true" : string.Empty;
+        url.Append(expandTasks ? "&expand_task=true" : string.Empty);
 
         if (startTimeFrom.HasValue)
         {
-            url += $"&start_time_from={startTimeFrom.Value.ToUnixTimeMilliseconds()}";
+            url.Append($"&start_time_from={startTimeFrom.Value.ToUnixTimeMilliseconds()}");
         }
 
         if (startTimeTo.HasValue)
         {
-            url += $"&start_time_to={startTimeTo.Value.ToUnixTimeMilliseconds()}";
+            url.Append($"&start_time_to={startTimeTo.Value.ToUnixTimeMilliseconds()}");
         }
 
+        return url.ToString();
+    }
+
+    [Obsolete("The offset parameter is deprecated. Use method with pageToken to iterate through the pages.")]
+    public async Task<RunList> RunsList(long? jobId = default, int offset = 0, int limit = 25,
+        bool activeOnly = default, bool completedOnly = default, RunType? runType = default, bool expandTasks = default,
+        DateTimeOffset? startTimeFrom = default, DateTimeOffset? startTimeTo = default, CancellationToken cancellationToken = default)
+    {
+        string url = BuildRunsListUrl(jobId, limit, activeOnly, completedOnly, runType, expandTasks, startTimeFrom, startTimeTo);
+        url += $"&offset={offset}";
+        return await HttpGet<RunList>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<RunList> RunsList(string pageToken, long? jobId = default, int limit = 25,
+        bool activeOnly = default, bool completedOnly = default, RunType? runType = default, bool expandTasks = default,
+        DateTimeOffset? startTimeFrom = default, DateTimeOffset? startTimeTo = default, CancellationToken cancellationToken = default)
+    {
+        string url = BuildRunsListUrl(jobId, limit, activeOnly, completedOnly, runType, expandTasks, startTimeFrom, startTimeTo);
+        url += string.IsNullOrEmpty(pageToken) ? string.Empty : $"&page_token={pageToken}";
         return await HttpGet<RunList>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
     }
 
