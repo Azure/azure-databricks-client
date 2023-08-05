@@ -11,10 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Super-Linter
-        uses: github/super-linter@v4.9.4
+      - name: Lint Code Base
+        uses: super-linter/super-linter@v5
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          VALIDATE_ALL_CODEBASE: false
           VALIDATE_JSCPD: false
           VALIDATE_NATURAL_LANGUAGE: false
           FILTER_REGEX_EXCLUDE: SECURITY.md
