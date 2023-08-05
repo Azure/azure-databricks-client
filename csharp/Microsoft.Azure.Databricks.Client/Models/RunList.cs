@@ -19,4 +19,16 @@ public record RunList
     /// </summary>
     [JsonPropertyName("has_more")]
     public bool HasMore { get; set; }
+
+    /// <summary>
+    /// A token that can be used to list the next page of runs.
+    /// </summary>
+    [JsonPropertyName("next_page_token")]
+    public string NextPageToken { get; set; }
+
+    /// <summary>
+    /// A token that can be used to list the previous page of runs.
+    /// </summary>
+    [JsonPropertyName("prev_page_token")]
+    public string PrevPageToken { get; set; }
 }

@@ -930,12 +930,13 @@ public class JobApiClientTest : ApiClientTest
     }
 
     [TestMethod]
-    public async Task TestRunsList()
+    [Obsolete]
+    public async Task TestRunsListWithOffSet()
     {
         var apiUri = new Uri(JobsApiUri, "runs/list");
 
         var expectedRequestUrl = new Uri(apiUri,
-            "?limit=25&offset=0&job_id=11223344&active_only=true&run_type=JOB_RUN&start_time_from=1642521600000&start_time_to=1642608000000");
+            "?limit=25&job_id=11223344&active_only=true&run_type=JOB_RUN&start_time_from=1642521600000&start_time_to=1642608000000&offset=0");
         const string response = @"
             {
                 ""runs"":[],
@@ -961,6 +962,50 @@ public class JobApiClientTest : ApiClientTest
 
         Assert.IsTrue(runsList.Runs.IsNullOrEmpty());
         Assert.IsFalse(runsList.HasMore);
+
+        handler.VerifyRequest(
+            HttpMethod.Get,
+            expectedRequestUrl,
+            Times.Once()
+        );
+    }
+
+    [TestMethod]
+    public async Task TestRunsListWithToken()
+    {
+        var apiUri = new Uri(JobsApiUri, "runs/list");
+
+        var expectedRequestUrl = new Uri(apiUri,
+            "?limit=25&job_id=11223344&active_only=true&run_type=JOB_RUN&start_time_from=1642521600000&start_time_to=1642608000000&page_token=abc");
+        const string response = @"
+            {
+                ""runs"":[],
+                ""has_more"": false,
+                ""next_page_token"": ""def"",
+                ""prev_page_token"": ""xyz""
+            }
+        ";
+        var handler = CreateMockHandler();
+        handler
+            .SetupRequest(HttpMethod.Get, expectedRequestUrl)
+            .ReturnsResponse(HttpStatusCode.OK, response, "application/json")
+            .Verifiable();
+
+        var hc = handler.CreateClient();
+        hc.BaseAddress = BaseApiUri;
+
+        using var client = new JobsApiClient(hc);
+        var runsList = await client.RunsList(
+            jobId: 11223344, pageToken: "abc", limit: 25, activeOnly: true, completedOnly: false, runType: RunType.JOB_RUN,
+            expandTasks: false,
+            startTimeFrom: DateTimeOffset.FromUnixTimeMilliseconds(1642521600000),
+            startTimeTo: DateTimeOffset.FromUnixTimeMilliseconds(1642608000000)
+        );
+
+        Assert.IsTrue(runsList.Runs.IsNullOrEmpty());
+        Assert.IsFalse(runsList.HasMore);
+        Assert.AreEqual("def", runsList.NextPageToken);
+        Assert.AreEqual("xyz", runsList.PrevPageToken);
 
         handler.VerifyRequest(
             HttpMethod.Get,
