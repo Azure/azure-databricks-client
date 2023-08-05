@@ -178,8 +178,8 @@ public class JobsApiClient : ApiClient, IJobsApi
     }
 
     [Obsolete("The offset parameter is deprecated. Use method with pageToken to iterate through the pages.")]
-    public async Task<RunList> RunsList(long? jobId = default, int offset = 0, int limit = 25, 
-        bool activeOnly = default, bool completedOnly = default, RunType? runType = default, bool expandTasks = default, 
+    public async Task<RunList> RunsList(long? jobId = default, int offset = 0, int limit = 25,
+        bool activeOnly = default, bool completedOnly = default, RunType? runType = default, bool expandTasks = default,
         DateTimeOffset? startTimeFrom = default, DateTimeOffset? startTimeTo = default, CancellationToken cancellationToken = default)
     {
         string url = BuildRunsListUrl(jobId, limit, activeOnly, completedOnly, runType, expandTasks, startTimeFrom, startTimeTo);
@@ -187,7 +187,7 @@ public class JobsApiClient : ApiClient, IJobsApi
         return await HttpGet<RunList>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<RunList> RunsList(string pageToken, long? jobId = default, int limit = 25, 
+    public async Task<RunList> RunsList(string pageToken, long? jobId = default, int limit = 25,
         bool activeOnly = default, bool completedOnly = default, RunType? runType = default, bool expandTasks = default,
         DateTimeOffset? startTimeFrom = default, DateTimeOffset? startTimeTo = default, CancellationToken cancellationToken = default)
     {

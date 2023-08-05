@@ -128,8 +128,8 @@ public interface IJobsApi : IDisposable
     /// a UTC timestamp in milliseconds. Can be combined with
     /// _start_time_from_ to filter by a time range.
     /// </param>
-    Task<RunList> RunsList(string pageToken, long? jobId = default, int limit = 25, 
-        bool activeOnly = default, bool completedOnly = default, RunType? runType = default, 
+    Task<RunList> RunsList(string pageToken, long? jobId = default, int limit = 25,
+        bool activeOnly = default, bool completedOnly = default, RunType? runType = default,
         bool expandTasks = default, DateTimeOffset? startTimeFrom = default,
         DateTimeOffset? startTimeTo = default, CancellationToken cancellationToken = default);
 
