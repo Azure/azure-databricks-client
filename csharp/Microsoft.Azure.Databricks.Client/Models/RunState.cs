@@ -8,7 +8,7 @@ namespace Microsoft.Azure.Databricks.Client.Models;
 public record RunState
 {
     /// <summary>
-    /// A description of a run’s current location in the run lifecycle. This field is always available in the response.
+    /// A value indicating the run's result. This field is only available for terminal lifecycle states.
     /// </summary>
     [JsonPropertyName("life_cycle_state")]
     public RunLifeCycleState LifeCycleState { get; set; }

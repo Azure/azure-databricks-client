@@ -4,12 +4,7 @@
 namespace Microsoft.Azure.Databricks.Client.Models;
 
 /// <summary>
-/// The life cycle state of a run. Allowed state transitions are:
-///     PENDING -> RUNNING -> TERMINATING -> TERMINATED
-///     PENDING -> SKIPPED
-///     PENDING -> INTERNAL_ERROR
-///     RUNNING -> INTERNAL_ERROR
-///     TERMINATING -> INTERNAL_ERROR
+/// A value indicating the run's current lifecycle state. This field is always available in the response.
 /// </summary>
 public enum RunLifeCycleState
 {
@@ -43,5 +38,7 @@ public enum RunLifeCycleState
     /// </summary>
     INTERNAL_ERROR,
 
-    BLOCKED
+    BLOCKED,
+
+    WAITING_FOR_RETRY
 }
