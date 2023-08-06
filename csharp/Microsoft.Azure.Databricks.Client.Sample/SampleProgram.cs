@@ -57,6 +57,7 @@ internal static partial class SampleProgram
             await TestDbfsApi(client);
             await TestJobsApi(client);
             await TestPermissionsApi(client);
+            await TestWarehouseApi(client);
         }
 
         Console.WriteLine("Press enter to exit");

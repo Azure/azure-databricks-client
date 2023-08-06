@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models
@@ -53,6 +54,7 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// - Defaults to 1
         /// </remarks>
         [JsonPropertyName("min_num_clusters")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public int MinNumClusters { get; set; } = 1;
 
         /// <summary>
@@ -66,6 +68,7 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// - Defaults to min_clusters if unset.
         /// </remarks>
         [JsonPropertyName("max_num_clusters")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public int MaxNumClusters { get; set; }
 
         /// <summary>
@@ -79,6 +82,7 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// - Defaults to 120 mins
         /// </remarks>
         [JsonPropertyName("auto_stop_mins")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public int AutoStopMins { get; set; } = 120;
 
         /// <summary>
@@ -97,7 +101,7 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// - Number of tags < 45.
         /// </remarks>
         [JsonPropertyName("tags")]
-        public Dictionary<string, string> Tags { get; set; }
+        public Tags Tags { get; set; }
 
         /// <summary>
         /// Gets or sets the configurations whether the warehouse should use spot instances.
@@ -110,6 +114,7 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// - "RELIABILITY_OPTIMIZED"
         /// </remarks>
         [JsonPropertyName("spot_instance_policy")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public SpotInstancePolicy SpotInstancePolicy { get; set; } = SpotInstancePolicy.POLICY_UNSPECIFIED;
 
         /// <summary>
@@ -154,10 +159,11 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// If you want to use serverless compute, you must set to PRO and also set the field enable_serverless_compute to true.
         /// </remarks>
         [JsonPropertyName("warehouse_type")]
-        public WarehouseType WarehouseType { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public WarehouseType WarehouseType { get; set; } = WarehouseType.TYPE_UNSPECIFIED;
     }
 
-    public record WarehouseInfo: WarehouseAttributes
+    public record WarehouseInfo : WarehouseAttributes
     {
         /// <summary>
         /// The unique identifier for warehouse.
@@ -216,27 +222,12 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// <value>The optional health status.</value>
         [JsonPropertyName("health")]
         public Health Health { get; set; }
+    }
 
-        /// <summary>
-        /// Gets or sets the reason for failure to bring up clusters for this warehouse. This is available when status is 'FAILED' and sometimes when it is DEGRADED.
-        /// </summary>
-        /// <value>The reason for failure to bring up clusters for this warehouse.</value>
-        [JsonPropertyName("failure_reason")]
-        public FailureReason FailureReason { get; set; }
-
-        /// <summary>
-        /// Gets or sets a short summary of the health status in case of degraded/failed warehouses.
-        /// </summary>
-        /// <value>A short summary of the health status in case of degraded/failed warehouses.</value>
-        [JsonPropertyName("summary")]
-        public string Summary { get; set; }
-
-        /// <summary>
-        /// Gets or sets details about errors that are causing current degraded/failed status.
-        /// </summary>
-        /// <value>Details about errors that are causing current degraded/failed status.</value>
-        [JsonPropertyName("details")]
-        public string Details { get; set; }
+    public record Tags
+    {
+        [JsonPropertyName("custom_tags")]
+        public List<Dictionary<string, string>> CustomTags { get; set; }
     }
 
     /// <summary>
@@ -267,7 +258,8 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// - "CHANNEL_NAME_CUSTOM"
         /// </remarks>
         [JsonPropertyName("name")]
-        public ChannelName Name { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public ChannelName Name { get; set; } = ChannelName.CHANNEL_NAME_UNSPECIFIED;
 
         /// <summary>
         /// Gets or sets the DBSQL version.
@@ -339,6 +331,27 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// </remarks>
         [JsonPropertyName("status")]
         public HealthStatus Status { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reason for failure to bring up clusters for this warehouse. This is available when status is 'FAILED' and sometimes when it is DEGRADED.
+        /// </summary>
+        /// <value>The reason for failure to bring up clusters for this warehouse.</value>
+        [JsonPropertyName("failure_reason")]
+        public FailureReason FailureReason { get; set; }
+
+        /// <summary>
+        /// Gets or sets a short summary of the health status in case of degraded/failed warehouses.
+        /// </summary>
+        /// <value>A short summary of the health status in case of degraded/failed warehouses.</value>
+        [JsonPropertyName("summary")]
+        public string Summary { get; set; }
+
+        /// <summary>
+        /// Gets or sets details about errors that are causing current degraded/failed status.
+        /// </summary>
+        /// <value>Details about errors that are causing current degraded/failed status.</value>
+        [JsonPropertyName("details")]
+        public string Details { get; set; }
     }
 
     /// <summary>

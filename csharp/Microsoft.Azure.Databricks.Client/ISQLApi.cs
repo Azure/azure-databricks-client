@@ -11,10 +11,10 @@ namespace Microsoft.Azure.Databricks.Client
 {
     public interface ISQLApi : IDisposable
     {
-        IDataWarehouseApi DataWarehouseApi { get; }
+        IWarehouseApi Warehouse { get; }
     }
 
-    public interface IDataWarehouseApi : IDisposable
+    public interface IWarehouseApi : IDisposable
     {
         /// <summary>
         /// Creates a new SQL warehouse.

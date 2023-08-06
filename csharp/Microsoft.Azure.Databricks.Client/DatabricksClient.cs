@@ -28,6 +28,7 @@ public class DatabricksClient : IDisposable
         this.Permissions = new PermissionsApiClient(httpClient);
         this.ClusterPolicies = new ClusterPoliciesApiClient(httpClient);
         this.GlobalInitScriptsApi = new GlobalInitScriptsApi(httpClient);
+        this.SQL = new SQLApiClient(httpClient);
     }
 
     /// <summary>
@@ -157,6 +158,8 @@ public class DatabricksClient : IDisposable
     public IClusterPoliciesApi ClusterPolicies { get; }
 
     public IGlobalInitScriptsApi GlobalInitScriptsApi { get; }
+
+    public ISQLApi SQL { get; }
 
     public void Dispose()
     {

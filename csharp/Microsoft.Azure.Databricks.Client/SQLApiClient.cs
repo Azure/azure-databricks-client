@@ -9,9 +9,9 @@ namespace Microsoft.Azure.Databricks.Client
     {
         public SQLApiClient(HttpClient httpClient) : base(httpClient)
         {
-            this.DataWarehouseApi = new DataWarehouseApiClient(httpClient);
+            this.Warehouse = new WarehouseApiClient(httpClient);
         }
 
-        public IDataWarehouseApi DataWarehouseApi { get; }
+        public IWarehouseApi Warehouse { get; }
     }
 }

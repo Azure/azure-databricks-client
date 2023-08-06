@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client
 {
-    public class DataWarehouseApiClient : ApiClient, IDataWarehouseApi
+    public class WarehouseApiClient : ApiClient, IWarehouseApi
     {
         private readonly string _apiBaseUrl;
 
-        public DataWarehouseApiClient(HttpClient httpClient) : base(httpClient)
+        public WarehouseApiClient(HttpClient httpClient) : base(httpClient)
         {
             _apiBaseUrl = $"{ApiVersion}/sql/warehouses";
         }
@@ -31,7 +31,7 @@ namespace Microsoft.Azure.Databricks.Client
                 jsonObj,
                 cancellationToken
             ).ConfigureAwait(false);
-            
+
             return warehouseIdentifier["id"]!.GetValue<string>();
         }
 
