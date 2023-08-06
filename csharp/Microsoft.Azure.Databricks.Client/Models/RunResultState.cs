@@ -30,5 +30,15 @@ public enum RunResultState
     /// <summary>
     /// The run was canceled at user request.
     /// </summary>
-    CANCELED
+    CANCELED,
+    
+    MAXIMUM_CONCURRENT_RUNS_REACHED,
+    
+    EXCLUDED,
+    
+    SUCCESS_WITH_FAILURES,
+    
+    UPSTREAM_FAILED,
+    
+    UPSTREAM_CANCELED
 }
