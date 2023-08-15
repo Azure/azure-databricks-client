@@ -217,6 +217,12 @@ public record JobSettings : JobRunBaseSettings<JobTaskSettings>
     /// </summary>
     [JsonPropertyName("format")]
     public JobFormat Format { get; set; }
+
+    /// <summary>
+    /// Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user or service principal that the job runs as. If not specified, the job runs as the user who created the job.
+    /// </summary>
+    [JsonPropertyName("run_as")]
+    public RunAs RunAs { get; set; }
 }
 
 /// <summary>
