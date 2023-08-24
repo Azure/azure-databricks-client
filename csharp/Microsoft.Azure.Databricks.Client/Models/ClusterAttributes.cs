@@ -156,7 +156,7 @@ public record ClusterAttributes : ClusterSize
     /// * STANDARD: Use the standard runtime engine type.
     /// </summary>
     [JsonPropertyName("runtime_engine")]
-    public RuntimeEngine RuntimeEngine { get; set; }
+    public RuntimeEngine? RuntimeEngine { get; set; }
 
     /// <summary>
     /// Specifies the single user's AAD user name, who is allowed to run commands on this cluster when Credential Passthrough is enabled.
