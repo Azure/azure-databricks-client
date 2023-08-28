@@ -100,7 +100,7 @@ public record ClusterAttributes : ClusterSize
     /// Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this cluster will not be automatically terminated. If specified, the threshold must be between 10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination.
     /// </summary>
     [JsonPropertyName("autotermination_minutes")]
-    public int AutoTerminationMinutes { get; set; }
+    public int? AutoTerminationMinutes { get; set; }
 
     /// <summary>
     /// Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space when its Spark workers are running low on disk space.
