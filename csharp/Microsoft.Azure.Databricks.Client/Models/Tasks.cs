@@ -6,6 +6,8 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models;
 
+#region NotebookTask
+
 public record NotebookTask
 {
     /// <summary>
@@ -23,6 +25,10 @@ public record NotebookTask
     public Dictionary<string, string> BaseParameters { get; set; }
 }
 
+#endregion
+
+#region SparkJarTask
+
 public record SparkJarTask
 {
     /// <summary>
@@ -39,6 +45,10 @@ public record SparkJarTask
     public List<string> Parameters { get; set; }
 }
 
+#endregion
+
+#region SparkPythonTask
+
 public record SparkPythonTask
 {
     /// <summary>
@@ -53,6 +63,10 @@ public record SparkPythonTask
     [JsonPropertyName("parameters")]
     public List<string> Parameters { get; set; }
 }
+
+#endregion
+
+#region SparkSubmitTask
 
 /// <remarks>
 /// Here are some important things to know.
@@ -84,6 +98,10 @@ public record SparkSubmitTask
     public List<string> Parameters { get; set; }
 }
 
+#endregion
+
+#region PipelineTask
+
 public record PipelineTask
 {
     /// <summary>
@@ -91,7 +109,17 @@ public record PipelineTask
     /// </summary>
     [JsonPropertyName("pipeline_id")]
     public string PipelineId { get; set; }
+
+    /// <summary>
+    /// If true, a full refresh will be triggered on the delta live table.
+    /// </summary>
+    [JsonPropertyName("full_refresh")]
+    public bool FullRefresh { get; set; }
 }
+
+#endregion
+
+#region PythonWheelTask
 
 public record PythonWheelTask
 {
@@ -119,3 +147,185 @@ public record PythonWheelTask
     [JsonPropertyName("named_parameters")]
     public Dictionary<string, string> NamedParameters { get; set; }
 }
+
+#endregion
+
+#region SQLTask
+
+public record SQLTask
+{
+    /// <summary>
+    /// If specified, indicates that this job must execute a SQL query.
+    /// </summary>
+    [JsonPropertyName("query")]
+    public SQLQuery Query { get; set; }
+
+    /// <summary>
+    /// If specified, indicates that this job must refresh a SQL dashboard.
+    /// </summary>
+    [JsonPropertyName("dashboard")]
+    public SQLDashboard Dashboard { get; set; }
+
+    /// <summary>
+    /// If specified, indicates that this job must refresh a SQL alert.
+    /// </summary>
+    [JsonPropertyName("alert")]
+    public SQLAlert Alert { get; set; }
+
+    /// <summary>
+    /// If specified, indicates that this job runs a SQL file in a remote Git repository. Only one SQL statement is supported in a file. Multiple SQL statements separated by semicolons (;) are not permitted.
+    /// </summary>
+    [JsonPropertyName("file")]
+    public SQLFile File { get; set; }
+
+    /// <summary>
+    /// Parameters to be used for each run of this job. The SQL alert task does not support custom parameters.
+    /// </summary>
+    [JsonPropertyName("parameters")]
+    public Dictionary<string, string> Parameters { get; set; }
+
+    /// <summary>
+    /// The canonical identifier of the SQL warehouse. Only serverless and pro SQL warehouses are supported.
+    /// </summary>
+    [JsonPropertyName("warehouse_id")]
+    public string WarehouseId { get; set; }
+}
+
+public record SQLQuery
+{
+    /// <summary>
+    /// The canonical identifier of the SQL query.
+    /// </summary>
+    [JsonPropertyName("query_id")]
+    public string QueryId { get; set; }
+}
+
+public record SQLDashboard
+{
+    /// <summary>
+    /// The canonical identifier of the SQL dashboard.
+    /// </summary>
+    [JsonPropertyName("dashboard_id")]
+    public string DashboardId { get; set; }
+
+    /// <summary>
+    /// If specified, dashboard snapshots are sent to subscriptions.
+    /// </summary>
+    [JsonPropertyName("subscriptions")]
+    public List<SQLSubscription> Subscriptions { get; set; }
+
+    /// <summary>
+    /// Subject of the email sent to subscribers of this task.
+    /// </summary>
+    [JsonPropertyName("custom_subject")]
+    public string CustomSubject { get; set; }
+
+    /// <summary>
+    /// If true, the dashboard snapshot is not taken, and emails are not sent to subscribers.
+    /// </summary>
+    [JsonPropertyName("pause_subscriptions")]
+    public string PauseSubscription { get; set; }
+}
+
+public record SQLSubscription
+{
+    /// <summary>
+    /// The user name to receive the subscription email. This parameter is mutually exclusive with destination_id. You cannot set both destination_id and user_name for subscription notifications.
+    /// </summary>
+    [JsonPropertyName("user_name")]
+    public string UserName { get; set; }
+
+    /// <summary>
+    /// The canonical identifier of the destination to receive email notification. This parameter is mutually exclusive with user_name. You cannot set both destination_id and user_name for subscription notifications.
+    /// </summary>
+    [JsonPropertyName("destination_id")]
+    public string DestinationId { get; set; }
+}
+
+public record SQLAlert
+{
+    /// <summary>
+    /// The canonical identifier of the SQL alert.
+    /// </summary>
+    [JsonPropertyName("alert_id")]
+    public string AlertId { get; set; }
+
+    /// <summary>
+    /// If specified, alert notifications are sent to subscribers.
+    /// </summary>
+    [JsonPropertyName("subscriptions")]
+    public List<SQLSubscription> Subscriptions { get; set; }
+
+    /// <summary>
+    /// If true, the alert notifications are not sent to subscribers.
+    /// </summary>
+    [JsonPropertyName("pause_subscriptions")]
+    public string PauseSubscription { get; set; }
+}
+
+public record SQLFile
+{
+    /// <summary>
+    /// Relative path of the SQL file in the remote Git repository.
+    /// </summary>
+    [JsonPropertyName("path")]
+    public string Path { get; set; }
+}
+
+#endregion
+
+#region DBTTask
+
+public record DBTTask
+{
+    /// <summary>
+    /// Optional (relative) path to the project directory, if no value is provided, the root of the git repository is used.
+    /// </summary>
+    [JsonPropertyName("project_directory")]
+    public string ProjectDirectory { get; set; }
+
+    /// <summary>
+    /// A list of dbt commands to execute. All commands must start with dbt. This parameter must not be empty. A maximum of up to 10 commands can be provided.
+    /// </summary>
+    [JsonPropertyName("commands")]
+    public List<string> Commands { get; set; }
+
+    /// <summary>
+    /// Optional schema to write to. This parameter is only used when a warehouse_id is also provided. If not provided, the default schema is used.
+    /// </summary>
+    [JsonPropertyName("schema")]
+    public string Schema { get; set; }
+
+    /// <summary>
+    /// ID of the SQL warehouse to connect to. If provided, we automatically generate and provide the profile and connection details to dbt. It can be overridden on a per-command basis by using the --profiles-dir command line argument.
+    /// </summary>
+    [JsonPropertyName("warehouse_id")]
+    public string WarehouseId { get; set; }
+
+    /// <summary>
+    /// Optional name of the catalog to use. The value is the top level in the 3-level namespace of Unity Catalog (catalog / schema / relation). The catalog value can only be specified if a warehouse_id is specified. Requires dbt-databricks >= 1.1.1.
+    /// </summary>
+    [JsonPropertyName("catalog")]
+    public string Catalog { get; set; }
+
+    /// <summary>
+    /// Optional (relative) path to the profiles directory. Can only be specified if no warehouse_id is specified. If no warehouse_id is specified and this folder is unset, the root directory is used.
+    /// </summary>
+    [JsonPropertyName("profiles_directory")]
+    public string ProfilesDirectory { get; set; }
+}
+
+#endregion
+
+#region RunJobTask
+
+public record RunJobTask
+{
+    /// <summary>
+    /// ID of the job to trigger.
+    /// </summary>
+    [JsonPropertyName("job_id")]
+    public string JobId { get; set; }
+}
+
+#endregion

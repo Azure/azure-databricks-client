@@ -37,6 +37,16 @@ public record RunParameters
         return new RunParameters { PythonNamedParams = pythonNamedParams };
     }
 
+    public static RunParameters CreatePipelineParams(bool fullRefresh)
+    {
+        return new RunParameters { PipelineParams = new PipelineParams { FullRefresh = fullRefresh } };
+    }
+
+    public static RunParameters CreateSQLParams(Dictionary<string, string> sqlParams)
+    {
+        return new RunParameters { SQLParams = sqlParams };
+    }
+
     /// <summary>
     /// A list of parameters for jobs with jar tasks, e.g. "jar_params": ["john doe", "35"]. The parameters will be used to invoke the main function of the main class specified in the spark jar task. If not specified upon run-now, it will default to an empty list. jar_params cannot be specified in conjunction with notebook_params. The json representation of this field (i.e. {"jar_params":["john doe","35"]}) cannot exceed 10,000 bytes.
     /// </summary>
@@ -69,4 +79,28 @@ public record RunParameters
     /// </summary>
     [JsonPropertyName("python_named_params")]
     public Dictionary<string, string> PythonNamedParams { get; set; }
+
+    [JsonPropertyName("pipeline_params")]
+    public PipelineParams PipelineParams { get; set; }
+
+    /// <summary>
+    /// A map from keys to values for jobs with SQL task, for example "sql_params": {"name": "john doe", "age": "35"}. The SQL alert task does not support custom parameters.
+    /// </summary>
+    [JsonPropertyName("sql_params")]
+    public Dictionary<string, string> SQLParams { get; set; }
+
+    /// <summary>
+    /// An array of commands to execute for jobs with the dbt task, for example "dbt_commands": ["dbt deps", "dbt seed", "dbt run"]
+    /// </summary>
+    [JsonPropertyName("dbt_commands")]
+    public List<string> DBTCommands { get; set; }
+}
+
+public record PipelineParams
+{
+    /// <summary>
+    /// If true, triggers a full refresh on the delta live table.
+    /// </summary>
+    [JsonPropertyName("full_refresh")]
+    public bool FullRefresh { get; set; }
 }
