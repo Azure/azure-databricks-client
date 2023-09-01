@@ -16,6 +16,39 @@ public record HasTaskKey
     public string TaskKey { get; set; }
 }
 
+public enum RunIf
+{
+    /// <summary>
+    /// All dependencies have executed and succeeded
+    /// </summary>
+    ALL_SUCCESS,
+
+    /// <summary>
+    /// At least one dependency has succeeded
+    /// </summary>
+    AT_LEAST_ONE_SUCCESS,
+
+    /// <summary>
+    /// None of the dependencies have failed and at least one was executed
+    /// </summary>
+    NONE_FAILED,
+
+    /// <summary>
+    /// All dependencies have been completed
+    /// </summary>
+    ALL_DONE,
+
+    /// <summary>
+    /// At least one dependency failed
+    /// </summary>
+    AT_LEAST_ONE_FAILED,
+
+    /// <summary>
+    /// All dependencies have failed
+    /// </summary>
+    ALL_FAILED
+}
+
 public abstract record BaseTask : HasTaskKey
 {
     [JsonPropertyName("description")]
@@ -23,6 +56,12 @@ public abstract record BaseTask : HasTaskKey
 
     [JsonPropertyName("depends_on")]
     public IEnumerable<HasTaskKey> DependsOn { get; set; }
+
+    /// <summary>
+    /// An optional value specifying the condition determining whether the task is run once its dependencies have been completed. When omitted, defaults to ALL_SUCCESS.
+    /// </summary>
+    [JsonPropertyName("run_if")]
+    public RunIf? RunIf { get; set; }
 
     [JsonPropertyName("existing_cluster_id")]
     public string ExistingClusterId { get; set; }
@@ -65,6 +104,24 @@ public abstract record BaseTask : HasTaskKey
     /// </summary>
     [JsonPropertyName("python_wheel_task")]
     public PythonWheelTask PythonWheelTask { get; set; }
+
+    /// <summary>
+    /// If set, indicates that this job must execute a SQL task.
+    /// </summary>
+    [JsonPropertyName("sql_task")]
+    public SQLTask SQLTask { get; set; }
+
+    /// <summary>
+    /// If set, indicates that this must execute a dbt task. It requires both Databricks SQL and the ability to use a serverless or a pro SQL warehouse.
+    /// </summary>
+    [JsonPropertyName("dbt_task")]
+    public DBTTask DBTTask { get; set; }
+
+    /// <summary>
+    /// If set, indicates that this task must execute another job.
+    /// </summary>
+    [JsonPropertyName("run_job_task")]
+    public RunJobTask RunJobTask { get; set; }
 
     /// <summary>
     /// An optional list of libraries to be installed on the cluster that executes the task. The default value is an empty list.
