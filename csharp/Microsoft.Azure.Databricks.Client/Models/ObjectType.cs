@@ -24,6 +24,11 @@ public enum ObjectType
     LIBRARY,
 
     /// <summary>
+    /// File
+    /// </summary>
+    FILE,
+
+    /// <summary>
     /// MLflow Experiment
     /// </summary>
     MLFLOW_EXPERIMENT,
