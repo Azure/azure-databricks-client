@@ -26,8 +26,8 @@ variables:
   buildConfiguration: "Release"
   major: 2
   minor: 1
-  patch: 1
-  suffix: ''
+  patch: 2
+  suffix: -rc.1
 
 jobs:
   - job: Build
