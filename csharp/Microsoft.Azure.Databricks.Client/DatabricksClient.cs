@@ -29,6 +29,7 @@ public class DatabricksClient : IDisposable
         this.ClusterPolicies = new ClusterPoliciesApiClient(httpClient);
         this.GlobalInitScriptsApi = new GlobalInitScriptsApi(httpClient);
         this.SQL = new SQLApiClient(httpClient);
+        this.Repos = new ReposApiClient(httpClient);
     }
 
     /// <summary>
@@ -161,6 +162,8 @@ public class DatabricksClient : IDisposable
 
     public ISQLApi SQL { get; }
 
+    public IReposApi Repos { get; }
+
     public void Dispose()
     {
         Clusters.Dispose();
@@ -174,6 +177,7 @@ public class DatabricksClient : IDisposable
         InstancePool.Dispose();
         ClusterPolicies.Dispose();
         GlobalInitScriptsApi.Dispose();
+        Repos.Dispose();
         GC.SuppressFinalize(this);
     }
 }
