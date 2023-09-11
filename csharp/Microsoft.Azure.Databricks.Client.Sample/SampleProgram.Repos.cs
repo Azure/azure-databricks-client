@@ -13,7 +13,7 @@ internal static partial class SampleProgram
         static string getRepoString(Repo repo) => $"Repo: {repo.Id}, path: {repo.Path}, URL: {repo.Url}, provider: {repo.Provider}, branch: {repo.Branch}, head: {repo.HeadCommitId}";
 
         Console.WriteLine("Creating repo");
-        var repo = await client.Repos.Create("https://github.com/mlflow/mlflow-example", RepoProvider.gitHub,  $"/Repos/{DatabricksUserName}/mlflow-example");
+        var repo = await client.Repos.Create("https://github.com/mlflow/mlflow-example", RepoProvider.gitHub, $"/Repos/{DatabricksUserName}/mlflow-example");
         Console.WriteLine(getRepoString(repo));
 
         Console.WriteLine("Update repo");

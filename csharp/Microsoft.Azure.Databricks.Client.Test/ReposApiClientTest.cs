@@ -27,7 +27,7 @@ public class ReposApiClientTest : ApiClientTest
                       ""head_commit_id"": ""7e0847ede61f07adede22e2bcce6050216489171""
                     }
                   ],
-                  ""next_page_token"": ""eyJyZXBvX3RyZWVub2RlX2lkIjo1MjQ5NjA4ODE0NTA5Mjc5fQ==""
+                  ""next_page_token"": ""test_token""
                 }
                 ";
 
@@ -45,7 +45,7 @@ public class ReposApiClientTest : ApiClientTest
         var (actual, token) = await client.List("/Repos/Production");
 
         CollectionAssert.AreEqual(expected!.ToArray(), actual.ToArray());
-        Assert.AreEqual("eyJyZXBvX3RyZWVub2RlX2lkIjo1MjQ5NjA4ODE0NTA5Mjc5fQ==", token);
+        Assert.AreEqual("test_token", token);
 
         handler.VerifyRequest(
             HttpMethod.Get,
@@ -126,7 +126,6 @@ public class ReposApiClientTest : ApiClientTest
         hc.BaseAddress = BaseApiUri;
 
         using var client = new ReposApiClient(hc);
-        
         await client.Update(testId, branch: "main");
 
         handler.VerifyRequest(
