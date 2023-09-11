@@ -23,17 +23,17 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Install .NET Core
+    - name: Install .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.x
     
-    - name: Install dependencies
-      run: dotnet restore $Solution_Name
+    - name: Restore
+      run: dotnet restore $env:Solution_Name
         
     - name: Build
-      run: dotnet build --no-restore --configuration ${{ matrix.configuration }} $Solution_Name
+      run: dotnet build --no-restore --configuration ${{ matrix.configuration }} $env:Solution_Name
 
     - name: Test
-      run: dotnet test --no-restore $Solution_Name
+      run: dotnet test --no-restore $env:Solution_Name
     
