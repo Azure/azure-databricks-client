@@ -16,7 +16,6 @@ jobs:
 
     env:
       Solution_Name: csharp/Microsoft.Azure.Databricks.Client.sln
-      Test_Project_Path: csharp/Microsoft.Azure.Databricks.Client.Test/Microsoft.Azure.Databricks.Client.Test.csproj
     
     steps:
     - name: Checkout
@@ -30,11 +29,11 @@ jobs:
         dotnet-version: 6.x
     
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore $Solution_Name
         
     - name: Build
-      run: dotnet build --no-restore --configuration ${{ matrix.configuration }}
+      run: dotnet build --no-restore --configuration ${{ matrix.configuration }} $Solution_Name
 
     - name: Test
-      run: dotnet test --no-restore
+      run: dotnet test --no-restore $Solution_Name
     
