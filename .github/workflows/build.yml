@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: csharp/Microsoft.Azure.Databricks.Client.sln
+      Test_Project_Path: csharp/Microsoft.Azure.Databricks.Client.Test/Microsoft.Azure.Databricks.Client.Test.csproj
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.x
+    
+    - name: Install dependencies
+      run: dotnet restore
+        
+    - name: Build
+      run: dotnet build --no-restore --configuration ${{ matrix.configuration }}
+
+    - name: Test
+      run: dotnet test --no-restore
+    
