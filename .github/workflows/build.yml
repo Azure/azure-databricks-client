@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     env:
       Solution_Name: csharp/Microsoft.Azure.Databricks.Client.sln
     
