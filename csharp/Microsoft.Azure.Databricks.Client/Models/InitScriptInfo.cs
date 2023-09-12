@@ -12,4 +12,10 @@ public record InitScriptInfo
     /// </summary>
     [JsonPropertyName("dbfs")]
     public DbfsStorageInfo Dbfs { get; set; }
+
+    /// <summary>
+    /// Workspace location of init script. destination must be provided.
+    /// </summary>
+    [JsonPropertyName("workspace")]
+    public WorkspaceStorageInfo Workspace { get; set; }
 }
