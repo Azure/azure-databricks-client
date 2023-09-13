@@ -11,5 +11,5 @@ public record ClusterLogConf
     /// For dbfs, destination must be provided. For example, { "dbfs" : { "destination" : "dbfs:/home/cluster_log" } }
     /// </summary>
     [JsonPropertyName("dbfs")]
-    public DbfsStorageInfo Dbfs { get; set; }
+    public InitScriptStorageInfo Dbfs { get; set; }
 }

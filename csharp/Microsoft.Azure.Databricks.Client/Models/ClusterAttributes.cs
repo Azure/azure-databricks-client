@@ -304,7 +304,7 @@ public record ClusterAttributes : ClusterSize
     public ClusterAttributes WithClusterLogConf(string dbfsDestination)
     {
         ClusterLogConfiguration =
-            new ClusterLogConf { Dbfs = new DbfsStorageInfo { Destination = dbfsDestination } };
+            new ClusterLogConf { Dbfs = new InitScriptStorageInfo { Destination = dbfsDestination } };
         return this;
     }
 

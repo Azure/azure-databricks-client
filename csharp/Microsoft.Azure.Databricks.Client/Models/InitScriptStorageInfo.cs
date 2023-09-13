@@ -5,10 +5,11 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models;
 
-public record DbfsStorageInfo
+public record InitScriptStorageInfo
 {
     /// <summary>
-    /// DBFS destination, e.g. dbfs:/my/path
+    /// Init script destination. Depends on the kind of init script source specified.
+    /// See https://docs.databricks.com/api/azure/workspace/clusters/get
     /// </summary>
     [JsonPropertyName("destination")]
     public string Destination { get; set; }
