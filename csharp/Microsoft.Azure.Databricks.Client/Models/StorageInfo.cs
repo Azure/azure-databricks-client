@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models;
 
-public record DbfsStorageInfo
+public abstract record StorageInfo
 {
     /// <summary>
     /// DBFS destination, e.g. dbfs:/my/path
@@ -13,3 +13,9 @@ public record DbfsStorageInfo
     [JsonPropertyName("destination")]
     public string Destination { get; set; }
 }
+
+public record DbfsStorageInfo : StorageInfo { }
+
+public record WorkspaceStorageInfo : StorageInfo { }
+
+public record VolumesStorageInfo : StorageInfo { }
