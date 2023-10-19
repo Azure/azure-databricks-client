@@ -28,6 +28,12 @@ public enum ClusterMode
 public record ClusterAttributes : ClusterSize
 {
     /// <summary>
+    /// A label for the cluster specification, either default to configure the default cluster, or maintenance to configure the maintenance cluster. This field is optional. The default value is default.
+    /// </summary>
+    [JsonPropertyName("label")]
+    public string Label { get; set; }
+
+    /// <summary>
     /// Cluster name requested by the user. This doesn’t have to be unique. If not specified at creation, the cluster name will be an empty string.
     /// </summary>
     [JsonPropertyName("cluster_name")]
@@ -106,7 +112,7 @@ public record ClusterAttributes : ClusterSize
     /// Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space when its Spark workers are running low on disk space.
     /// </summary>
     [JsonPropertyName("enable_elastic_disk")]
-    public bool EnableElasticDisk { get; set; }
+    public bool? EnableElasticDisk { get; set; }
 
     /// <summary>
     /// The optional ID of the instance pool to which the cluster belongs. Refer to Pools for details.
@@ -130,7 +136,7 @@ public record ClusterAttributes : ClusterSize
     /// When enabled, local disk data will be encrypted at-rest. Contact your Microsoft or Databricks account representative to enable for your subscription.
     /// </summary>
     [JsonPropertyName("enable_local_disk_encryption")]
-    public bool LocalDiskEncryption { get; set; }
+    public bool? LocalDiskEncryption { get; set; }
 
     /// <summary>
     /// A cluster policy ID.

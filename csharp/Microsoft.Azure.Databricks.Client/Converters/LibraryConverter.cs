@@ -52,6 +52,11 @@ public class LibraryConverter : JsonConverter<Library>
             return library.Deserialize<RCranLibrary>();
         }
 
+        if (library.TryGetPropertyValue("notebook", out _))
+        {
+            return library.Deserialize<NotebookLibrary>();
+        }
+
         throw new NotSupportedException("Library not recognized");
     }
 
@@ -65,6 +70,7 @@ public class LibraryConverter : JsonConverter<Library>
             MavenLibrary maven => JsonSerializer.SerializeToNode(maven),
             PythonPyPiLibrary pypi => JsonSerializer.SerializeToNode(pypi),
             RCranLibrary rcran => JsonSerializer.SerializeToNode(rcran),
+            NotebookLibrary ntbk => JsonSerializer.SerializeToNode(ntbk),
             _ => throw new NotImplementedException($"JsonConverter not implemented for type {value.GetType()}")
         };
 

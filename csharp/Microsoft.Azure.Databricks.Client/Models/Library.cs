@@ -147,3 +147,37 @@ public record MavenLibrarySpec
     [JsonPropertyName("exclusions")]
     public IEnumerable<string> Exclusions { get; set; }
 }
+
+public record NotebookLibrary : Library
+{
+    [JsonPropertyName("notebook")]
+    public PathSpec Notebook { get; set; }
+
+    public override string ToString()
+    {
+        return Notebook.ToString();
+    }
+}
+
+public record FileLibrary : Library
+{
+    [JsonPropertyName("file")]
+    public PathSpec File { get; set; }
+
+    public override string ToString()
+    {
+        return File.ToString();
+    }
+}
+
+/// <summary>
+/// The path to a notebook or file that defines a pipeline and is stored in the workspace.
+/// </summary>
+public record PathSpec
+{
+    /// <summary>
+    /// The absolute path of the notebook.
+    /// </summary>
+    [JsonPropertyName("path")]
+    public string Path { get; set; }
+}
