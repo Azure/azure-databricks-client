@@ -17,6 +17,8 @@ public abstract class ApiClient : IDisposable
 
     protected virtual string ApiVersion => "2.0";
 
+    protected string BaseUnityCatalogUri => "2.1/unity-catalog";
+
     protected static readonly JsonSerializerOptions Options = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
