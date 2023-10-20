@@ -36,6 +36,21 @@ public record AzureAttributes : InstancePoolAzureAttributes
     [JsonPropertyName("first_on_demand")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public int FirstOnDemand { get; set; }
+
+    /// <summary>
+    /// Defines values necessary to configure and run Azure Log Analytics agent
+    /// </summary>
+    [JsonPropertyName("log_analytics_info")]
+    public LogAnalyticsInfo LogAnalyticsInfo { get; set; }
+}
+
+public record LogAnalyticsInfo
+{
+    [JsonPropertyName("log_analytics_workspace_id")]
+    public string LogAnalyticsWorkspaceId { get; set; }
+
+    [JsonPropertyName("log_analytics_primary_key")]
+    public string LogAnalyticsPrimaryKey { get; set; }
 }
 
 /// <summary>
