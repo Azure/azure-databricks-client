@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Databricks.Client.Models;
+﻿using Castle.DynamicProxy.Generators;
+using Microsoft.Azure.Databricks.Client.Models;
 using Moq;
 using Moq.Contrib.HttpClient;
 using System.Net;
@@ -850,7 +851,7 @@ public class PipelinesApiClientTest : ApiClientTest
     }
 
     [TestMethod]
-    public async Task TestQueueUpdate()
+    public async Task TestStart()
     {
         var maxResults = 25;
         var pipelineId = "1234-567890-cited123";
@@ -858,8 +859,15 @@ public class PipelinesApiClientTest : ApiClientTest
 
         var expectedRequest = @"
         {
-          ""full_refresh"": true,
-          ""cause"": ""API_CALL""
+          ""full_refresh"": ""true"",
+          ""cause"": ""API_CALL"",
+          ""refresh_selection"": [
+            ""string1"", ""string2""
+          ],
+          ""full_refresh_selection"": [
+             ""string1"", ""string2""
+          ]
+
         }
         ";
 
@@ -877,13 +885,23 @@ public class PipelinesApiClientTest : ApiClientTest
         mockClient.BaseAddress = BaseApiUri;
 
         using var client = new PipelinesApiClient(mockClient);
-        var response = await client.Start(pipelineId);
+        var response = await client.Start(
+            pipelineId,
+            fullRefresh: true,
+            refreshSelection: new[] { "string1", "string2" },
+            fullRefreshSelection: new[] { "string1", "string2" });
 
         Assert.AreEqual(expectedResponse.update_id, response);
+
+        handler.VerifyRequest(
+            HttpMethod.Post, 
+            apiUri,
+            GetMatcher(expectedRequest),
+            Times.Once());
     }
 
     [TestMethod]
-    public async Task TestListEvenets()
+    public async Task TestListEvents()
     {
         var maxResults = 25;
         var pipelineId = "1234-567890-cited123";
