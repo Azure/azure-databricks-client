@@ -17,7 +17,7 @@ public record PipelineLatestUpdate
     /// The update state.
     /// </summary>
     [JsonPropertyName("state")]
-    public PipelineUpdateState State { get; set; }
+    public PipelineUpdateState? State { get; set; }
 
     /// <summary>
     /// The time when this update was created.
@@ -59,7 +59,7 @@ public record Pipeline
     /// The pipeline state.
     /// </summary>
     [JsonPropertyName("state")]
-    public PipelineState State { get; set; }
+    public PipelineState? State { get; set; }
 
     /// <summary>
     /// An optional message detailing the cause of the pipeline state.

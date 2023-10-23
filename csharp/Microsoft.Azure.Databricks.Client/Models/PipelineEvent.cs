@@ -60,7 +60,7 @@ public record PipelineEvent
     /// The severity level of the event.
     /// </summary>
     [JsonPropertyName("level")]
-    public PipelineEventLevel Level { get; set; }
+    public PipelineEventLevel? Level { get; set; }
 
     /// <summary>
     /// Information about an error captured by the event.
@@ -78,7 +78,7 @@ public record PipelineEvent
     /// Maturity level for event_type.
     /// </summary>
     [JsonPropertyName("maturity_level")]
-    public MaturityLevel MaturityLevel { get; set; }
+    public MaturityLevel? MaturityLevel { get; set; }
 
 
 }

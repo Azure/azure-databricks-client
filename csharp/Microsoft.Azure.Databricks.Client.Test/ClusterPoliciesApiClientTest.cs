@@ -23,7 +23,6 @@ public class ClusterPoliciesApiClientTest : ApiClientTest
               ""policy_id"": ""ABCD000000000000"",
               ""name"": ""Test policy"",
               ""definition"": ""{\""spark_conf.spark.databricks.cluster.profile\"":{\""type\"":\""forbidden\"",\""hidden\"":true}}"",
-              ""is_default"": false,
               ""created_at_timestamp"": 1600000000000
             }
         ";
@@ -55,14 +54,12 @@ public class ClusterPoliciesApiClientTest : ApiClientTest
               ""policy_id"": ""ABCD000000000001"",
               ""name"": ""Empty"",
               ""definition"": ""{}"",
-              ""is_default"": false,
               ""created_at_timestamp"": 1600000000002
             },
             {
               ""policy_id"": ""ABCD000000000000"",
               ""name"": ""Test policy"",
               ""definition"": ""{\""spark_conf.spark.databricks.cluster.profile\"":{\""type\"":\""forbidden\"",\""hidden\"":true}}"",
-              ""is_default"": false,
               ""created_at_timestamp"": 1600000000000
             }
           ],

@@ -1115,16 +1115,7 @@ public class JobApiClientTest : ApiClientTest
                 ""error"": ""ZeroDivisionError: integer division or modulo by zero"",
                 ""error_trace"": ""---------------------------------------------------------------------------\nException Traceback (most recent call last)\n 1 numerator = 42\n 2 denominator = 0\n----> 3 return numerator / denominator\n\nZeroDivisionError: integer division or modulo by zero"",
                 ""metadata"": {
-                    ""job_id"": 0,
-                    ""original_attempt_run_id"": 0,
-                    ""git_source"": null,
-                    ""setup_duration"": 0,
-                    ""execution_duration"": 0,
-                    ""cleanup_duration"": 0,
-                    ""run_type"": ""JOB_RUN"",
-                    ""attempt_number"": 0,
-                    ""run_id"": 0,
-                    ""number_in_job"": 0
+                    ""git_source"": null
                 }
             }
         ";

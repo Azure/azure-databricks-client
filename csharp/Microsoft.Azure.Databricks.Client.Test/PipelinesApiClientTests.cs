@@ -1,5 +1,4 @@
-﻿using Castle.DynamicProxy.Generators;
-using Microsoft.Azure.Databricks.Client.Models;
+﻿using Microsoft.Azure.Databricks.Client.Models;
 using Moq;
 using Moq.Contrib.HttpClient;
 using System.Net;
@@ -112,8 +111,8 @@ public class PipelinesApiClientTest : ApiClientTest
                 ""policy_id"": ""string"",
                 ""num_workers"": 0,
                 ""autoscale"": {
-                  ""min_workers"": 0,
-                  ""max_workers"": 0
+                  ""min_workers"": 1,
+                  ""max_workers"": 1
                 },
                 ""apply_policy_default_values"": true
               }
@@ -544,8 +543,8 @@ public class PipelinesApiClientTest : ApiClientTest
                   ""policy_id"": ""string"",
                   ""num_workers"": 0,
                   ""autoscale"": {
-                    ""min_workers"": 0,
-                    ""max_workers"": 0
+                    ""min_workers"": 1,
+                    ""max_workers"": 1
                   },
                   ""apply_policy_default_values"": true
                 }
@@ -649,8 +648,8 @@ public class PipelinesApiClientTest : ApiClientTest
                   ""policy_id"": ""string"",
                   ""num_workers"": 0,
                   ""autoscale"": {
-                    ""min_workers"": 0,
-                    ""max_workers"": 0
+                    ""min_workers"": 1,
+                    ""max_workers"": 1
                   },
                   ""apply_policy_default_values"": true
                 }
@@ -775,10 +774,10 @@ public class PipelinesApiClientTest : ApiClientTest
                   ""instance_pool_id"": ""string"",
                   ""driver_instance_pool_id"": ""string"",
                   ""policy_id"": ""string"",
-                  ""num_workers"": 0,
+                  ""num_workers"": 1,
                   ""autoscale"": {
-                    ""min_workers"": 0,
-                    ""max_workers"": 0
+                    ""min_workers"": 1,
+                    ""max_workers"": 1
                   },
                   ""apply_policy_default_values"": true
                 }
@@ -847,7 +846,7 @@ public class PipelinesApiClientTest : ApiClientTest
 
         var responseJson = JsonSerializer.Serialize<PipelineUpdatesList>(response, Options);
 
-        AssertJsonDeepEquals(expectedResponse, responseJson);        
+        AssertJsonDeepEquals(expectedResponse, responseJson);
     }
 
     [TestMethod]
@@ -894,7 +893,7 @@ public class PipelinesApiClientTest : ApiClientTest
         Assert.AreEqual(expectedResponse.update_id, response);
 
         handler.VerifyRequest(
-            HttpMethod.Post, 
+            HttpMethod.Post,
             apiUri,
             GetMatcher(expectedRequest),
             Times.Once());
@@ -919,12 +918,12 @@ public class PipelinesApiClientTest : ApiClientTest
                   ""instance"": ""string"",
                   ""seq_no"": {}
                 },
-                ""control_plane_seq_no"": 0
+                ""control_plane_seq_no"": 1
               },
               ""origin"": {
                 ""cloud"": ""string"",
                 ""region"": ""string"",
-                ""org_id"": 0,
+                ""org_id"": 1,
                 ""pipeline_id"": ""string"",
                 ""pipeline_name"": ""string"",
                 ""cluster_id"": ""string"",
@@ -934,7 +933,7 @@ public class PipelinesApiClientTest : ApiClientTest
                 ""dataset_name"": ""string"",
                 ""flow_id"": ""string"",
                 ""flow_name"": ""string"",
-                ""batch_id"": 0,
+                ""batch_id"": 1,
                 ""request_id"": ""string"",
                 ""uc_resource_id"": ""string"",
                 ""host"": ""string"",
@@ -954,7 +953,7 @@ public class PipelinesApiClientTest : ApiClientTest
                         ""declaring_class"": ""string"",
                         ""method_name"": ""string"",
                         ""file_name"": ""string"",
-                        ""line_number"": 0
+                        ""line_number"": 1
                       }
                     ]
                   }

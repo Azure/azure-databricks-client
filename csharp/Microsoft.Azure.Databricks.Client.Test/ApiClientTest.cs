@@ -17,7 +17,7 @@ public abstract class ApiClientTest
 
     protected static readonly JsonSerializerOptions Options = new()
     {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
         Converters = {
             new JsonStringEnumConverter(),
             new MillisecondEpochDateTimeConverter(),
