@@ -83,7 +83,8 @@ internal static partial class SampleProgram
         }
         PrintDelimiter();
 
-        Console.WriteLine("Queue pipeline update");
+        Console.WriteLine("Start pipeline update");
+        await client.Pipelines.Stop(pipelineId);
         var pipelineUpdateId = await client.Pipelines.Start(pipelineId);
         PrintDelimiter();
 
