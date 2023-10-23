@@ -88,7 +88,7 @@ public class Catalog
     /// The type of the catalog.
     /// </summary>
     [JsonPropertyName("catalog_type")]
-    public CatalogType CatalogType { get; set; }
+    public CatalogType? CatalogType { get; set; }
 
     /// <summary>
     /// Storage Location URL (full path) for managed tables within catalog.
@@ -100,7 +100,7 @@ public class Catalog
     /// Whether the current securable is accessible from all workspaces or a specific set of workspaces.
     /// </summary>
     [JsonPropertyName("isolation_mode")]
-    public IsolationMode IsolationMode { get; set; }
+    public IsolationMode? IsolationMode { get; set; }
 
     /// <summary>
     /// Whether the current securable is accessible from all workspaces or a specific set of workspaces.
@@ -124,7 +124,7 @@ public class Catalog
     /// Kind of catalog securable.
     /// </summary>
     [JsonPropertyName("securable_kind")]
-    public CatalogSeucrableKind CatalogSeucrableKind { get; set; }
+    public CatalogSeucrableKind? CatalogSeucrableKind { get; set; }
 
     /// <summary>
     /// Default: "CATALOG"

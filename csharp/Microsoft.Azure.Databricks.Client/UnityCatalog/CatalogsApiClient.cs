@@ -10,8 +10,6 @@ namespace Microsoft.Azure.Databricks.Client.UnityCatalog;
 
 public class CatalogsApiClient : ApiClient, ICatalogsApi
 {
-
-
     public CatalogsApiClient(HttpClient httpClient) : base(httpClient)
     {
     }
@@ -19,7 +17,7 @@ public class CatalogsApiClient : ApiClient, ICatalogsApi
     public async Task<CatalogsList> List(CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/catalogs";
-        return await HttpGet<CatalogsList>(this.HttpClient, requestUri, cancellationToken);
+        return await HttpGet<CatalogsList>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Catalog> Create(Catalog catalog, CancellationToken cancellationToken = default)
@@ -36,7 +34,7 @@ public class CatalogsApiClient : ApiClient, ICatalogsApi
     public async Task<Catalog> Get(string catalogName, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/catalogs/{catalogName}";
-        return await HttpGet<Catalog>(this.HttpClient, requestUri, cancellationToken);
+        return await HttpGet<Catalog>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Catalog> Update(

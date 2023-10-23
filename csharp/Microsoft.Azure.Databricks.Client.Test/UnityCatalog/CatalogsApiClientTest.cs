@@ -8,7 +8,7 @@ using System.Text.Json;
 namespace Microsoft.Azure.Databricks.Client.Test;
 
 [TestClass]
-public class CatalogsApiTests : UnityCatalogApiClientTest
+public class CatalogsApiClientTest : UnityCatalogApiClientTest
 {
     private static readonly Uri CatalogsApiUri = new(BaseApiUri, "catalogs");
 
