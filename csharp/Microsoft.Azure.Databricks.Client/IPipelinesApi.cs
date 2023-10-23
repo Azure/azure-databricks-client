@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -76,8 +77,8 @@ public interface IPipelinesApi : IDisposable
         string pipelineId,
         bool fullRefresh = false,
         PipelineUpdateCause cause = PipelineUpdateCause.API_CALL,
-        string refreshSelection = default,
-        string fullRefrehSelection = default,
+        IEnumerable<string> refreshSelection = default,
+        IEnumerable<string> fullRefreshSelection = default,
         CancellationToken cancellation = default);
 
     /// <summary>

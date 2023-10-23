@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -132,8 +133,8 @@ public class PipelinesApiClient : ApiClient, IPipelinesApi
         string pipelineId,
         bool fullRefresh = false,
         PipelineUpdateCause cause = PipelineUpdateCause.API_CALL,
-        string refreshSelection = default,
-        string fullRefrehSelection = default,
+        IEnumerable<string> refreshSelection = default,
+        IEnumerable<string> fullRefreshSelection = default,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/pipelines/{pipelineId}/updates";
@@ -143,18 +144,20 @@ public class PipelinesApiClient : ApiClient, IPipelinesApi
             { "full_refresh", fullRefresh.ToString().ToLower() },
             { "cause", cause.ToString() }
         };
-
+        var request = JsonSerializer.SerializeToNode(requestDict, Options).AsObject();
+        
         if (refreshSelection != null)
         {
-            requestDict["refresh_selection"] = refreshSelection;
+            var refreshSelectionJson = JsonSerializer.SerializeToNode(refreshSelection, Options);
+            request.Add("refresh_selection", refreshSelectionJson);
         }
 
-        if (fullRefrehSelection != null)
+        if (fullRefreshSelection != null)
         {
-            requestDict["full_refresh_selection"] = fullRefrehSelection;
+            var fullRefreshSelectionJson = JsonSerializer.SerializeToNode(fullRefreshSelection, Options);
+            request.Add("full_refresh_selection", fullRefreshSelectionJson);
         }
 
-        var request = JsonSerializer.SerializeToNode(requestDict, Options).AsObject();
         var response = await HttpPost<JsonObject, JsonObject>(this.HttpClient, requestUri, request, cancellationToken).ConfigureAwait(false);
 
         return response["update_id"].GetValue<string>();
