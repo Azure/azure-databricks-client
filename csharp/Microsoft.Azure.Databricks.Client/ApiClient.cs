@@ -28,7 +28,8 @@ public abstract class ApiClient : IDisposable
             new MillisecondEpochDateTimeConverter(),
             new LibraryConverter(),
             new SecretScopeConverter(),
-            new AclPermissionItemConverter()
+            new AclPermissionItemConverter(),
+            new DepedencyConverter()
         }
     };
 

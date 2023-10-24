@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 
-public class ExternalLocationsList
+public record ExternalLocationsList
 {
     /// <summary>
     /// An array of external locations.

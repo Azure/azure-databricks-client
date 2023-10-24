@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 
-public class Connection
+public record Connection
 {
     /// <summary>
     /// Name of the connection.

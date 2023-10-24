@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 
-public class ConnectionsList
+public record ConnectionsList
 {
     /// <summary>
     /// An array of connection information objects.

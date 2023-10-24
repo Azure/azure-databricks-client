@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 
-public class CatalogsList
+public record CatalogsList
 {
     /// <summary>
     /// An array of catalog information objects.

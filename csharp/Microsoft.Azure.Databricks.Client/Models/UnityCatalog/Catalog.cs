@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 
-public class Catalog
+public record Catalog
 {
     /// <summary>
     /// Name of catalog.
