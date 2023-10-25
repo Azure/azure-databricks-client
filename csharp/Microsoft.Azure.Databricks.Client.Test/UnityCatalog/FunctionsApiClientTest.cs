@@ -4,6 +4,7 @@ using Moq;
 using Moq.Contrib.HttpClient;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 
@@ -80,10 +81,6 @@ public class FunctionsApiClientTest : UnityCatalogApiClientTest
                 ""sql_path"": ""string"",
                 ""owner"": ""string"",
                 ""comment"": ""string"",
-                ""properties"": {
-                    ""property1"": ""string"",
-                    ""property2"": ""string""
-                },
                 ""metastore_id"": ""string"",
                 ""full_name"": ""string"",
                 ""created_at"": 0,
@@ -94,6 +91,9 @@ public class FunctionsApiClientTest : UnityCatalogApiClientTest
         }]}
         ";
 
+        var expected = JsonNode.Parse(expectedResponse)?["functions"].Deserialize<IEnumerable<Function>>(Options);
+
+        
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Get, requestUri)
@@ -105,7 +105,13 @@ public class FunctionsApiClientTest : UnityCatalogApiClientTest
         using var client = new FunctionsApiClient(mockClient);
         var response = await client.List();
 
-        var responseJson = JsonSerializer.Serialize(response, Options);
+        // adding layer of serialization as simple Assert will fail because of arrays in Json response
+        var responseDict = new Dictionary<string, IEnumerable<Function>>()
+        {
+            { "functions", response }
+        };
+        var responseJson = JsonSerializer.Serialize(responseDict, Options);
+
         AssertJsonDeepEquals(expectedResponse, responseJson);
     }
 

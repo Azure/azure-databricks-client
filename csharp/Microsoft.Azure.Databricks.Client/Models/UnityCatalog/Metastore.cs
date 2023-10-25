@@ -4,15 +4,6 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 
-public record MetastoresList
-{
-    /// <summary>
-    /// An array of metastore information objects.
-    /// </summary>
-    [JsonPropertyName("metastores")]
-    public IEnumerable<Metastore> Metastores { get; set; }
-}
-
 public record Metastore
 {
     /// <summary>

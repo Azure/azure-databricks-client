@@ -4,6 +4,7 @@ using Moq;
 using Moq.Contrib.HttpClient;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 
@@ -23,17 +24,9 @@ public class ConnectionsApiClientTest : UnityCatalogApiClientTest
             {
                 ""name"": ""string"",
                 ""connection_type"": ""MYSQL"",
-                ""options"": {
-                    ""property1"": ""string"",
-                    ""property2"": ""string""
-                },
                 ""owner"": ""string"",
                 ""read_only"": true,
                 ""comment"": ""string"",
-                ""properties"": {
-                    ""property1"": ""string"",
-                    ""property2"": ""string""
-                },
                 ""full_name"": ""string"",
                 ""url"": ""string"",
                 ""credential_type"": ""USERNAME_PASSWORD"",
@@ -52,6 +45,8 @@ public class ConnectionsApiClientTest : UnityCatalogApiClientTest
         }
         ";
 
+        var expected = JsonNode.Parse(expectedResponse)?["connections"].Deserialize<IEnumerable<Connection>>(Options);
+
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Get, requestUri)
@@ -63,8 +58,7 @@ public class ConnectionsApiClientTest : UnityCatalogApiClientTest
         using var client = new ConnectionsApiClient(mockClient);
         var response = await client.List();
 
-        var responseJson = JsonSerializer.Serialize(response, Options);
-        AssertJsonDeepEquals(expectedResponse, responseJson);
+        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
     }
 
     [TestMethod]

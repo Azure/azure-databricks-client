@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -94,10 +95,13 @@ public class MetastoresApiClient : ApiClient, IMetastoresApi
         return HttpGet<Metastore>(HttpClient, requestUri, cancellationToken);
     }
 
-    public Task<MetastoresList> List(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Metastore>> List(CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/metastores";
-        return HttpGet<MetastoresList>(HttpClient, requestUri , cancellationToken);
+        var metastoresList = await HttpGet<JsonObject>(HttpClient, requestUri , cancellationToken).ConfigureAwait(false);
+        metastoresList.TryGetPropertyValue("connections", out var metastores);
+
+        return metastores?.Deserialize<IEnumerable<Metastore>>(Options) ?? Enumerable.Empty<Metastore>();
     }
 
     public async Task<Metastore> Update(

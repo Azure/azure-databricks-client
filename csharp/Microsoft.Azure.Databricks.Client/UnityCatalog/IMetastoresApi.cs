@@ -1,8 +1,6 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,7 +19,7 @@ public interface IMetastoresApi : IDisposable
     /// The caller must be an admin to retrieve this info. 
     /// There is no guarantee of a specific ordering of the elements in the array.
     /// </summary>
-    Task<MetastoresList> List(CancellationToken cancellationToken = default);
+    Task<IEnumerable<Metastore>> List(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new metastore based on a provided name and storage root path.

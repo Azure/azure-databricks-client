@@ -4,6 +4,7 @@ using Moq;
 using Moq.Contrib.HttpClient;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 
@@ -29,6 +30,7 @@ public class UnityCatalogPermissionsApiClientTest : UnityCatalogApiClientTest
           ]
         }
 ";
+        var expected = JsonNode.Parse(expectedResponse)?["privilege_assignments"].Deserialize<IEnumerable<Permission>>(Options);
 
         var handler = CreateMockHandler();
         handler
@@ -41,8 +43,7 @@ public class UnityCatalogPermissionsApiClientTest : UnityCatalogApiClientTest
         using var client = new UnityCatalogPermissionsApiClient(mockClient);
         var response = await client.Get(securableType, securableName);
 
-        var responseJson = JsonSerializer.Serialize(response, Options);
-        AssertJsonDeepEquals(expectedResponse, responseJson);
+        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
     }
 
     [TestMethod]
@@ -111,10 +112,11 @@ public class UnityCatalogPermissionsApiClientTest : UnityCatalogApiClientTest
         var response = await client.Update(
             securableType,
             securableName,
-            new PermissionsUpdate[] {permissionUpdate});
+            new PermissionsUpdate[] { permissionUpdate });
 
-        var responseJson = JsonSerializer.Serialize(response, Options);
-        AssertJsonDeepEquals(expectedResponse, responseJson);
+        var expected = JsonNode.Parse(expectedResponse)?["privilege_assignments"].Deserialize<IEnumerable<Permission>>(Options);
+
+        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
 
         handler.VerifyRequest(
             HttpMethod.Patch,
@@ -145,6 +147,8 @@ public class UnityCatalogPermissionsApiClientTest : UnityCatalogApiClientTest
         }
         ";
 
+        var expected = JsonNode.Parse(expectedResponse)?["privilege_assignments"].Deserialize<IEnumerable<EffectivePermission>>(Options);
+
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Get, requestUri)
@@ -156,7 +160,6 @@ public class UnityCatalogPermissionsApiClientTest : UnityCatalogApiClientTest
         using var client = new UnityCatalogPermissionsApiClient(mockClient);
         var response = await client.GetEffective(securableType, securableName);
 
-        var responseJson = JsonSerializer.Serialize(response, Options);
-        AssertJsonDeepEquals(expectedResponse, responseJson);
+        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
     }
 }

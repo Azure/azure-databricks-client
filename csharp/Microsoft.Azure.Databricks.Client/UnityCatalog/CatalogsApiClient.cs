@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -14,10 +15,14 @@ public class CatalogsApiClient : ApiClient, ICatalogsApi
     {
     }
 
-    public async Task<CatalogsList> List(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Catalog>> List(CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/catalogs";
-        return await HttpGet<CatalogsList>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+        var catalogsList = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+
+        catalogsList.TryGetPropertyValue("catalogs", out var catalogs);
+
+        return catalogs?.Deserialize<IEnumerable<Catalog>>(Options) ?? Enumerable.Empty<Catalog>();
     }
 
     public async Task<Catalog> Create(Catalog catalog, CancellationToken cancellationToken = default)

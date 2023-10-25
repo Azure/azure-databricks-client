@@ -1,8 +1,10 @@
-﻿using Microsoft.Azure.Databricks.Client.UnityCatalog;
+﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
+using Microsoft.Azure.Databricks.Client.UnityCatalog;
 using Moq;
 using Moq.Contrib.HttpClient;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 
@@ -36,6 +38,8 @@ public class ExternalLocationsApiClientTest : UnityCatalogApiClientTest
         }
         ";
 
+        var expected = JsonNode.Parse(expectedResponse)?["external_locations"].Deserialize<IEnumerable<ExternalLocation>>(Options);
+
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Get, requestUri)
@@ -47,8 +51,7 @@ public class ExternalLocationsApiClientTest : UnityCatalogApiClientTest
         using var client = new ExternalLocationsApiClient(mockClient);
         var response = await client.List();
 
-        var responseJson = JsonSerializer.Serialize(response, Options);
-        AssertJsonDeepEquals(expectedResponse, responseJson);
+        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
     }
 
     [TestMethod]

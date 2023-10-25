@@ -4,6 +4,7 @@ using Moq;
 using Moq.Contrib.HttpClient;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 
@@ -42,6 +43,8 @@ public class MetastoresApiClientTest : UnityCatalogApiClientTest
         }
         ";
 
+        var expected = JsonNode.Parse(expectedResponse)?["metastores"].Deserialize<IEnumerable<Metastore>>(Options);
+
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Get, requestUri)
@@ -54,7 +57,7 @@ public class MetastoresApiClientTest : UnityCatalogApiClientTest
         var response = await client.List();
 
         var responseJson = JsonSerializer.Serialize(response, Options);
-        AssertJsonDeepEquals(expectedResponse, responseJson);
+        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
     }
 
     [TestMethod]

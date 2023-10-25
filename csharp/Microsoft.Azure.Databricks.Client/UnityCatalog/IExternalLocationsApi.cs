@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ public interface IExternalLocationsApi : IDisposable
     /// or a user that has some privilege on the external location. 
     /// There is no guarantee of a specific ordering of the elements in the array.
     /// </summary>
-    Task<ExternalLocationsList> List(CancellationToken cancellationToken = default);
+    Task<IEnumerable<ExternalLocation>> List(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new external location entry in the metastore. The caller must be a metastore admin 

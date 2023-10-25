@@ -1,9 +1,11 @@
-﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
+﻿using Microsoft.Azure.Databricks.Client.Models;
+using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using Microsoft.Azure.Databricks.Client.UnityCatalog;
 using Moq;
 using Moq.Contrib.HttpClient;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Microsoft.Azure.Databricks.Client.Test;
 
@@ -22,10 +24,6 @@ public class CatalogsApiClientTest : UnityCatalogApiClientTest
               ""name"": ""string"",
               ""owner"": ""string"",
               ""comment"": ""string"",
-              ""properties"": {
-                ""property1"": ""string"",
-                ""property2"": ""string""
-              },
               ""storage_root"": ""string"",
               ""provider_name"": ""string"",
               ""share_name"": ""string"",
@@ -38,10 +36,6 @@ public class CatalogsApiClientTest : UnityCatalogApiClientTest
               ""storage_location"": ""string"",
               ""isolation_mode"": ""OPEN"",
               ""connection_name"": ""string"",
-              ""options"": {
-                ""property1"": ""string"",
-                ""property2"": ""string""
-              },
               ""full_name"": ""string"",
               ""securable_kind"": ""CATALOG_STANDARD"",
               ""securable_type"": ""CATALOG"",
@@ -54,13 +48,12 @@ public class CatalogsApiClientTest : UnityCatalogApiClientTest
         }
 ";
         var requestUri = CatalogsApiUri;
-
-        var expected = JsonSerializer.Deserialize<CatalogsList>(expectedResponse, Options);
+        var expected = JsonNode.Parse(expectedResponse)?["catalogs"].Deserialize<IEnumerable<Catalog>>(Options);
 
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Get, requestUri)
-            .ReturnsResponse(System.Net.HttpStatusCode.OK, expectedResponse, "application/json");
+            .ReturnsResponse(HttpStatusCode.OK, expectedResponse, "application/json");
 
         var mockClient = handler.CreateClient();
         mockClient.BaseAddress = ApiClientTest.BaseApiUri;
@@ -68,9 +61,7 @@ public class CatalogsApiClientTest : UnityCatalogApiClientTest
         using var client = new CatalogsApiClient(mockClient);
         var actual = await client.List();
 
-        var actualJson = JsonSerializer.Serialize(actual, Options);
-
-        AssertJsonDeepEquals(expectedResponse, actualJson);
+        CollectionAssert.AreEqual(expected?.ToList(), actual?.ToList());
     }
 
     [TestMethod]

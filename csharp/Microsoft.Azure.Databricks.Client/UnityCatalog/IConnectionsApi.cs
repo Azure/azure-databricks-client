@@ -11,7 +11,7 @@ public interface IConnectionsApi : IDisposable
     /// <summary>
     /// List all connections.
     /// </summary>
-    Task<ConnectionsList> List(CancellationToken cancellationToken = default);
+    Task<IEnumerable<Connection>> List(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets a connection from it's name.

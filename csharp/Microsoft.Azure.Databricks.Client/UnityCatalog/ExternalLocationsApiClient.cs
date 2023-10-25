@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -16,9 +17,12 @@ public class ExternalLocationsApiClient : ApiClient, IExternalLocationsApi
     {
     }
 
-    public async Task<ExternalLocationsList> List(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ExternalLocation>> List(CancellationToken cancellationToken = default)
     {
-        return await HttpGet<ExternalLocationsList>(HttpClient, this.ExternalLocationsApiUri, cancellationToken).ConfigureAwait(false);
+        var externalLocationsList = await HttpGet<JsonObject>(HttpClient, this.ExternalLocationsApiUri, cancellationToken).ConfigureAwait(false);
+
+        externalLocationsList.TryGetPropertyValue("external_locations", out var externalLocations);
+        return externalLocations?.Deserialize<IEnumerable<ExternalLocation>>(Options) ?? Enumerable.Empty<ExternalLocation>();
     }
 
     public async Task<ExternalLocation> Create(

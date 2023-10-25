@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -15,10 +16,14 @@ public class ConnectionsApiClient : ApiClient, IConnectionsApi
     {
     }
 
-    public async Task<ConnectionsList> List(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Connection>> List(CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/connections";
-        return await HttpGet<ConnectionsList>(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+        var connectionsList = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+
+        connectionsList.TryGetPropertyValue("connections", out var connections);
+
+        return connections?.Deserialize<IEnumerable<Connection>>(Options) ?? Enumerable.Empty<Connection>();
     }
 
     public async Task<Connection> Create(

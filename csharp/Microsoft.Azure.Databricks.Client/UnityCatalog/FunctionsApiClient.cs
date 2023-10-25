@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -16,9 +17,12 @@ public class FunctionsApiClient : ApiClient, IFunctionsApi
     {
     }
 
-    public async Task<FunctionsList> List(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Function>> List(CancellationToken cancellationToken = default)
     {
-        return await HttpGet<FunctionsList>(HttpClient, this.FunctionsApiUrl, cancellationToken).ConfigureAwait(false);
+        var functionsList = await HttpGet<JsonObject>(HttpClient, this.FunctionsApiUrl, cancellationToken).ConfigureAwait(false);
+        functionsList.TryGetPropertyValue("functions", out var functions);
+
+        return functions?.Deserialize<IEnumerable<Function>>(Options) ?? Enumerable.Empty<Function>();
     }
 
     public async Task<Function> Create(

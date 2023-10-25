@@ -7,15 +7,6 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 
-public record PermissionsList
-{
-    /// <summary>
-    /// The privileges assigned to each principal
-    /// </summary>
-    [JsonPropertyName("privilege_assignments")]
-    public IEnumerable<Permission> PrivilegeAssignments { get; set; }
-}
-
 public record Permission
 {
     /// <summary>
@@ -29,15 +20,6 @@ public record Permission
     /// </summary>
     [JsonPropertyName("privileges")]
     public IEnumerable<Privilege> Privileges { get; set; }
-}
-
-public record EffectivePermissionsList
-{
-    /// <summary>
-    /// The privileges conveyed to each principal (either directly or via inheritance)
-    /// </summary>
-    [JsonPropertyName("privilege_assignments")]
-    public IEnumerable<EffectivePermission> PrivilegeAssignments { get; set; }
 }
 
 public record EffectivePermission

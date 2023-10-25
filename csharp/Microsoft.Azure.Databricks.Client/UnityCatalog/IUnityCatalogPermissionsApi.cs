@@ -11,7 +11,7 @@ public interface IUnityCatalogPermissionsApi : IDisposable
     /// <summary>
     /// Gets the permissions for a securable.
     /// </summary>
-    Task<PermissionsList> Get(
+    Task<IEnumerable<Permission>> Get(
         SecurableType securableType,
         string securableFullName,
         string principal,
@@ -20,7 +20,7 @@ public interface IUnityCatalogPermissionsApi : IDisposable
     /// <summary>
     /// Updates the permissions for a securable.
     /// </summary>
-    Task<PermissionsList> Update(
+    Task<IEnumerable<Permission>> Update(
         SecurableType securableType,
         string securableFullName,
         IEnumerable<PermissionsUpdate> permissionsUpdates,
@@ -29,7 +29,7 @@ public interface IUnityCatalogPermissionsApi : IDisposable
     /// <summary>
     /// Gets the effective permissions for a securable.
     /// </summary>
-    Task<EffectivePermissionsList> GetEffective(
+    Task<IEnumerable<EffectivePermission>> GetEffective(
         SecurableType securableType,
         string securableFullName,
         string principal,

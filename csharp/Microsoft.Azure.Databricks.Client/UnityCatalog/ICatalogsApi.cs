@@ -13,7 +13,7 @@ public interface ICatalogsApi : IDisposable
     /// Otherwise, only catalogs owned by the caller (or for which the caller has the USE_CATALOG privilege) will be retrieved. 
     /// There is no guarantee of a specific ordering of the elements in the array.
     /// </summary>
-    Task<CatalogsList> List(CancellationToken cancellationToken = default);
+    Task<IEnumerable<Catalog>> List(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the CREATE_CATALOG privilege.
