@@ -111,8 +111,8 @@ public class PipelinesApiClientTest : ApiClientTest
                 ""policy_id"": ""string"",
                 ""num_workers"": 0,
                 ""autoscale"": {
-                  ""min_workers"": 0,
-                  ""max_workers"": 0
+                  ""min_workers"": 1,
+                  ""max_workers"": 1
                 },
                 ""apply_policy_default_values"": true
               }
@@ -543,8 +543,8 @@ public class PipelinesApiClientTest : ApiClientTest
                   ""policy_id"": ""string"",
                   ""num_workers"": 0,
                   ""autoscale"": {
-                    ""min_workers"": 0,
-                    ""max_workers"": 0
+                    ""min_workers"": 1,
+                    ""max_workers"": 1
                   },
                   ""apply_policy_default_values"": true
                 }
@@ -648,8 +648,8 @@ public class PipelinesApiClientTest : ApiClientTest
                   ""policy_id"": ""string"",
                   ""num_workers"": 0,
                   ""autoscale"": {
-                    ""min_workers"": 0,
-                    ""max_workers"": 0
+                    ""min_workers"": 1,
+                    ""max_workers"": 1
                   },
                   ""apply_policy_default_values"": true
                 }
@@ -774,10 +774,10 @@ public class PipelinesApiClientTest : ApiClientTest
                   ""instance_pool_id"": ""string"",
                   ""driver_instance_pool_id"": ""string"",
                   ""policy_id"": ""string"",
-                  ""num_workers"": 0,
+                  ""num_workers"": 1,
                   ""autoscale"": {
-                    ""min_workers"": 0,
-                    ""max_workers"": 0
+                    ""min_workers"": 1,
+                    ""max_workers"": 1
                   },
                   ""apply_policy_default_values"": true
                 }
@@ -846,11 +846,11 @@ public class PipelinesApiClientTest : ApiClientTest
 
         var responseJson = JsonSerializer.Serialize<PipelineUpdatesList>(response, Options);
 
-        AssertJsonDeepEquals(expectedResponse, responseJson);        
+        AssertJsonDeepEquals(expectedResponse, responseJson);
     }
 
     [TestMethod]
-    public async Task TestQueueUpdate()
+    public async Task TestStart()
     {
         var maxResults = 25;
         var pipelineId = "1234-567890-cited123";
@@ -858,8 +858,15 @@ public class PipelinesApiClientTest : ApiClientTest
 
         var expectedRequest = @"
         {
-          ""full_refresh"": true,
-          ""cause"": ""API_CALL""
+          ""full_refresh"": ""true"",
+          ""cause"": ""API_CALL"",
+          ""refresh_selection"": [
+            ""string1"", ""string2""
+          ],
+          ""full_refresh_selection"": [
+             ""string1"", ""string2""
+          ]
+
         }
         ";
 
@@ -877,13 +884,23 @@ public class PipelinesApiClientTest : ApiClientTest
         mockClient.BaseAddress = BaseApiUri;
 
         using var client = new PipelinesApiClient(mockClient);
-        var response = await client.Start(pipelineId);
+        var response = await client.Start(
+            pipelineId,
+            fullRefresh: true,
+            refreshSelection: new[] { "string1", "string2" },
+            fullRefreshSelection: new[] { "string1", "string2" });
 
         Assert.AreEqual(expectedResponse.update_id, response);
+
+        handler.VerifyRequest(
+            HttpMethod.Post,
+            apiUri,
+            GetMatcher(expectedRequest),
+            Times.Once());
     }
 
     [TestMethod]
-    public async Task TestListEvenets()
+    public async Task TestListEvents()
     {
         var maxResults = 25;
         var pipelineId = "1234-567890-cited123";
@@ -901,12 +918,12 @@ public class PipelinesApiClientTest : ApiClientTest
                   ""instance"": ""string"",
                   ""seq_no"": {}
                 },
-                ""control_plane_seq_no"": 0
+                ""control_plane_seq_no"": 1
               },
               ""origin"": {
                 ""cloud"": ""string"",
                 ""region"": ""string"",
-                ""org_id"": 0,
+                ""org_id"": 1,
                 ""pipeline_id"": ""string"",
                 ""pipeline_name"": ""string"",
                 ""cluster_id"": ""string"",
@@ -916,7 +933,7 @@ public class PipelinesApiClientTest : ApiClientTest
                 ""dataset_name"": ""string"",
                 ""flow_id"": ""string"",
                 ""flow_name"": ""string"",
-                ""batch_id"": 0,
+                ""batch_id"": 1,
                 ""request_id"": ""string"",
                 ""uc_resource_id"": ""string"",
                 ""host"": ""string"",
@@ -936,7 +953,7 @@ public class PipelinesApiClientTest : ApiClientTest
                         ""declaring_class"": ""string"",
                         ""method_name"": ""string"",
                         ""file_name"": ""string"",
-                        ""line_number"": 0
+                        ""line_number"": 1
                       }
                     ]
                   }

@@ -28,13 +28,13 @@ public record PipelineUpdate
     /// What triggered this update.
     /// </summary>
     [JsonPropertyName("cause")]
-    public PipelineUpdateCause Cause { get; set; }
+    public PipelineUpdateCause? Cause { get; set; }
 
     /// <summary>
     /// The update state.
     /// </summary>
     [JsonPropertyName("state")]
-    public PipelineUpdateState State { get; set; }
+    public PipelineUpdateState? State { get; set; }
 
     /// <summary>
     /// The ID of the cluster that the update is running on.
