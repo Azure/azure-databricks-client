@@ -99,7 +99,7 @@ public class MetastoresApiClient : ApiClient, IMetastoresApi
     {
         var requestUri = $"{BaseUnityCatalogUri}/metastores";
         var metastoresList = await HttpGet<JsonObject>(HttpClient, requestUri , cancellationToken).ConfigureAwait(false);
-        metastoresList.TryGetPropertyValue("connections", out var metastores);
+        metastoresList.TryGetPropertyValue("metastores", out var metastores);
 
         return metastores?.Deserialize<IEnumerable<Metastore>>(Options) ?? Enumerable.Empty<Metastore>();
     }

@@ -30,8 +30,6 @@ public class UnityCatalogPermissionsApiClientTest : UnityCatalogApiClientTest
           ]
         }
 ";
-        var expected = JsonNode.Parse(expectedResponse)?["privilege_assignments"].Deserialize<IEnumerable<Permission>>(Options);
-
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Get, requestUri)
@@ -43,7 +41,14 @@ public class UnityCatalogPermissionsApiClientTest : UnityCatalogApiClientTest
         using var client = new UnityCatalogPermissionsApiClient(mockClient);
         var response = await client.Get(securableType, securableName);
 
-        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
+        // adding layer of serialization as simple Assert will fail because of arrays in Json response
+        var responseDict = new Dictionary<string, IEnumerable<Permission>>()
+        {
+            { "privilege_assignments", response }
+        };
+        var responseJson = JsonSerializer.Serialize(responseDict, Options);
+
+        AssertJsonDeepEquals(expectedResponse, responseJson);
     }
 
     [TestMethod]
@@ -114,9 +119,14 @@ public class UnityCatalogPermissionsApiClientTest : UnityCatalogApiClientTest
             securableName,
             new PermissionsUpdate[] { permissionUpdate });
 
-        var expected = JsonNode.Parse(expectedResponse)?["privilege_assignments"].Deserialize<IEnumerable<Permission>>(Options);
+        // adding layer of serialization as simple Assert will fail because of arrays in Json response
+        var responseDict = new Dictionary<string, IEnumerable<Permission>>()
+        {
+            { "privilege_assignments", response }
+        };
+        var responseJson = JsonSerializer.Serialize(responseDict, Options);
 
-        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
+        AssertJsonDeepEquals(expectedResponse, responseJson);
 
         handler.VerifyRequest(
             HttpMethod.Patch,
@@ -147,8 +157,6 @@ public class UnityCatalogPermissionsApiClientTest : UnityCatalogApiClientTest
         }
         ";
 
-        var expected = JsonNode.Parse(expectedResponse)?["privilege_assignments"].Deserialize<IEnumerable<EffectivePermission>>(Options);
-
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Get, requestUri)
@@ -160,6 +168,13 @@ public class UnityCatalogPermissionsApiClientTest : UnityCatalogApiClientTest
         using var client = new UnityCatalogPermissionsApiClient(mockClient);
         var response = await client.GetEffective(securableType, securableName);
 
-        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
+        // adding layer of serialization as simple Assert will fail because of arrays in Json response
+        var responseDict = new Dictionary<string, IEnumerable<EffectivePermission>>()
+        {
+            { "privilege_assignments", response }
+        };
+        var responseJson = JsonSerializer.Serialize(responseDict, Options);
+
+        AssertJsonDeepEquals(expectedResponse, responseJson);
     }
 }
