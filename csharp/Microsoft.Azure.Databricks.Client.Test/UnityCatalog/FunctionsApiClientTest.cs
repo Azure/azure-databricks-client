@@ -92,7 +92,6 @@ public class FunctionsApiClientTest : UnityCatalogApiClientTest
         ";
 
         var expected = JsonNode.Parse(expectedResponse)?["functions"].Deserialize<IEnumerable<Function>>(Options);
-
         
         var handler = CreateMockHandler();
         handler
