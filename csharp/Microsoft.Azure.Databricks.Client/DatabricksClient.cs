@@ -30,6 +30,7 @@ public class DatabricksClient : IDisposable
         this.GlobalInitScriptsApi = new GlobalInitScriptsApi(httpClient);
         this.SQL = new SQLApiClient(httpClient);
         this.Repos = new ReposApiClient(httpClient);
+        this.Pipelines = new PipelinesApiClient(httpClient);
     }
 
     /// <summary>
@@ -163,6 +164,8 @@ public class DatabricksClient : IDisposable
     public ISQLApi SQL { get; }
 
     public IReposApi Repos { get; }
+
+    public IPipelinesApi Pipelines { get; }
 
     public void Dispose()
     {
