@@ -85,7 +85,7 @@ public interface IPipelinesApi : IDisposable
     /// Retrieves events for a pipeline.
     /// </summary>
     Task<PipelineEventsList> ListEvents(
-        string pipelineId, 
+        string pipelineId,
         int maxResults = 25,
         string orderBy = null,
         string filter = null,
