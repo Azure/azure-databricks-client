@@ -138,15 +138,13 @@ public class PipelinesApiClient : ApiClient, IPipelinesApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/pipelines/{pipelineId}/updates";
-
         var requestDict = new Dictionary<string, string>()
         {
             { "full_refresh", fullRefresh.ToString().ToLower() },
             { "cause", cause.ToString() }
         };
-        
+
         var request = JsonSerializer.SerializeToNode(requestDict, Options).AsObject();
-        
         if (refreshSelection != null)
         {
             var refreshSelectionJson = JsonSerializer.SerializeToNode(refreshSelection, Options);
