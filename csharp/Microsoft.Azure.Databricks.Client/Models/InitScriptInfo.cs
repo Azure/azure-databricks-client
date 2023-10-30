@@ -2,14 +2,13 @@
 // Licensed under the MIT License.
 
 using System.Text.Json.Serialization;
+using Microsoft.Azure.Databricks.Client.Converters;
 
 namespace Microsoft.Azure.Databricks.Client.Models;
 
+[JsonConverter(typeof(InitScriptInfoConverter))]
 public record InitScriptInfo
 {
-    /// <summary>
-    /// DBFS location of init script. destination must be provided.
-    /// </summary>
-    [JsonPropertyName("dbfs")]
-    public DbfsStorageInfo Dbfs { get; set; }
+    [JsonIgnore]
+    public StorageInfo StorageDestination { get; set; }
 }

@@ -145,7 +145,8 @@ public class PipelinesApiClient : ApiClient, IPipelinesApi
             { "cause", cause.ToString() }
         };
         var request = JsonSerializer.SerializeToNode(requestDict, Options).AsObject();
-        
+
+        var request = JsonSerializer.SerializeToNode(requestDict, Options).AsObject();
         if (refreshSelection != null)
         {
             var refreshSelectionJson = JsonSerializer.SerializeToNode(refreshSelection, Options);
@@ -171,7 +172,7 @@ public class PipelinesApiClient : ApiClient, IPipelinesApi
         string pageToken = null,
         CancellationToken cancellationToken = default)
     {
-        var requestUriSb = new StringBuilder($"{ApiVersion}/pipelines/{pipelineId}/events?max_results={maxResults}");        
+        var requestUriSb = new StringBuilder($"{ApiVersion}/pipelines/{pipelineId}/events?max_results={maxResults}");
 
         if (orderBy != null)
         {
