@@ -257,64 +257,11 @@ public record FunctionParameter
     public string Comment { get; set; }
 }
 
-public abstract record Dependency;
-
-public record TableDependency : Dependency
-{
-    [JsonPropertyName("table")]
-    public TableDependencyProperties Table { get; set; }
-}
-
-public record FunctionDependency : Dependency
-{
-    [JsonPropertyName("function")]
-    public FunctionDependencyProperties Function  { get; set; }
-}
-
-public record TableDependencyProperties 
-{
-    [JsonPropertyName("table_full_name")]
-    public string TableFullName { get; set; }
-}
-
-public record FunctionDependencyProperties 
-{
-    [JsonPropertyName("function_full_name")]
-    public string FunctionFullName { get; set; }
-}
-
 public enum ParameterType
 {
     PARAM,
     COLUMN
 }
-
-public enum DataType
-{
-    BOOLEAN,
-    BYTE,
-    SHORT,
-    INT,
-    LONG,
-    FLOAT,
-    DOUBLE,
-    DATE,
-    TIMESTAMP,
-    TIMESTAMP_NTZ,
-    STRING,
-    BINARY,
-    DECIMAL,
-    INTERVAL,
-    ARRAY,
-    STRUCT,
-    MAP,
-    CHAR,
-    NULL,
-    USER_DEFINED_TYPE,
-    TABLE_TYPE
-}
-
-
 
 public enum Language
 {

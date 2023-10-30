@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 
@@ -13,37 +9,37 @@ public record StorageCredentialAttributes
     /// The credential name. The name must be unique within the metastore.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; }
+    public string Name { get; set; }
 
     /// <summary>
     /// Comment associated with the credential.
     /// </summary>
     [JsonPropertyName("comment")]
-    public string Comment { get; init; }
+    public string Comment { get; set; }
 
     /// <summary>
     /// Whether the storage credential is only usable for read operations.
     /// </summary>
     [JsonPropertyName("read_only")]
-    public bool ReadOnly { get; init; }
+    public bool ReadOnly { get; set; }
 
     /// <summary>
     /// The Azure service principal configuration.
     /// </summary>
     [JsonPropertyName("azure_service_principal")]
-    public AzureServicePrincipal AzureServicePrincipal { get; init; }
+    public AzureServicePrincipal AzureServicePrincipal { get; set; }
 
     /// <summary>
     /// The Azure managed identity configuration.
     /// </summary>
     [JsonPropertyName("azure_managed_identity")]
-    public AzureManagedIdentity AzureManagedIdentity { get; init; }
+    public AzureManagedIdentity AzureManagedIdentity { get; set; }
 
     /// <summary>
     /// Username of the current owner of the credential.
     /// </summary>
     [JsonPropertyName("owner")]
-    public string Owner { get; init; }
+    public string Owner { get; set; }
 }
 
 public record StorageCredential : StorageCredentialAttributes
@@ -52,43 +48,43 @@ public record StorageCredential : StorageCredentialAttributes
     /// The unique identifier of the credential.
     /// </summary>
     [JsonPropertyName("id")]
-    public string Id { get; init; }
+    public string Id { get; set; }
 
     /// <summary>
     /// Unique identifier of the parent metastore.
     /// </summary>
     [JsonPropertyName("metastore_id")]
-    public string MetastoreId { get; init; }
+    public string MetastoreId { get; set; }
 
     /// <summary>
     /// Time at which this credential was created, in epoch milliseconds.
     /// </summary>
     [JsonPropertyName("created_at")]
-    public DateTimeOffset? CreatedAt { get; init; }
+    public DateTimeOffset? CreatedAt { get; set; }
 
     /// <summary>
     /// Username of the credential creator.
     /// </summary>
     [JsonPropertyName("created_by")]
-    public string CreatedBy { get; init; }
+    public string CreatedBy { get; set; }
 
     /// <summary>
     /// Time at which this credential was last modified, in epoch milliseconds.
     /// </summary>
     [JsonPropertyName("updated_at")]
-    public DateTimeOffset? UpdatedAt { get; init; }
+    public DateTimeOffset? UpdatedAt { get; set; }
 
     /// <summary>
     /// Username of the user who last modified the credential.
     /// </summary>
     [JsonPropertyName("updated_by")]
-    public string UpdatedBy { get; init; }
+    public string UpdatedBy { get; set; }
 
     /// <summary>
     /// Whether this credential is the current metastore's root storage credential.
     /// </summary>
     [JsonPropertyName("used_for_managed_storage")]
-    public bool UsedForManagedStorage { get; init; }
+    public bool UsedForManagedStorage { get; set; }
 }
 
 public record AzureManagedIdentity

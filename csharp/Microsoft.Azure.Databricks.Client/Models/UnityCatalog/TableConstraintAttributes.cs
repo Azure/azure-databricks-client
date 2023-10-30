@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 
@@ -26,16 +22,16 @@ public record TableConstraintAttributes
 public record ConstraintRecord
 {
     [JsonPropertyName("primary_key_constraint")]
-    public PrimaryKey PrimaryKeyConstraint { get; set; }
+    public PrimaryKeyConstraint PrimaryKeyConstraint { get; set; }
 
     [JsonPropertyName("foreign_key_constraint")]
-    public ForeignKey ForeignKeyConstraint { get; set; }
+    public ForeignKeyConstraint ForeignKeyConstraint { get; set; }
 
     [JsonPropertyName("named_table_constraint")]
-    public NamedTable NamedTableConstraint { get; set; }
+    public NamedTableConstraint NamedTableConstraint { get; set; }
 }
 
-public record PrimaryKey
+public record PrimaryKeyConstraint
 {
     /// <summary>
     /// The name of the constraint.
@@ -51,7 +47,7 @@ public record PrimaryKey
 }
 
 
-public record ForeignKey
+public record ForeignKeyConstraint
 {
     /// <summary>
     /// The name of the constraint.
@@ -78,7 +74,7 @@ public record ForeignKey
     public IEnumerable<string> ParentColumns { get; set; }
 }
 
-public record NamedTable
+public record NamedTableConstraint
 {
     /// <summary>
     /// The name of the constraint.

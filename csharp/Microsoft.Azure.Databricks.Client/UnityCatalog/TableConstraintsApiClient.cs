@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.UnityCatalog;
 
-public class TableConstraintsApiClient : ApiClient
+public class TableConstraintsApiClient : ApiClient, ITableConstraintsApi
 {
     public TableConstraintsApiClient(HttpClient httpClient) : base(httpClient)
     {
@@ -22,8 +22,8 @@ public class TableConstraintsApiClient : ApiClient
 
     public async Task Delete(
         string fullTableName,
-        string constraintName, 
-        bool cascade = false, 
+        string constraintName,
+        bool cascade = false,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/constraints/{fullTableName}?constraint_name={constraintName}&cascade={cascade.ToString().ToLower()}";

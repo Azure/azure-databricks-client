@@ -1,10 +1,11 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.UnityCatalog;
 
-public interface ITableConstraintsApi
+public interface ITableConstraintsApi : IDisposable
 {
     /// <summary>
     /// Creates a new table constraint.
