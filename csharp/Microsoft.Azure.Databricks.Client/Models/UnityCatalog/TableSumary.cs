@@ -14,5 +14,5 @@ public record TableSummary
     /// Enum: "MANAGED" "EXTERNAL" "VIEW" "MATERIALIZED_VIEW" "STREAMING_TABLE"
     /// </summary>
     [JsonPropertyName("table_type")]
-    public TableType TableType { get; set; }
+    public TableType? TableType { get; set; }
 }

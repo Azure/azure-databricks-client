@@ -28,7 +28,7 @@ public record Table : TableSummary
     /// Data source format
     /// </summary>
     [JsonPropertyName("data_source_format")]
-    public DataSourceFormat DataSourceFormat { get; set; }
+    public DataSourceFormat? DataSourceFormat { get; set; }
 
     /// <summary>
     /// The array of ColumnInfo definitions of the table's columns.

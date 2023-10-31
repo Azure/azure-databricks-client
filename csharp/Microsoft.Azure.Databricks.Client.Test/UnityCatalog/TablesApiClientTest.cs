@@ -27,14 +27,11 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
         }
 ";
 
-        var testOptions = Options;
-        testOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
-
         var catalogName = "catalog";
 
         var requestUri = $"{BaseApiUri}table-summaries?catalog_name={catalogName}&max_results=10000";
-        var expectedTablesSummaries = JsonNode.Parse(expectedResponse)?["tables"].Deserialize<IEnumerable<Table>>(testOptions);
-        var expectedNextPageToken = JsonNode.Parse(expectedResponse)?["next_page_token"].Deserialize<string>(testOptions);
+        var expectedTablesSummaries = JsonNode.Parse(expectedResponse)?["tables"].Deserialize<IEnumerable<Table>>(Options);
+        var expectedNextPageToken = JsonNode.Parse(expectedResponse)?["next_page_token"].Deserialize<string>(Options);
 
         var handler = CreateMockHandler();
         handler
@@ -53,10 +50,10 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
         {
             { "tables", response.Item1 }
         };
-        var responseListObject = JsonSerializer.SerializeToNode(responseDict, testOptions)!.AsObject();
+        var responseListObject = JsonSerializer.SerializeToNode(responseDict, Options)!.AsObject();
         responseListObject.Add("next_page_token", response.Item2);
 
-        var responseListJson = JsonSerializer.Serialize(responseListObject, testOptions);
+        var responseListJson = JsonSerializer.Serialize(responseListObject, Options);
 
         AssertJsonDeepEquals(expectedResponse, responseListJson);
 
@@ -179,8 +176,8 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
         var schemaName = "schema";
 
         var requestUri = $"{TablesApiUri}?catalog_name={catalogName}&schema_name={schemaName}";
-        var expectedTables = JsonNode.Parse(expectedResponse)?["tables"].Deserialize<IEnumerable<Table>>(testOptions);
-        var expectedNextPageToken = JsonNode.Parse(expectedResponse)?["next_page_token"].Deserialize<string>(testOptions);
+        var expectedTables = JsonNode.Parse(expectedResponse)?["tables"].Deserialize<IEnumerable<Table>>(Options);
+        var expectedNextPageToken = JsonNode.Parse(expectedResponse)?["next_page_token"].Deserialize<string>(Options);
 
         var handler = CreateMockHandler();
         handler
@@ -200,10 +197,10 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
         {
             { "tables", response.Item1 }
         };
-        var responseListObject = JsonSerializer.SerializeToNode(responseDict, testOptions)!.AsObject();
+        var responseListObject = JsonSerializer.SerializeToNode(responseDict, Options)!.AsObject();
         responseListObject.Add("next_page_token", response.Item2);
 
-        var responseListJson = JsonSerializer.Serialize(responseListObject, testOptions);
+        var responseListJson = JsonSerializer.Serialize(responseListObject, Options);
 
         AssertJsonDeepEquals(expectedResponse, responseListJson);
     }
@@ -328,7 +325,7 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
         using var client = new TablesApiClient(mockClient);
         var response = await client.Get(fullTableName);
 
-        var responseJson = JsonSerializer.Serialize(response, testOptions);
+        var responseJson = JsonSerializer.Serialize(response, Options);
 
         AssertJsonDeepEquals(expectedResponse, responseJson);
     }
