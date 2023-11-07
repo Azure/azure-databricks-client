@@ -4,43 +4,13 @@ using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 
-public record Schema
+public record Schema : SchemaAttributes
 {
-    /// <summary>
-    /// Name of the schema, relative to the parent catalog.
-    /// </summary>
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-
-    /// <summary>
-    /// Name of the parent catalog.
-    /// </summary>
-    [JsonPropertyName("catalog_name")]
-    public string CatalogName { get; set; }
-
     /// <summary>
     /// Username of the current owner of the schema.
     /// </summary>
     [JsonPropertyName("owner")]
     public string Owner { get; set; }
-
-    /// <summary>
-    /// User-provided free-form text description.
-    /// </summary>
-    [JsonPropertyName("comment")]
-    public string Comment { get; set; }
-
-    /// <summary>
-    /// A map of key-value properties attached to the securable.
-    /// </summary>
-    [JsonPropertyName("properties")]
-    public Dictionary<string, string> Properties { get; set; }
-
-    /// <summary>
-    /// Storage root URL for managed tables within the schema.
-    /// </summary>
-    [JsonPropertyName("storage_root")]
-    public string StorageRoot { get; set; }
 
     /// <summary>
     /// Unique identifier of the parent metastore.

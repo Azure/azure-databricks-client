@@ -6,7 +6,7 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace Microsoft.Azure.Databricks.Client.Test;
+namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 
 [TestClass]
 public class SchemasApiClientTest : UnityCatalogApiClientTest
@@ -95,6 +95,8 @@ public class SchemasApiClientTest : UnityCatalogApiClientTest
 
         var requestUri = SchemasApiUri;
 
+        var schemasAttributes = JsonSerializer.Deserialize<SchemaAttributes>(expectedRequest, Options);
+
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Post, requestUri)
@@ -105,18 +107,7 @@ public class SchemasApiClientTest : UnityCatalogApiClientTest
 
         using var client = new SchemasApiClient(mockClient);
 
-        var properties = new Dictionary<string, string>()
-        {
-            { "property1", "string" },
-            { "property2", "string" }
-        };
-
-        var response = await client.Create(
-            "string",
-            "string",
-            "string",
-            properties,
-            "string");
+        var response = await client.Create(schemasAttributes);
 
         var responseJson = JsonSerializer.Serialize(response, Options);
 

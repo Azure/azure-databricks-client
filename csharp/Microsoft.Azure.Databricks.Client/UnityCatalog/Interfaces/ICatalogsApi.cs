@@ -18,7 +18,7 @@ public interface ICatalogsApi : IDisposable
     /// <summary>
     /// Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the CREATE_CATALOG privilege.
     /// </summary>
-    Task<Catalog> Create(Catalog catalog, CancellationToken cancellationToken = default);
+    Task<Catalog> Create(CatalogAttributes catalog, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets the specified catalog in a metastore. The caller must be a metastore admin, 

@@ -64,7 +64,7 @@ public class ExternalLocationsApiClientTest : UnityCatalogApiClientTest
             ""name"": ""string"",
             ""url"": ""string"",
             ""credential_name"": ""string"",
-            ""read_only"": ""true"",
+            ""read_only"": true,
             ""comment"": ""string"",
             ""skip_validation"": ""true""
         }
@@ -87,6 +87,8 @@ public class ExternalLocationsApiClientTest : UnityCatalogApiClientTest
         }
 ";
 
+        var externalLocationAttributes = JsonSerializer.Deserialize<ExternalLocationAttributes>(expectedRequest, Options);
+
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Post, requestUri)
@@ -97,11 +99,7 @@ public class ExternalLocationsApiClientTest : UnityCatalogApiClientTest
 
         using var client = new ExternalLocationsApiClient(mockClient);
         var response = await client.Create(
-            "string",
-            "string",
-            "string",
-            true,
-            "string",
+            externalLocationAttributes,
             true);
 
         var responseJson = JsonSerializer.Serialize(response, Options);

@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.Databricks.Client.Models;
-using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
+﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using Microsoft.Azure.Databricks.Client.UnityCatalog;
 using Moq;
 using Moq.Contrib.HttpClient;
@@ -7,7 +6,7 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace Microsoft.Azure.Databricks.Client.Test;
+namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 
 [TestClass]
 public class CatalogsApiClientTest : UnityCatalogApiClientTest
@@ -82,8 +81,7 @@ public class CatalogsApiClientTest : UnityCatalogApiClientTest
             ""options"": {
                 ""property1"": ""string"",
                 ""property2"": ""string""
-            },
-            ""securable_type"": ""CATALOG""
+            }
         }
         ";
 
@@ -123,7 +121,7 @@ public class CatalogsApiClientTest : UnityCatalogApiClientTest
 ";
 
         var requestUri = CatalogsApiUri;
-        var catalogToCreate = JsonSerializer.Deserialize<Catalog>(expectedRequest, Options);
+        var catalogToCreate = JsonSerializer.Deserialize<CatalogAttributes>(expectedRequest, Options);
 
         var handler = CreateMockHandler();
         handler

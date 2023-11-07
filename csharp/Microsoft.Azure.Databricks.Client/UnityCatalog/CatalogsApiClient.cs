@@ -25,7 +25,7 @@ public class CatalogsApiClient : ApiClient, ICatalogsApi
         return catalogs?.Deserialize<IEnumerable<Catalog>>(Options) ?? Enumerable.Empty<Catalog>();
     }
 
-    public async Task<Catalog> Create(Catalog catalog, CancellationToken cancellationToken = default)
+    public async Task<Catalog> Create(CatalogAttributes catalog, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/catalogs";
         var request = JsonSerializer.SerializeToNode(catalog, Options).AsObject();

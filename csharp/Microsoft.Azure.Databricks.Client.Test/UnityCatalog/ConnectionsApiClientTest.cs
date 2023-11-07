@@ -167,12 +167,7 @@ public class ConnectionsApiClientTest : UnityCatalogApiClientTest
         }}
         ";
 
-        var propertiesDict = new Dictionary<string, string>()
-            {
-                { "property1", "string" },
-                { "property2", "string" }
-            };
-
+        var connectionToCreate = JsonSerializer.Deserialize<ConnectionAttributes>(expectedRequest, Options);
         var handler = CreateMockHandler();
         handler
             .SetupRequest(HttpMethod.Post, requestUri)
@@ -183,12 +178,7 @@ public class ConnectionsApiClientTest : UnityCatalogApiClientTest
 
         using var client = new ConnectionsApiClient(mockClient);
         var response = await client.Create(
-            "string",
-            ConnectionType.MYSQL,
-            propertiesDict,
-            true,
-            "string",
-            propertiesDict);
+            connectionToCreate);
 
         var responseJson = JsonSerializer.Serialize(response, Options);
         AssertJsonDeepEquals(expectedResponse, responseJson);

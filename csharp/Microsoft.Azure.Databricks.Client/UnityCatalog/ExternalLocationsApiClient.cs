@@ -26,39 +26,18 @@ public class ExternalLocationsApiClient : ApiClient, IExternalLocationsApi
     }
 
     public async Task<ExternalLocation> Create(
-        string name,
-        string url,
-        string credentialName,
-        bool? readOnly = default,
-        string comment = default,
+        ExternalLocationAttributes attributes,
         bool? skipValidation = default,
         CancellationToken cancellationToken = default)
     {
-        var request = new Dictionary<string, string>()
-        {
-            {"name", name },
-            {"url", url },
-            {"credential_name", credentialName }
-        };
-
-        if (readOnly != null)
-        {
-            request["read_only"] = readOnly.ToString().ToLower();
-        }
-
-        if (comment != null)
-        {
-            request["comment"] = comment;
-        }
+        var request = JsonSerializer.SerializeToNode(attributes)!.AsObject();
 
         if (skipValidation != null)
         {
-            request["skip_validation"] = skipValidation.ToString().ToLower();
+            request.Add("skip_validation", skipValidation.ToString().ToLower());
         }
 
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-
-        return await HttpPost<JsonObject, ExternalLocation>(HttpClient, this.ExternalLocationsApiUri, requestJson, cancellationToken).ConfigureAwait(false);
+        return await HttpPost<JsonObject, ExternalLocation>(HttpClient, this.ExternalLocationsApiUri, request, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ExternalLocation> Get(string name, CancellationToken cancellationToken = default)

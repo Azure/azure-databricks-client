@@ -5,7 +5,7 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace Microsoft.Azure.Databricks.Client.Test;
+namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 
 [TestClass]
 public class TablesApiClientTest : UnityCatalogApiClientTest
@@ -77,13 +77,13 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
                   ""type_text"": ""string"",
                   ""type_json"": ""string"",
                   ""type_name"": ""BOOLEAN"",
-                  ""type_precision"": 0,
-                  ""type_scale"": 0,
+                  ""type_precision"": 1,
+                  ""type_scale"": 1,
                   ""type_interval_type"": ""string"",
-                  ""position"": 0,
+                  ""position"": 1,
                   ""comment"": ""string"",
                   ""nullable"": true,
-                  ""partition_index"": 0,
+                  ""partition_index"": 1,
                   ""mask"": {
                     ""function_name"": ""string"",
                     ""using_column_names"": [
@@ -169,8 +169,6 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
           ""next_page_token"": ""string""
         }
 ";
-        var testOptions = Options;
-        testOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
 
         var catalogName = "catalog";
         var schemaName = "schema";
@@ -221,13 +219,13 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
               ""type_text"": ""string"",
               ""type_json"": ""string"",
               ""type_name"": ""BOOLEAN"",
-              ""type_precision"": 0,
-              ""type_scale"": 0,
+              ""type_precision"": 1,
+              ""type_scale"": 1,
               ""type_interval_type"": ""string"",
-              ""position"": 0,
+              ""position"": 1,
               ""comment"": ""string"",
               ""nullable"": true,
-              ""partition_index"": 0,
+              ""partition_index"": 1,
               ""mask"": {
                 ""function_name"": ""string"",
                 ""using_column_names"": [
@@ -306,9 +304,6 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
           }
 }
 ";
-
-        var testOptions = Options;
-        testOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
 
         var fullTableName = $"catalog.schema.table";
 

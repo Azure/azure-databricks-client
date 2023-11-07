@@ -27,41 +27,11 @@ public class ConnectionsApiClient : ApiClient, IConnectionsApi
     }
 
     public async Task<Connection> Create(
-        string name,
-        ConnectionType connectionType,
-        Dictionary<string, string> options,
-        bool? readOnly = default,
-        string comment = default,
-        Dictionary<string, string> properties = default,
+        ConnectionAttributes connectionAttributes,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/connections";
-
-        var request = new Dictionary<string, string>()
-        {
-            {"name", name },
-            {"connection_type", connectionType.ToString() }
-        };
-
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-
-        requestJson.Add("options", JsonSerializer.SerializeToNode(options));
-
-        if (readOnly  != null )
-        {
-            requestJson.Add("read_only", readOnly);
-        }
-
-        if (comment != null )
-        {
-            requestJson.Add("comment", comment);
-        }
-
-        if (properties != null )
-        {
-            requestJson.Add("properties", JsonSerializer.SerializeToNode(properties));
-        }
-
+        var requestJson = JsonSerializer.SerializeToNode(connectionAttributes, Options).AsObject();
         return await HttpPost<JsonObject, Connection>(HttpClient, requestUri, requestJson, cancellationToken).ConfigureAwait(false);
     }
 

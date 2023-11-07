@@ -21,11 +21,7 @@ public interface IExternalLocationsApi : IDisposable
     /// or have the CREATE_EXTERNAL_LOCATION privilege on both the metastore and the associated storage credential.
     /// </summary>
     Task<ExternalLocation> Create(
-        string name,
-        string url,
-        string credentialName,
-        bool? readOnly = default,
-        string comment = default,
+        ExternalLocationAttributes attributes,
         bool? skipValidation = default,
         CancellationToken cancellationToken = default);
 

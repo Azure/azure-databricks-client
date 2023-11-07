@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Azure.Databricks.Client.Test;
+namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 
 [TestClass]
 public class UnityCatalogApiClientTest : ApiClientTest

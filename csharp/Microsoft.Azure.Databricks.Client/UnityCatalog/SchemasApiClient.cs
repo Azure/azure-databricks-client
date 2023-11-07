@@ -26,37 +26,12 @@ public class SchemasApiClient : ApiClient, ISchemasApi
     }
 
     public async Task<Schema> Create(
-        string name,
-        string catalogName,
-        string comment = default,
-        Dictionary<string, string> properties = default,
-        string storageRoot = default,
+        SchemaAttributes attributes,
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/schemas";
-        var requestDict = new Dictionary<string, string>()
-        {
-            { "name", name },
-            { "catalog_name", catalogName }
-        };
-
-        if (comment != null)
-        {
-            requestDict["comment"] = comment;
-        }
-
-        if (storageRoot != null)
-        {
-            requestDict["storage_root"] = storageRoot;
-        }
-
-
-        var request = JsonSerializer.SerializeToNode(requestDict, Options).AsObject();
         
-        if (properties != null)
-        {
-            request.Add("properties", JsonSerializer.SerializeToNode(properties, Options));
-        }
+        var request = JsonSerializer.SerializeToNode(attributes, Options).AsObject();
 
         return await HttpPost<JsonObject, Schema>
                 (this.HttpClient, requestUri, request, cancellationToken)

@@ -23,12 +23,7 @@ public interface IConnectionsApi : IDisposable
     /// It allows users to specify connection details and configurations for interaction with the external server.
     /// </summary>
     Task<Connection> Create(
-        string name,
-        ConnectionType connectionType,
-        Dictionary<string, string> options,
-        bool? readOnly = default,
-        string comment = default,
-        Dictionary<string, string> properties = default,
+        ConnectionAttributes connectionAttributes,
         CancellationToken cancellationToken = default);
 
     /// <summary>

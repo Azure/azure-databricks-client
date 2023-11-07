@@ -6,7 +6,7 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace Microsoft.Azure.Databricks.Client.Test;
+namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 
 [TestClass]
 public class StorageCredentialsApiClientTest : UnityCatalogApiClientTest

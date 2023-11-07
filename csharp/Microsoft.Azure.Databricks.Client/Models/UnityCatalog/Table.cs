@@ -172,7 +172,7 @@ public record Column
     /// Name of type (INT, STRUCT, MAP, etc.).
     /// </summary>
     [JsonPropertyName("type_name")]
-    public DataType TypeName { get; set; }
+    public DataType? TypeName { get; set; }
 
     /// <summary>
     /// Digits of precision; required for DecimalTypes.

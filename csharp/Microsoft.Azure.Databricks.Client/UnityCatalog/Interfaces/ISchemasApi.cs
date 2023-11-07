@@ -19,11 +19,7 @@ public interface ISchemasApi : IDisposable
     /// Creates a new schema for catalog in the Metatastore. The caller must be a metastore admin, or have the CREATE_SCHEMA privilege in the parent catalog.
     /// </summary>
     Task<Schema> Create(
-        string name,
-        string catalogName,
-        string comment = default,
-        Dictionary<string, string> properties = default,
-        string storageRoot = default,
+        SchemaAttributes attributes,
         CancellationToken cancellationToken = default);
 
     /// <summary>
