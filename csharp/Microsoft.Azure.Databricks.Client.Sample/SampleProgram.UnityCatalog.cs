@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.Databricks.Client.Models;
-using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
+﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,10 +11,18 @@ internal static partial class SampleProgram
     {
         var catalogAttributes = new CatalogAttributes()
         {
-            Name = "catalog123",
-            Comment = "comment",
+            Name = "9E2B6ACC-2624-4D22-8616-D9808A53EEF3",
+            Comment = "Catalog created during C# client sample run"
         };
 
+        PrintDelimiter();
+
+        Console.WriteLine("Listing metastores");
+        var metastoresList = await client.UnityCatalog.Metastores.List();
+        foreach (var metastore in metastoresList)
+        {
+            Console.WriteLine($"\t{metastore.MetastoreId}, {metastore.Name}");
+        }
         PrintDelimiter();
 
         Console.WriteLine("Creating a catalog...");
@@ -25,7 +32,7 @@ internal static partial class SampleProgram
 
         Console.WriteLine("Listing schemas in created catalog...");
         var schemasList = await client.UnityCatalog.Schemas.List(catalog.FullName);
-        foreach (var schema in schemasList) 
+        foreach (var schema in schemasList)
         {
             Console.WriteLine($"\t{schema.Name}");
         }
@@ -35,7 +42,7 @@ internal static partial class SampleProgram
         var systemSchemasList = await client.UnityCatalog.SystemSchemas.List(catalog.MetastoreId);
         foreach (var schema in systemSchemasList)
         {
-            Console.WriteLine($"\t{schema.Schema} | {schema.State}");
+            Console.WriteLine($"\t{schema.Schema}, {schema.State}");
         }
         PrintDelimiter();
 
@@ -55,7 +62,7 @@ internal static partial class SampleProgram
         Console.WriteLine("Schemas deleted");
         PrintDelimiter();
 
-        Console.WriteLine("Deleting catalog...");
+        Console.WriteLine($"Deleting created catalog {catalog.Name}...");
         await client.UnityCatalog.Catalogs.Delete(catalog.Name);
         Console.WriteLine("Catalog deleted");
     }
