@@ -15,9 +15,11 @@ public class SchemasApiClient : ApiClient, ISchemasApi
     {
     }
 
-    public async Task<IEnumerable<Schema>> List(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Schema>> List(
+        string catalogName,
+        CancellationToken cancellationToken = default)
     {
-        var requestUri = $"{BaseUnityCatalogUri}/schemas";
+        var requestUri = $"{BaseUnityCatalogUri}/schemas?catalog_name={catalogName}";
         var schemasList = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
 
         schemasList.TryGetPropertyValue("schemas", out var schemas);

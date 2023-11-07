@@ -13,7 +13,9 @@ public interface ISchemasApi : IDisposable
     /// all schemas for the catalog will be retrieved. Otherwise, only schemas owned by the caller
     /// (or for which the caller has the USE_SCHEMA privilege) will be retrieved. There is no guarantee of a specific ordering of the elements in the array.
     /// </summary>
-    Task<IEnumerable<Schema>> List(CancellationToken cancellationToken = default);
+    Task<IEnumerable<Schema>> List(
+        string catalogName,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new schema for catalog in the Metatastore. The caller must be a metastore admin, or have the CREATE_SCHEMA privilege in the parent catalog.

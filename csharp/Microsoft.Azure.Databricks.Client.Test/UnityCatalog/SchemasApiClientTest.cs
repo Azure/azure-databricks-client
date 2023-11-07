@@ -37,7 +37,7 @@ public class SchemasApiClientTest : UnityCatalogApiClientTest
           ]
         }
 ";
-        var requestUri = SchemasApiUri;
+        var requestUri = $"{SchemasApiUri}?catalog_name=string";
 
         var expected = JsonNode.Parse(expectedResponse)?["schemas"].Deserialize<IEnumerable<Schema>>(Options);
 
@@ -50,7 +50,7 @@ public class SchemasApiClientTest : UnityCatalogApiClientTest
         mockClient.BaseAddress = ApiClientTest.BaseApiUri;
 
         using var client = new SchemasApiClient(mockClient);
-        var actual = await client.List();
+        var actual = await client.List("string");
 
         CollectionAssert.AreEqual(expected?.ToList(), actual?.ToList());
     }
