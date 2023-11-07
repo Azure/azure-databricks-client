@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.Databricks.Client.UnityCatalog;
+using Microsoft.Azure.Databricks.Client.UnityCatalog.Interfaces;
 using System;
 using System.Net.Http;
 
@@ -21,6 +22,7 @@ public class UnityCatalogClient : ApiClient, IDisposable
         this.Tables = new TablesApiClient(httpClient);
         this.UnityCatalogPermissions = new UnityCatalogPermissionsApiClient(httpClient);
         this.Volumes = new VolumesApiClient(httpClient);
+        this.Lineage = new LineageApiClient(httpClient);
     }
 
     public ICatalogsApi Catalogs { get; set; }
@@ -48,4 +50,6 @@ public class UnityCatalogClient : ApiClient, IDisposable
     public IUnityCatalogPermissionsApi UnityCatalogPermissions { get; set; }
 
     public IVolumesApi Volumes { get; set; }
+
+    public ILineageApi Lineage { get; set; }
 }
