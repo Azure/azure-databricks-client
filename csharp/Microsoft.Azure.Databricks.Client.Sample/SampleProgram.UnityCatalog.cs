@@ -30,6 +30,14 @@ internal static partial class SampleProgram
         Console.WriteLine($"Created a catalog of name: {catalog.Name}");
         PrintDelimiter();
 
+        Console.WriteLine("Listing catalogs...");
+        var catalogsList = await client.UnityCatalog.Catalogs.List();
+        foreach (var catalogItem in catalogsList)
+        {
+            Console.WriteLine($"\t{catalogItem.Name}, {catalogItem.CatalogType}");
+        }
+        PrintDelimiter();
+
         Console.WriteLine("Listing schemas in created catalog...");
         var schemasList = await client.UnityCatalog.Schemas.List(catalog.FullName);
         foreach (var schema in schemasList)

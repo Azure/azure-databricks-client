@@ -99,7 +99,8 @@ public enum CatalogType
 {
     MANAGED_CATALOG,
     DELTASHARING_CATALOG,
-    SYSTEM_CATALOG
+    SYSTEM_CATALOG,
+    INTERNAL_CATALOG
 }
 
 public enum IsolationMode
