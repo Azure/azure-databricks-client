@@ -14,6 +14,12 @@ public record RunState
     public RunLifeCycleState LifeCycleState { get; set; }
 
     /// <summary>
+    /// The reason indicating why the run was queued.
+    /// </summary>
+    [JsonPropertyName("queue_reason")]
+    public string QueueReason { get; set; }
+
+    /// <summary>
     /// The result state of a run. If it is not available, the response won’t include this field. <see cref="RunResultState"/> for details about the availability of result_state.
     /// </summary>
     [JsonPropertyName("result_state")]

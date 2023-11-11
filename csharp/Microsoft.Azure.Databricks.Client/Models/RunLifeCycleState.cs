@@ -40,5 +40,7 @@ public enum RunLifeCycleState
 
     BLOCKED,
 
-    WAITING_FOR_RETRY
+    WAITING_FOR_RETRY,
+
+    QUEUED
 }
