@@ -52,7 +52,7 @@ public record Table : TableSummary
     /// View dependencies (when table_type == VIEW or MATERIALIZED_VIEW, STREAMING_TABLE)
     /// </summary>
     [JsonPropertyName("view_dependencies")]
-    public IEnumerable<Dependency> ViewDependencies { get; set; }
+    public ViewDependencies ViewDependencies { get; set; }
 
     /// <summary>
     /// List of schemes whose objects can be referenced without qualification.
@@ -278,6 +278,14 @@ public record NamedTableConstraint : TableConstraint
 {
     [JsonPropertyName("named_table_constraint")]
     public NamedConstraint NamedTable { get; set; }
+}
+
+public record ViewDependencies
+{
+    /// <summary>
+    /// Array of dependencies.
+    /// </summary>
+    IEnumerable<Dependency> Dependencies { get; set; }
 }
 
 public enum TableType
