@@ -88,7 +88,7 @@ public record Table : TableSummary
     /// List of table constraints.
     /// </summary>
     [JsonPropertyName("table_constraints")]
-    public TableConstraints TableConstraints { get; set; }
+    public IEnumerable<TableConstraint> TableConstraints { get; set; }
 
     [JsonPropertyName("row_filter")]
     public RowFilter RowFilter { get; set; }
@@ -235,12 +235,6 @@ public record Mask
     public List<string> UsingColumnNames { get; set; }
 }
 
-public record TableConstraints
-{
-    [JsonPropertyName("table_constraints")]
-    public List<ConstraintRecord> TableConstraintsList { get; set; }
-}
-
 public record RowFilter
 {
     /// <summary>
@@ -264,6 +258,26 @@ public record DeltaRuntimePropertiesKvpairs
     /// </summary>
     [JsonPropertyName("delta_runtime_properties")]
     public Dictionary<string, string> DeltaRuntimeProperties { get; set; }
+}
+
+public abstract record TableConstraint;
+
+public record PrimaryKeyTableConstraint : TableConstraint
+{
+    [JsonPropertyName("primary_key_constraint")]
+    public PrimaryKeyConstraint PrimaryKey { get; set; }
+}
+
+public record ForeignKeyTableConstraint : TableConstraint
+{
+    [JsonPropertyName("foreign_key_constraint")]
+    public ForeignKeyConstraint ForeignKey { get; set; }
+}
+
+public record NamedTableConstraint : TableConstraint
+{
+    [JsonPropertyName("named_table_constraint")]
+    public NamedConstraint NamedTable { get; set; }
 }
 
 public enum TableType

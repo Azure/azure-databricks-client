@@ -25,7 +25,7 @@ public interface ITablesApi : IDisposable
         string schemaName,
         int? maxResults = default,
         string pageToken = default,
-        string includeDeltaMetadata = default,
+        bool? includeDeltaMetadata = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>

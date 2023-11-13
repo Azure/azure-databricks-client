@@ -29,7 +29,8 @@ public abstract class ApiClient : IDisposable
             new LibraryConverter(),
             new SecretScopeConverter(),
             new AclPermissionItemConverter(),
-            new DepedencyConverter()
+            new DepedencyConverter(),
+            new TableConstraintConverter(),
         }
     };
 

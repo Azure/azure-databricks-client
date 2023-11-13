@@ -20,7 +20,9 @@ internal static partial class SampleProgram
             new MillisecondEpochDateTimeConverter(),
             new LibraryConverter(),
             new SecretScopeConverter(),
-            new AclPermissionItemConverter()
+            new AclPermissionItemConverter(),
+            new DepedencyConverter(),
+            new TableConstraintConverter(),
         }
     };
 

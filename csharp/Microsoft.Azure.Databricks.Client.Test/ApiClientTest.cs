@@ -24,7 +24,8 @@ public abstract class ApiClientTest
             new LibraryConverter(),
             new SecretScopeConverter(),
             new AclPermissionItemConverter(),
-            new DepedencyConverter()
+            new DepedencyConverter(),
+            new TableConstraintConverter()
         }
     };
 

@@ -60,7 +60,7 @@ public class TablesApiClient : ApiClient, ITablesApi
         string schemaName,
         int? maxResults = default,
         string pageToken = default,
-        string includeDeltaMetadata = default,
+        bool? includeDeltaMetadata = default,
         CancellationToken cancellationToken = default)
     {
         var requestUriSb = new StringBuilder(
@@ -78,7 +78,7 @@ public class TablesApiClient : ApiClient, ITablesApi
 
         if (includeDeltaMetadata != null)
         {
-            requestUriSb.Append($"&include_delta_metadata={includeDeltaMetadata}");
+            requestUriSb.Append($"&include_delta_metadata={includeDeltaMetadata.ToString().ToLower()}");
         }
 
         var requestUri = requestUriSb.ToString();

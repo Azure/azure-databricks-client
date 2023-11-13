@@ -28,7 +28,7 @@ public record ConstraintRecord
     public ForeignKeyConstraint ForeignKeyConstraint { get; set; }
 
     [JsonPropertyName("named_table_constraint")]
-    public NamedTableConstraint NamedTableConstraint { get; set; }
+    public NamedConstraint NamedConstraint { get; set; }
 }
 
 public record PrimaryKeyConstraint
@@ -74,7 +74,7 @@ public record ForeignKeyConstraint
     public IEnumerable<string> ParentColumns { get; set; }
 }
 
-public record NamedTableConstraint
+public record NamedConstraint
 {
     /// <summary>
     /// The name of the constraint.

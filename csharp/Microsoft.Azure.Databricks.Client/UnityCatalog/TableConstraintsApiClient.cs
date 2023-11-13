@@ -13,11 +13,11 @@ public class TableConstraintsApiClient : ApiClient, ITableConstraintsApi
     {
     }
 
-    public async Task<ConstraintRecord> Create(TableConstraintAttributes constraintAttributes, CancellationToken cancellationToken = default)
+    public async Task<TableConstraint> Create(TableConstraintAttributes constraintAttributes, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/constraints";
         var request = JsonSerializer.SerializeToNode(constraintAttributes, Options).AsObject();
-        return await HttpPost<JsonObject, ConstraintRecord>(this.HttpClient, requestUri, request, cancellationToken);
+        return await HttpPost<JsonObject, TableConstraint>(this.HttpClient, requestUri, request, cancellationToken);
     }
 
     public async Task Delete(

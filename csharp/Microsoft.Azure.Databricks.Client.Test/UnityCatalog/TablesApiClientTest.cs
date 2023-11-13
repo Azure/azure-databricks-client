@@ -114,35 +114,6 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
                 ""property2"": ""string""
               },
               ""storage_credential_name"": ""string"",
-              ""table_constraints"": {
-                ""table_constraints"": [
-                  {
-                    ""primary_key_constraint"": {
-                      ""name"": ""string"",
-                      ""child_columns"": [
-                        ""string""
-                      ]
-                    }
-                  },
-                  {
-                    ""foreign_key_constraint"": {
-                      ""name"": ""string"",
-                      ""child_columns"": [
-                        ""string""
-                      ],
-                      ""parent_table"": ""string"",
-                      ""parent_columns"": [
-                        ""string""
-                      ]
-                    }
-                   },
-                   {
-                    ""named_table_constraint"": {
-                      ""name"": ""string""
-                    }
-                  }
-                ]
-              },
               ""row_filter"": {
                 ""name"": ""string"",
                 ""input_column_names"": [
@@ -256,32 +227,34 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
             ""property2"": ""string""
           },
           ""storage_credential_name"": ""string"",
-          ""table_constraints"": {
-            ""table_constraints"": [
+          ""table_constraints"": [
               {
-                ""primary_key_constraint"": {
-                  ""name"": ""string"",
-                  ""child_columns"": [
-                    ""string""
-                  ]
-                },
-                ""foreign_key_constraint"": {
-                  ""name"": ""string"",
-                  ""child_columns"": [
-                    ""string""
-                  ],
-                  ""parent_table"": ""string"",
-                  ""parent_columns"": [
-                    ""string""
-                  ]
-                },
-                ""named_table_constraint"": {
-                  ""name"": ""string""
-                }
+                  ""primary_key_constraint"": {
+                      ""name"": ""string"",
+                      ""child_columns"": [
+                          ""string""
+                      ]
+                  }
+              },
+              {
+                  ""foreign_key_constraint"": {
+                      ""name"": ""string"",
+                      ""child_columns"": [
+                          ""string""
+                      ],
+                      ""parent_table"": ""string"",
+                      ""parent_columns"": [
+                          ""string""
+                      ]
+                  }
+              },
+              {
+                  ""named_table_constraint"": {
+                      ""name"": ""string""
+                  }
               }
-            ]
-          },
-          ""row_filter"": {
+          ],
+        ""row_filter"": {
             ""name"": ""string"",
             ""input_column_names"": [
               ""string""
