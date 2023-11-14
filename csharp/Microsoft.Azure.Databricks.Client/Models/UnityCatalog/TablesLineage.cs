@@ -16,4 +16,16 @@ public record ObjectsLineageStream
 {
     [JsonPropertyName("tableInfo")]
     public TableInfo TableInfo { get; set; }
+
+    [JsonPropertyName("pipelineInfos")]
+    public IEnumerable<PipelineInfo> PipelineInfos { get; set; }
+}
+
+public record PipelineInfo
+{
+    [JsonPropertyName("pipeline_id")]
+    public string PipelineId { get; set; }
+
+    [JsonPropertyName("update_id")]
+    public string UpdateId { get; set; }
 }
