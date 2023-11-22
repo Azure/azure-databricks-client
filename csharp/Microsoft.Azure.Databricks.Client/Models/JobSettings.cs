@@ -192,7 +192,7 @@ public record JobSettings : JobRunBaseSettings<JobTaskSettings>
     public JobEmailNotifications EmailNotifications { get; set; }
 
     /// <summary>
-    /// An optional set of webhook addreses that will be notified when runs of this job begin or complete as well as when this job is deleted. The default behavior is to not send any webhook notifications.
+    /// An optional set of webhook addresses that will be notified when runs of this job begin or complete as well as when this job is deleted. The default behavior is to not send any webhook notifications.
     /// </summary>
     [JsonPropertyName("webhook_notifications")]
     public JobWebhookNotifications WebhookNotifications { get; set; }
@@ -235,4 +235,16 @@ public record RunSubmitSettings : JobRunBaseSettings<RunSubmitTaskSettings>
     /// </summary>
     [JsonPropertyName("run_name")]
     public string RunName { get; set; }
+
+    /// <summary>
+    /// An optional set of email addresses that will be notified when runs of this job begin or complete as well as when this job is deleted. The default behavior is to not send any emails.
+    /// </summary>
+    [JsonPropertyName("email_notifications")]
+    public JobEmailNotifications EmailNotifications { get; set; }
+
+    /// <summary>
+    /// An optional set of webhook addresses that will be notified when runs of this job begin or complete as well as when this job is deleted. The default behavior is to not send any webhook notifications.
+    /// </summary>
+    [JsonPropertyName("webhook_notifications")]
+    public JobWebhookNotifications WebhookNotifications { get; set; }
 }
