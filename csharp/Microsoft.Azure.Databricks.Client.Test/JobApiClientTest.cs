@@ -208,6 +208,17 @@ public class JobApiClientTest : ApiClientTest
                         ""timeout_seconds"": 86400
                     }
                 ],
+                ""email_notifications"": {
+                    ""on_start"": [""user.name@databricks.com""],
+                    ""on_success"": [""user.name@databricks.com""],
+                    ""on_failure"": [""user.name@databricks.com""],
+                    ""no_alert_for_skipped_runs"": false
+                },
+                ""webhook_notifications"": {
+                    ""on_start"": [{""id"":""1234567""}],
+                    ""on_success"": [{""id"":""1234567""}],
+                    ""on_failure"": [{""id"":""1234567""}]
+                },
                 ""timeout_seconds"": 86400,
                 ""git_source"": null,
                 ""idempotency_token"": ""8f018174-4792-40d5-bcbc-3e6a527352c8"",
@@ -252,7 +263,20 @@ public class JobApiClientTest : ApiClientTest
         var runSubmit = new RunSubmitSettings
         {
             RunName = "A multitask job run",
-            TimeoutSeconds = 86400
+            TimeoutSeconds = 86400,
+            EmailNotifications = new JobEmailNotifications
+            {
+                NoAlertForSkippedRuns = false,
+                OnStart = new[] { "user.name@databricks.com" },
+                OnFailure = new[] { "user.name@databricks.com" },
+                OnSuccess = new[] { "user.name@databricks.com" }
+            },
+            WebhookNotifications = new JobWebhookNotifications
+            {
+                OnStart = new[] { new JobWebhookSetting() { Id = "1234567" } },
+                OnFailure = new[] { new JobWebhookSetting() { Id = "1234567" } },
+                OnSuccess = new[] { new JobWebhookSetting() { Id = "1234567" } },
+            }
         };
 
         var sessionizeTask = new SparkJarTask
