@@ -643,6 +643,10 @@ public class JobApiClientTest : ApiClientTest
               ""python_named_params"": {
                 ""name"": ""task"",
                 ""data"": ""dbfs:/path/to/data.json""
+              },
+              ""job_parameters"": {
+                ""name"": ""job"",
+                ""data"": ""dbfs:/path/to/job/data.json""
               }
             }
         ";
@@ -660,7 +664,8 @@ public class JobApiClientTest : ApiClientTest
             NotebookParams = new Dictionary<string, string> { { "name", "john doe" }, { "age", "35" } },
             PythonParams = new List<string> { "john doe", "35" },
             SparkSubmitParams = new List<string> { "--class", "org.apache.spark.examples.SparkPi" },
-            PythonNamedParams = new Dictionary<string, string> { { "name", "task" }, { "data", "dbfs:/path/to/data.json" } }
+            PythonNamedParams = new Dictionary<string, string> { { "name", "task" }, { "data", "dbfs:/path/to/data.json" } },
+            JobParams = new Dictionary<string, string> { { "name", "job" }, { "data", "dbfs:/path/to/job/data.json" } }
         };
 
         var handler = CreateMockHandler();

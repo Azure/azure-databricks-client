@@ -47,6 +47,11 @@ public record RunParameters
         return new RunParameters { SQLParams = sqlParams };
     }
 
+    public static RunParameters CreateJobParams(Dictionary<string, string> jobParams)
+    {
+        return new RunParameters { JobParams = jobParams };
+    }
+
     /// <summary>
     /// A list of parameters for jobs with jar tasks, e.g. "jar_params": ["john doe", "35"]. The parameters will be used to invoke the main function of the main class specified in the spark jar task. If not specified upon run-now, it will default to an empty list. jar_params cannot be specified in conjunction with notebook_params. The json representation of this field (i.e. {"jar_params":["john doe","35"]}) cannot exceed 10,000 bytes.
     /// </summary>
@@ -94,6 +99,12 @@ public record RunParameters
     /// </summary>
     [JsonPropertyName("dbt_commands")]
     public List<string> DBTCommands { get; set; }
+
+    /// <summary>
+    /// Job-level parameters used in the run, for example "param": "overriding_val"
+    /// </summary>
+    [JsonPropertyName("job_parameters")]
+    public Dictionary<string, string> JobParams { get; set; }
 }
 
 public record PipelineParams
