@@ -325,7 +325,7 @@ public record RunJobTask
     /// ID of the job to trigger.
     /// </summary>
     [JsonPropertyName("job_id")]
-    public string JobId { get; set; }
+    public long JobId { get; set; }
 }
 
 #endregion
