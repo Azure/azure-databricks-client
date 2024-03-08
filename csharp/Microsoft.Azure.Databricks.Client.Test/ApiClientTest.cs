@@ -23,7 +23,9 @@ public abstract class ApiClientTest
             new MillisecondEpochDateTimeConverter(),
             new LibraryConverter(),
             new SecretScopeConverter(),
-            new AclPermissionItemConverter()
+            new AclPermissionItemConverter(),
+            new DepedencyConverter(),
+            new TableConstraintConverter()
         }
     };
 

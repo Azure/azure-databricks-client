@@ -122,6 +122,11 @@ public class PipelinesApiClientTest : ApiClientTest
                 ""notebook"": {
                   ""path"": ""string""
                 }
+              },
+              {
+                ""file"": {
+                  ""path"": ""string""
+                }
               }
             ],
             ""target"": ""string"",

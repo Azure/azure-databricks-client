@@ -145,6 +145,7 @@ public class PipelinesApiClient : ApiClient, IPipelinesApi
         };
 
         var request = JsonSerializer.SerializeToNode(requestDict, Options).AsObject();
+
         if (refreshSelection != null)
         {
             var refreshSelectionJson = JsonSerializer.SerializeToNode(refreshSelection, Options);

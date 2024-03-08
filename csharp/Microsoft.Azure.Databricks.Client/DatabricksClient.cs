@@ -31,6 +31,7 @@ public class DatabricksClient : IDisposable
         this.SQL = new SQLApiClient(httpClient);
         this.Repos = new ReposApiClient(httpClient);
         this.Pipelines = new PipelinesApiClient(httpClient);
+        this.UnityCatalog = new UnityCatalogClient(httpClient);
     }
 
     /// <summary>
@@ -167,6 +168,8 @@ public class DatabricksClient : IDisposable
 
     public IPipelinesApi Pipelines { get; }
 
+    public UnityCatalogClient UnityCatalog { get; }
+
     public void Dispose()
     {
         Clusters.Dispose();
@@ -181,6 +184,8 @@ public class DatabricksClient : IDisposable
         ClusterPolicies.Dispose();
         GlobalInitScriptsApi.Dispose();
         Repos.Dispose();
+        Pipelines.Dispose();
+        UnityCatalog.Dispose();
         GC.SuppressFinalize(this);
     }
 }
