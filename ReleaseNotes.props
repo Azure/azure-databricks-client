@@ -16,6 +16,12 @@
             - Add support for listing and getting policy family
             - Add support for creating and editing cluster policy with policy family.
         </PackageReleaseNotes>
+        <PackageReleaseNotes Condition="'$(VersionPrefix)' == '2.3.0'">
+            - Add support for Pipelines (Delta Live Tables) API.
+            - Add support for webhook and email notification to JobApi.RunSubmit
+            - Add support for job_parameters during job run
+            - Add support for Unity Catalog API.
+        </PackageReleaseNotes>
         <PackageReleaseNotes>
         Changes in $(VersionPrefix): $(PackageReleaseNotes)
         </PackageReleaseNotes>
