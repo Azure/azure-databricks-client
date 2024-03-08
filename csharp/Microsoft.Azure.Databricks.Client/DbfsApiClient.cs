@@ -100,7 +100,7 @@ public sealed class DbfsApiClient : ApiClient, IDbfsApi
         var url = $"{ApiVersion}/dbfs/list?path={encodedPath}";
         var result = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
         return result.TryGetPropertyValue("files", out var files)
-            ? files.Deserialize<IEnumerable<FileInfo>>()
+            ? files.Deserialize<IEnumerable<FileInfo>>(Options)
             : Enumerable.Empty<FileInfo>();
     }
 
