@@ -1,15 +1,9 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using Microsoft.Azure.Databricks.Client.UnityCatalog;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq.Contrib.HttpClient;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 

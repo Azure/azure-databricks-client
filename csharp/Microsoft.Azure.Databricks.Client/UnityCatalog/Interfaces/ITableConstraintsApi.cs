@@ -10,7 +10,7 @@ public interface ITableConstraintsApi : IDisposable
     /// <summary>
     /// Creates a new table constraint.
     /// </summary>
-    Task<TableConstraint> Create(TableConstraintAttributes constraint, CancellationToken cancellationToken = default);
+    Task<ConstraintRecord> Create(TableConstraintAttributes constraint, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deletes a table constraint.

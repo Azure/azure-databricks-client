@@ -94,7 +94,8 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
               ],
               ""storage_location"": ""string"",
               ""view_definition"": ""string"",
-              ""view_dependencies"": [
+              ""view_dependencies"": {
+                ""dependencies"": [
                 {
                   ""table"": {
                     ""table_full_name"": ""string""
@@ -105,7 +106,7 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
                     ""function_full_name"": ""string""
                   }
                 }
-              ],
+              ]},
               ""sql_path"": ""string"",
               ""owner"": ""string"",
               ""comment"": ""string"",
@@ -207,7 +208,8 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
           ],
           ""storage_location"": ""string"",
           ""view_definition"": ""string"",
-          ""view_dependencies"": [
+          ""view_dependencies"": {
+            ""dependencies"": [
             {
                 ""table"": {
                 ""table_full_name"": ""string""
@@ -218,7 +220,7 @@ public class TablesApiClientTest : UnityCatalogApiClientTest
                 ""function_full_name"": ""string""
                 }
             }
-            ],
+            ]},
           ""sql_path"": ""string"",
           ""owner"": ""string"",
           ""comment"": ""string"",
