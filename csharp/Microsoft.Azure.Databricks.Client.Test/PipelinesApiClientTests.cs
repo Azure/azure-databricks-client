@@ -852,7 +852,6 @@ public class PipelinesApiClientTest : ApiClientTest
     [TestMethod]
     public async Task TestStart()
     {
-        var maxResults = 25;
         var pipelineId = "1234-567890-cited123";
         var apiUri = $"{PipelineApiUri}/{pipelineId}/updates";
 
