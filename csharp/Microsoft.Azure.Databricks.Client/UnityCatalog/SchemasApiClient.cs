@@ -32,13 +32,9 @@ public class SchemasApiClient : ApiClient, ISchemasApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/schemas";
-        
-        var request = JsonSerializer.SerializeToNode(attributes, Options).AsObject();
 
-        return await HttpPost<JsonObject, Schema>
-                (this.HttpClient, requestUri, request, cancellationToken)
+        return await HttpPost<SchemaAttributes, Schema>(this.HttpClient, requestUri, attributes, cancellationToken)
             .ConfigureAwait(false);
-
     }
 
     public async Task<Schema> Get(string schemaFullName, CancellationToken cancellationToken = default)
@@ -56,38 +52,13 @@ public class SchemasApiClient : ApiClient, ISchemasApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/schemas/{schemaFullName}";
-
-        var requestDict = new Dictionary<string, string>();
-        
-        if (name != null)
-        {
-            requestDict["name"] = name;
-        }
-
-        if (owner != null)
-        {
-            requestDict["owner"] = owner;
-        }
-
-        if (comment != null)
-        {
-            requestDict["comment"] = comment;
-        }
-
-        var request = JsonSerializer.SerializeToNode(requestDict, Options).AsObject();
-
-        if (properties != null)
-        {
-            request.Add("properties", JsonSerializer.SerializeToNode(properties, Options));
-        }
-
-        return await HttpPatch<JsonObject, Schema>(HttpClient, requestUri, request, cancellationToken).ConfigureAwait(false);
+        var request = new { name, owner, comment, properties };
+        return await HttpPatch<dynamic, Schema>(HttpClient, requestUri, request, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task Delete(string schemaFullName, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/schemas/{schemaFullName}";
-
         await HttpDelete(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
     }
 }

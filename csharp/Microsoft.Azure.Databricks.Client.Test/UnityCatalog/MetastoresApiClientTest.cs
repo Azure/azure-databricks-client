@@ -218,7 +218,7 @@ public class MetastoresApiClientTest : UnityCatalogApiClientTest
           ""name"": ""string"",
           ""storage_root_credential_id"": ""string"",
           ""delta_sharing_scope"": ""INTERNAL"",
-          ""delta_sharing_recipient_token_lifetime_in_seconds"": ""1"",
+          ""delta_sharing_recipient_token_lifetime_in_seconds"": 1,
           ""delta_sharing_organization_name"": ""string"",
           ""owner"": ""string"",
           ""privilege_model_version"": ""string""
@@ -412,7 +412,7 @@ public class MetastoresApiClientTest : UnityCatalogApiClientTest
         mockClient.BaseAddress = ApiClientTest.BaseApiUri;
 
         using var client = new MetastoresApiClient(mockClient);
-        await client.DeleteAsignment(
+        await client.DeleteAssignment(
             workspaceId,
             metastoreId);
 

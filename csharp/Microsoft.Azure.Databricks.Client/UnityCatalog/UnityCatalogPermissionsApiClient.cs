@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Microsoft.Azure.Databricks.Client.UnityCatalog;
 
@@ -43,18 +41,17 @@ public class UnityCatalogPermissionsApiClient : ApiClient, IUnityCatalogPermissi
     public async Task<IEnumerable<Permission>> Update(
         SecurableType securableType,
         string securableFullName,
-        IEnumerable<PermissionsUpdate> permisionsUpdates,
+        IEnumerable<PermissionsUpdate> permissionsUpdates,
         CancellationToken cancellationToken = default)
     {
         var request = new
         {
-            changes = permisionsUpdates,
+            changes = permissionsUpdates,
         };
 
         var requestUri = $"{BaseUnityCatalogUri}/permissions/{securableType.ToString().ToLower()}/{securableFullName}";
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-
-        var permissionsList = await HttpPatch<JsonObject, JsonObject>(HttpClient, requestUri, requestJson, cancellationToken).ConfigureAwait(false);
+        
+        var permissionsList = await HttpPatch<dynamic, JsonObject>(HttpClient, requestUri, request, cancellationToken).ConfigureAwait(false);
         permissionsList.TryGetPropertyValue("privilege_assignments", out var permissions);
 
         return permissions.Deserialize<IEnumerable<Permission>>(Options) ?? Enumerable.Empty<Permission>();

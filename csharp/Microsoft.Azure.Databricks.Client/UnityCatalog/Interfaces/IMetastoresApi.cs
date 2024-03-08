@@ -43,7 +43,7 @@ public interface IMetastoresApi : IDisposable
         string newMetastoreName = default,
         string storageRootCredentialId = default,
         DeltaSharingScope? deltaSharingScope = default,
-        long? deltaSharingRecipentTokenLifetimeInSeconds = default,
+        long? deltaSharingRecipientTokenLifetimeInSeconds = default,
         string deltaSharingOrganizationName = default,
         string owner = default,
         string privilegeModelVersion = default,
@@ -77,13 +77,13 @@ public interface IMetastoresApi : IDisposable
     Task UpdateAssignment(
         long workspaceId,
         string metastoreId = default,
-        string defaultCatalogNamem = default,
+        string defaultCatalogName = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deletes a metastore assignment. The caller must be an account administrator.
     /// </summary>
-    Task DeleteAsignment(
+    Task DeleteAssignment(
         long workspaceId,
         string metastoreId,
         CancellationToken cancellationToken = default);

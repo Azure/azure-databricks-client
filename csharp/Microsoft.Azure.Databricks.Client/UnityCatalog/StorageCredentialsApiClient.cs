@@ -19,9 +19,7 @@ public class StorageCredentialsApiClient : ApiClient, IStorageCredentialsApi
     {
         var requestUri = $"{BaseUnityCatalogUri}/storage-credentials";
         var credentialsList = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
-
         credentialsList.TryGetPropertyValue("storage_credentials", out var credentials);
-
         return credentials?.Deserialize<IEnumerable<StorageCredential>>(Options) ?? Enumerable.Empty<StorageCredential>();
     }
 
@@ -31,7 +29,7 @@ public class StorageCredentialsApiClient : ApiClient, IStorageCredentialsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/storage-credentials";
-        
+
         var request = JsonSerializer.SerializeToNode(credentialAttributes, Options).AsObject();
 
         if (skipValidation != null)
@@ -39,8 +37,7 @@ public class StorageCredentialsApiClient : ApiClient, IStorageCredentialsApi
             request.Add("skip_validation", skipValidation);
         }
 
-        return await HttpPost<JsonObject, StorageCredential>
-                (this.HttpClient, requestUri, request, cancellationToken)
+        return await HttpPost<JsonObject, StorageCredential>(this.HttpClient, requestUri, request, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -76,7 +73,6 @@ public class StorageCredentialsApiClient : ApiClient, IStorageCredentialsApi
     public async Task Delete(string storageCredentialName, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/storage-credentials/{storageCredentialName}";
-
         await HttpDelete(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
     }
 }

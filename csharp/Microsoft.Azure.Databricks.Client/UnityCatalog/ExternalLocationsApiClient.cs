@@ -41,7 +41,7 @@ public class ExternalLocationsApiClient : ApiClient, IExternalLocationsApi
     }
 
     public async Task<ExternalLocation> Update(
-        string externaLocationName,
+        string externalLocationName,
         string newName = default,
         string url = default,
         string credentialName = default,
@@ -51,7 +51,7 @@ public class ExternalLocationsApiClient : ApiClient, IExternalLocationsApi
         bool? force = default,
         CancellationToken cancellationToken = default)
     {
-        var requestUri = $"{this.ExternalLocationsApiUri}/{externaLocationName}";
+        var requestUri = $"{this.ExternalLocationsApiUri}/{externalLocationName}";
 
         var request = new
         {

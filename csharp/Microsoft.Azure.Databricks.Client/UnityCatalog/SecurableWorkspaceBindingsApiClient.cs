@@ -23,7 +23,6 @@ public class SecurableWorkspaceBindingsApiClient : ApiClient, ISecurableWorkspac
         var requestUri = $"{BaseUnityCatalogUri}/bindings/{securableType}/{securableName}";
         var securityBindingsList = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
         securityBindingsList.TryGetPropertyValue("bindings", out var securityBindings);
-
         return securityBindings.Deserialize<IEnumerable<SecurableWorkspaceBinding>>(Options) ?? Enumerable.Empty<SecurableWorkspaceBinding>();
     }
 
@@ -35,20 +34,9 @@ public class SecurableWorkspaceBindingsApiClient : ApiClient, ISecurableWorkspac
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/bindings/{securableType}/{securableName}";
-
-        var request = new
-        {
-            add,
-            remove
-        };
-
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-
-        var securityBindingsList = await HttpPatch<JsonObject, JsonObject>
-            (HttpClient, requestUri, requestJson, cancellationToken).ConfigureAwait(false);
-
+        var request = new { add, remove };
+        var securityBindingsList = await HttpPatch<dynamic, JsonObject>(HttpClient, requestUri, request, cancellationToken).ConfigureAwait(false);
         securityBindingsList.TryGetPropertyValue("bindings", out var securityBindings);
-
         return securityBindings.Deserialize<IEnumerable<SecurableWorkspaceBinding>>(Options) ?? Enumerable.Empty<SecurableWorkspaceBinding>();
     }
 }

@@ -29,8 +29,7 @@ public class FunctionsApiClient : ApiClient, IFunctionsApi
         Function newFunction,
         CancellationToken cancellationToken = default)
     {
-        var request = JsonSerializer.SerializeToNode(newFunction, Options).AsObject();
-        return await HttpPost<JsonObject, Function>(HttpClient, this.FunctionsApiUrl, request, cancellationToken).ConfigureAwait(false);
+        return await HttpPost<Function, Function>(HttpClient, this.FunctionsApiUrl, newFunction, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Function> Get(string name, CancellationToken cancellationToken = default)
@@ -45,14 +44,8 @@ public class FunctionsApiClient : ApiClient, IFunctionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{this.FunctionsApiUrl}/{functionName}";
-
-        var request = new Dictionary<string, string>()
-        {
-            {"owner", owner }
-        };
-
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-        return await HttpPatch<JsonObject, Function>(HttpClient, requestUri, requestJson, cancellationToken).ConfigureAwait(false);
+        var request = new { owner };
+        return await HttpPatch<dynamic, Function>(HttpClient, requestUri, request, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task Delete(string name, CancellationToken cancellationToken = default)

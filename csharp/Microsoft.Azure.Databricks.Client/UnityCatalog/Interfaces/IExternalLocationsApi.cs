@@ -36,7 +36,7 @@ public interface IExternalLocationsApi : IDisposable
     /// In the second case, the admin can only update the name of the external location.
     /// </summary>
     Task<ExternalLocation> Update(
-        string externaLocationName,
+        string externalLocationName,
         string newName = default,
         string url = default,
         string credentialName = default,

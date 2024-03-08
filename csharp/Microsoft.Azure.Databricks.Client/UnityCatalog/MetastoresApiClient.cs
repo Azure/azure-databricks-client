@@ -6,7 +6,6 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Microsoft.Azure.Databricks.Client.UnityCatalog;
 
@@ -23,21 +22,8 @@ public class MetastoresApiClient : ApiClient, IMetastoresApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/metastores";
-
-        var request = new Dictionary<string, string>()
-        {
-            { "name", name },
-            { "storage_root", storageRoot }
-        };
-
-        if (region != null )
-        {
-            request["region"] = region;
-        }
-
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-
-        return await HttpPost<JsonObject, Metastore>(HttpClient, requestUri, requestJson, cancellationToken);
+        var request = new { name, storage_root = storageRoot, region };
+        return await HttpPost<dynamic, Metastore>(HttpClient, requestUri, request, cancellationToken);
     }
 
     public async Task CreateAssignment(
@@ -47,16 +33,8 @@ public class MetastoresApiClient : ApiClient, IMetastoresApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/workspaces/{workspaceId}/metastore";
-        
-        var request = new Dictionary<string, string>()
-        {
-            { "metastore_id", metastoreId },
-            { "default_catalog_name", defaultCatalogName }
-        };
-
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-
-        await HttpPut<JsonObject>(HttpClient, requestUri, requestJson, cancellationToken);
+        var request = new { metastore_id = metastoreId, default_catalog_name = defaultCatalogName };
+        await HttpPut<dynamic>(HttpClient, requestUri, request, cancellationToken);
     }
 
     public async Task Delete(
@@ -68,7 +46,7 @@ public class MetastoresApiClient : ApiClient, IMetastoresApi
         await HttpDelete(HttpClient, requestUri, cancellationToken);
     }
 
-    public async Task DeleteAsignment(
+    public async Task DeleteAssignment(
         long workspaceId,
         string metastoreId,
         CancellationToken cancellationToken = default)
@@ -100,7 +78,6 @@ public class MetastoresApiClient : ApiClient, IMetastoresApi
         var requestUri = $"{BaseUnityCatalogUri}/metastores";
         var metastoresList = await HttpGet<JsonObject>(HttpClient, requestUri , cancellationToken).ConfigureAwait(false);
         metastoresList.TryGetPropertyValue("metastores", out var metastores);
-
         return metastores?.Deserialize<IEnumerable<Metastore>>(Options) ?? Enumerable.Empty<Metastore>();
     }
 
@@ -109,7 +86,7 @@ public class MetastoresApiClient : ApiClient, IMetastoresApi
         string newMetastoreName = null,
         string storageRootCredentialId = null,
         DeltaSharingScope? deltaSharingScope = null,
-        long? deltaSharingRecipentTokenLifetimeInSeconds = null,
+        long? deltaSharingRecipientTokenLifetimeInSeconds = null,
         string deltaSharingOrganizationName = null,
         string owner = null,
         string privilegeModelVersion = null,
@@ -117,46 +94,18 @@ public class MetastoresApiClient : ApiClient, IMetastoresApi
     {
         var requestUri = $"{BaseUnityCatalogUri}/metastores/{metastoreId}";
 
-        var request = new Dictionary<string, string>();
-
-        if (newMetastoreName != null)
+        var request = new
         {
-            request["name"] = newMetastoreName;
-        }
+            name = newMetastoreName,
+            storage_root_credential_id = storageRootCredentialId,
+            delta_sharing_scope = deltaSharingScope,
+            delta_sharing_recipient_token_lifetime_in_seconds = deltaSharingRecipientTokenLifetimeInSeconds,
+            delta_sharing_organization_name = deltaSharingOrganizationName,
+            owner,
+            privilege_model_version = privilegeModelVersion
+        };
 
-        if (storageRootCredentialId != null)
-        {
-            request["storage_root_credential_id"] = storageRootCredentialId;
-        }
-
-        if (deltaSharingScope != null)
-        {
-            request["delta_sharing_scope"] = deltaSharingScope.ToString();
-        }
-
-        if (deltaSharingRecipentTokenLifetimeInSeconds != null)
-        {
-            request["delta_sharing_recipient_token_lifetime_in_seconds"] = deltaSharingRecipentTokenLifetimeInSeconds.ToString();
-        }
-
-        if (deltaSharingOrganizationName != null)
-        {
-            request["delta_sharing_organization_name"] = deltaSharingOrganizationName;
-        }
-
-        if (owner != null) 
-        {
-            request["owner"] = owner;
-        }
-
-        if (privilegeModelVersion != null)
-        {
-            request["privilege_model_version"] = privilegeModelVersion;
-        }
-
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-
-        return await HttpPatch<JsonObject, Metastore>(HttpClient, requestUri, requestJson, cancellationToken);
+        return await HttpPatch<dynamic, Metastore>(HttpClient, requestUri, request, cancellationToken);
     }
 
     public async Task UpdateAssignment(
@@ -167,20 +116,12 @@ public class MetastoresApiClient : ApiClient, IMetastoresApi
     {
         var requestUri = $"{BaseUnityCatalogUri}/workspaces/{workspaceId}/metastore";
 
-        var request = new Dictionary<string, string>();
-
-        if (metastoreId != null)
+        var request = new
         {
-            request["metastore_id"] = metastoreId;
-        }
+            metastore_id = metastoreId,
+            default_catalog_name = defaultCatalogName
+        };
 
-        if (defaultCatalogName != null)
-        {
-            request["default_catalog_name"] = defaultCatalogName;
-        }
-
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-
-        await HttpPatch<JsonObject>(HttpClient, requestUri, requestJson, cancellationToken);
+        await HttpPatch<dynamic>(HttpClient, requestUri, request, cancellationToken);
     }
 }
