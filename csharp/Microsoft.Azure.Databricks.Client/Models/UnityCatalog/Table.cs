@@ -43,7 +43,7 @@ public record Table : TableSummary
     public string StorageLocation { get; set; }
 
     /// <summary>
-    /// View defsetion SQL (when table_type is VIEW, MATERIALIZED_VIEW, or STREAMING_TABLE)
+    /// View definition SQL (when table_type is VIEW, MATERIALIZED_VIEW, or STREAMING_TABLE)
     /// </summary>
     [JsonPropertyName("view_definition")]
     public string ViewDefinition { get; set; }
@@ -145,7 +145,7 @@ public record Table : TableSummary
     /// Information pertaining to current state of the delta table.
     /// </summary>
     [JsonPropertyName("delta_runtime_properties_kvpairs")]
-    public DeltaRuntimePropertiesKvpairs DeltaRuntimePropertiesKvpairs { get; set; }
+    public DeltaRuntimePropertyBag DeltaRuntimeProperties { get; set; }
 }
 
 public record Column
@@ -251,13 +251,13 @@ public record RowFilter
     public List<string> InputColumnNames { get; set; }
 }
 
-public record DeltaRuntimePropertiesKvpairs
+public record DeltaRuntimePropertyBag
 {
     /// <summary>
     /// A map of key-value properties attached to the securable.
     /// </summary>
     [JsonPropertyName("delta_runtime_properties")]
-    public Dictionary<string, string> DeltaRuntimeProperties { get; set; }
+    public Dictionary<string, string> Properties { get; set; }
 }
 
 public abstract record TableConstraint;

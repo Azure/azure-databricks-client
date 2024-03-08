@@ -206,7 +206,7 @@ public class MetastoresApiClientTest : UnityCatalogApiClientTest
             GetMatcher(expectedRequest),
             Times.Once());
     }
-    
+
     [TestMethod]
     public async Task TestUpdate()
     {
@@ -299,6 +299,7 @@ public class MetastoresApiClientTest : UnityCatalogApiClientTest
             requestUri);
     }
 
+    [TestMethod]
     public async Task TestGetAssignment()
     {
         var requestUri = $"{BaseApiUri}current-metastore-assignment";
@@ -306,7 +307,7 @@ public class MetastoresApiClientTest : UnityCatalogApiClientTest
         var expectedResponse = @"
         {
           ""metastore_id"": ""string"",
-          ""workspace_id"": 0,
+          ""workspace_id"": 1,
           ""default_catalog_name"": ""string""
         }
         ";
@@ -420,5 +421,4 @@ public class MetastoresApiClientTest : UnityCatalogApiClientTest
             HttpMethod.Delete,
             requestUri);
     }
-
 }

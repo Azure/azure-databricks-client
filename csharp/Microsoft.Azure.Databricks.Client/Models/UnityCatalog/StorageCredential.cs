@@ -99,7 +99,7 @@ public record AzureManagedIdentity
     /// <summary>
     /// The Azure resource ID of the managed identity. 
     /// Use the format /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}. 
-    /// This is only available for user-assgined identities. For system-assigned identities, the access_connector_id is used to identify the identity. 
+    /// This is only available for user-assigned identities. For system-assigned identities, the access_connector_id is used to identify the identity. 
     /// If this field is not provided, then we assume the AzureManagedIdentity is for a system-assigned identity.
     /// </summary>
     [JsonPropertyName("managed_identity_id")]

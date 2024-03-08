@@ -28,7 +28,7 @@ public interface IStorageCredentialsApi : IDisposable
     /// Gets a storage credential from the metastore. The caller must be a metastore admin, 
     /// the owner of the storage credential, or have some permission on the storage credential.
     /// </summary>
-    Task<StorageCredential> Get(string name,  CancellationToken cancellationToken = default);
+    Task<StorageCredential> Get(string name, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates a storage credential on the metastore.

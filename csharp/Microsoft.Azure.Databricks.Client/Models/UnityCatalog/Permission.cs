@@ -53,7 +53,7 @@ public record PrivilegeObject
     /// This field is omitted when privilege is not inherited (it's assigned to the securable itself).
     /// </summary>
     [JsonPropertyName("inherited_from_name")]
-    public string InhertiedFromName { get; set; }   
+    public string InheritedFromName { get; set; }
 }
 
 public record PermissionsUpdate

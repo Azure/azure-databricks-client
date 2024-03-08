@@ -33,7 +33,7 @@ public record ExternalLocation : ExternalLocationAttributes
     /// Username of external location creator.
     /// </summary>
     [JsonPropertyName("created_by")]
-    public string CrteatedBy { get; set; }
+    public string CreatedBy { get; set; }
 
     /// <summary>
     /// Time at which external location this was last modified, in epoch milliseconds

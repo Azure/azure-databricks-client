@@ -16,7 +16,6 @@ public class UnityCatalogPermissionsApiClient : ApiClient, IUnityCatalogPermissi
     {
     }
 
-  
     public async Task<IEnumerable<Permission>> Get(
         SecurableType securableType,
         string securableFullName,
@@ -25,7 +24,6 @@ public class UnityCatalogPermissionsApiClient : ApiClient, IUnityCatalogPermissi
     {
         var requestUriSb = new StringBuilder(
             $"{BaseUnityCatalogUri}/permissions/{securableType.ToString().ToLower()}/{securableFullName}");
-        
         if (principal != null)
         {
             requestUriSb.Append($"?principal={principal}");
@@ -50,7 +48,6 @@ public class UnityCatalogPermissionsApiClient : ApiClient, IUnityCatalogPermissi
         };
 
         var requestUri = $"{BaseUnityCatalogUri}/permissions/{securableType.ToString().ToLower()}/{securableFullName}";
-        
         var permissionsList = await HttpPatch<dynamic, JsonObject>(HttpClient, requestUri, request, cancellationToken).ConfigureAwait(false);
         permissionsList.TryGetPropertyValue("privilege_assignments", out var permissions);
 

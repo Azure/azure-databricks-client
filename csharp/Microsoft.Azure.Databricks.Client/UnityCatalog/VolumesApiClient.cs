@@ -24,7 +24,7 @@ public class VolumesApiClient : ApiClient, IVolumesApi
         return await HttpGet<Volume>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
     }
 
-   public async Task<Volume> Update(
+    public async Task<Volume> Update(
         string fullVolumeName,
         string name = default,
         string owner = default,

@@ -69,7 +69,7 @@ public record Catalog : CatalogAttributes
     /// Kind of catalog securable.
     /// </summary>
     [JsonPropertyName("securable_kind")]
-    public CatalogSeucrableKind? CatalogSeucrableKind { get; set; }
+    public CatalogSecurableKind? CatalogSecurableKind { get; set; }
 
     /// <summary>
     /// Default: "CATALOG"
@@ -87,7 +87,7 @@ public record Catalog : CatalogAttributes
     /// Indicate whether or not the catalog info contains only browsable metadata.
     /// </summary>
     [JsonPropertyName("browse_only")]
-    public bool BrowseOnly { get; set; }   
+    public bool BrowseOnly { get; set; }
 }
 
 public enum CatalogType
@@ -104,7 +104,7 @@ public enum IsolationMode
     ISOLATED
 }
 
-public enum CatalogSeucrableKind
+public enum CatalogSecurableKind
 {
     CATALOG_STANDARD,
     CATALOG_INTERNAL,

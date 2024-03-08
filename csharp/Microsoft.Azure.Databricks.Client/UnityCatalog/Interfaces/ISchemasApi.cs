@@ -28,7 +28,7 @@ public interface ISchemasApi : IDisposable
     /// Gets the specified schema within the metastore. The caller must be a metastore admin, 
     /// the owner of the schema, or a user that has the USE_SCHEMA privilege on the schema.
     /// </summary>
-    Task<Schema> Get(string schemaFullName,  CancellationToken cancellationToken = default);
+    Task<Schema> Get(string schemaFullName, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. 

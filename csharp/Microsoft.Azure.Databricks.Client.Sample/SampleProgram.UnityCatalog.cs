@@ -39,7 +39,7 @@ internal static partial class SampleProgram
         PrintDelimiter();
 
         Console.WriteLine("Listing schemas in created catalog...");
-        var schemasList = await client.UnityCatalog.Schemas.List(catalog.FullName);
+        var schemasList = (await client.UnityCatalog.Schemas.List(catalog.FullName)).ToArray();
         foreach (var schema in schemasList)
         {
             Console.WriteLine($"\t{schema.Name}");
@@ -47,7 +47,7 @@ internal static partial class SampleProgram
         PrintDelimiter();
 
         Console.WriteLine("Listing system schemas...");
-        var systemSchemasList = await client.UnityCatalog.SystemSchemas.List(catalog.MetastoreId);
+        var systemSchemasList = (await client.UnityCatalog.SystemSchemas.List(catalog.MetastoreId)).ToArray();
         foreach (var schema in systemSchemasList)
         {
             Console.WriteLine($"\t{schema.Schema}, {schema.State}");

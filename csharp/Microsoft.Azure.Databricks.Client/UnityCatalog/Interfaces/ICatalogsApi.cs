@@ -24,7 +24,7 @@ public interface ICatalogsApi : IDisposable
     /// Gets the specified catalog in a metastore. The caller must be a metastore admin, 
     /// the owner of the catalog, or a user that has the USE_CATALOG privilege set for their account.
     /// </summary>
-    Task<Catalog> Get(string catalogName,  CancellationToken cancellationToken = default);
+    Task<Catalog> Get(string catalogName, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates the catalog that matches the supplied name. The caller must be either the owner of the catalog, 

@@ -76,7 +76,7 @@ public class MetastoresApiClient : ApiClient, IMetastoresApi
     public async Task<IEnumerable<Metastore>> List(CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/metastores";
-        var metastoresList = await HttpGet<JsonObject>(HttpClient, requestUri , cancellationToken).ConfigureAwait(false);
+        var metastoresList = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
         metastoresList.TryGetPropertyValue("metastores", out var metastores);
         return metastores?.Deserialize<IEnumerable<Metastore>>(Options) ?? Enumerable.Empty<Metastore>();
     }
