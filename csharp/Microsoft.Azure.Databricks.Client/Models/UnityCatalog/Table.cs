@@ -285,7 +285,8 @@ public record ViewDependencies
     /// <summary>
     /// Array of dependencies.
     /// </summary>
-    IEnumerable<Dependency> Dependencies { get; set; }
+    [JsonPropertyName("dependencies")]
+    public IEnumerable<Dependency> Dependencies { get; set; }
 }
 
 public enum TableType
