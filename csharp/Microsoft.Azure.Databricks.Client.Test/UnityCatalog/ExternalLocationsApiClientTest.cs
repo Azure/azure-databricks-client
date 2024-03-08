@@ -66,7 +66,7 @@ public class ExternalLocationsApiClientTest : UnityCatalogApiClientTest
             ""credential_name"": ""string"",
             ""read_only"": true,
             ""comment"": ""string"",
-            ""skip_validation"": ""true""
+            ""skip_validation"": true
         }
 ";
 
@@ -161,10 +161,10 @@ public class ExternalLocationsApiClientTest : UnityCatalogApiClientTest
             ""name"": ""string"",
             ""url"": ""string"",
             ""credential_name"": ""string"",
-            ""read_only"": ""true"",
+            ""read_only"": true,
             ""comment"": ""string"",
             ""owner"": ""string"",
-            ""force"": ""true""
+            ""force"": true
         }
 ";
 

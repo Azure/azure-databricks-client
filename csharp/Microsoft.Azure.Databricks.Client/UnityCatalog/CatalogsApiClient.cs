@@ -28,12 +28,9 @@ public class CatalogsApiClient : ApiClient, ICatalogsApi
     public async Task<Catalog> Create(CatalogAttributes catalog, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/catalogs";
-        var request = JsonSerializer.SerializeToNode(catalog, Options).AsObject();
-        var response = await HttpPost<JsonObject, JsonObject>
-                (this.HttpClient, requestUri, request, cancellationToken)
-            .ConfigureAwait(false);
 
-        return JsonSerializer.Deserialize<Catalog>(response, Options);
+        return await HttpPost<CatalogAttributes, Catalog>(this.HttpClient, requestUri, catalog, cancellationToken)
+            .ConfigureAwait(false);
     }
 
     public async Task<Catalog> Get(string catalogName, CancellationToken cancellationToken = default)
@@ -52,30 +49,13 @@ public class CatalogsApiClient : ApiClient, ICatalogsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/catalogs/{catalogName}";
-
-        var request = new
-        {
-            name,
-            owner,
-            comment,
-            isolation_mode = isolationMode
-        };
-
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-
-        if (properties != null)
-        {
-            var propertiesJson = JsonSerializer.SerializeToNode(properties, Options);
-            requestJson.Add("properties", propertiesJson);
-        }
-
-        return await HttpPatch<JsonObject, Catalog>(HttpClient, requestUri, requestJson, cancellationToken).ConfigureAwait(false);
+        var request = new { name, owner, comment, isolation_mode = isolationMode, properties };
+        return await HttpPatch<dynamic, Catalog>(HttpClient, requestUri, request, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task Delete(string catalogName, bool forceDeletion = false, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/catalogs/{catalogName}?force={forceDeletion.ToString().ToLower()}";
-
         await HttpDelete(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
     }
 }

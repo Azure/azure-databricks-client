@@ -22,7 +22,7 @@ public interface IExternalLocationsApi : IDisposable
     /// </summary>
     Task<ExternalLocation> Create(
         ExternalLocationAttributes attributes,
-        bool? skipValidation = default,
+        bool skipValidation = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>

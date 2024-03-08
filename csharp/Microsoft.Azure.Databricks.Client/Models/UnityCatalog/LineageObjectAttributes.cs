@@ -16,3 +16,13 @@ public record LineageObjectAttributes
     [JsonPropertyName("table_type")]
     public string TableType { get; set; }
 }
+
+public record TableInfo : LineageObjectAttributes
+{
+}
+
+public record ColumnInfo : LineageObjectAttributes
+{
+    [JsonPropertyName("table_name")]
+    public string TableName { get; set; }
+}

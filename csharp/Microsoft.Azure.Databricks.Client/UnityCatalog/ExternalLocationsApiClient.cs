@@ -20,23 +20,17 @@ public class ExternalLocationsApiClient : ApiClient, IExternalLocationsApi
     public async Task<IEnumerable<ExternalLocation>> List(CancellationToken cancellationToken = default)
     {
         var externalLocationsList = await HttpGet<JsonObject>(HttpClient, this.ExternalLocationsApiUri, cancellationToken).ConfigureAwait(false);
-
         externalLocationsList.TryGetPropertyValue("external_locations", out var externalLocations);
         return externalLocations?.Deserialize<IEnumerable<ExternalLocation>>(Options) ?? Enumerable.Empty<ExternalLocation>();
     }
 
     public async Task<ExternalLocation> Create(
         ExternalLocationAttributes attributes,
-        bool? skipValidation = default,
+        bool skipValidation = default,
         CancellationToken cancellationToken = default)
     {
         var request = JsonSerializer.SerializeToNode(attributes)!.AsObject();
-
-        if (skipValidation != null)
-        {
-            request.Add("skip_validation", skipValidation.ToString().ToLower());
-        }
-
+        request.Add("skip_validation", skipValidation);
         return await HttpPost<JsonObject, ExternalLocation>(HttpClient, this.ExternalLocationsApiUri, request, cancellationToken).ConfigureAwait(false);
     }
 
@@ -59,45 +53,18 @@ public class ExternalLocationsApiClient : ApiClient, IExternalLocationsApi
     {
         var requestUri = $"{this.ExternalLocationsApiUri}/{externaLocationName}";
 
-        var request = new Dictionary<string, string>();
-
-        if (newName != null)
+        var request = new
         {
-            request["name"] = newName;
-        }
+            name = newName,
+            url,
+            credential_name = credentialName,
+            read_only = readOnly,
+            comment,
+            owner,
+            force
+        };
 
-        if (url != null)
-        {
-            request["url"] = url;
-        }
-
-        if (credentialName != null)
-        {
-            request["credential_name"] = credentialName;
-        }
-
-        if (readOnly != null)
-        {
-            request["read_only"] = readOnly.ToString().ToLower();
-        }
-
-        if (comment != null)
-        {
-            request["comment"] = comment;
-        }
-
-        if (owner != null)
-        {
-            request["owner"] = owner;
-        }
-
-        if (force != null)
-        {
-            request["force"] = force.ToString().ToLower();
-        }
-
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-        return await HttpPatch<JsonObject, ExternalLocation>(HttpClient, requestUri, requestJson, cancellationToken).ConfigureAwait(false);
+        return await HttpPatch<dynamic, ExternalLocation>(HttpClient, requestUri, request, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task Delete(string name, CancellationToken cancellationToken = default)

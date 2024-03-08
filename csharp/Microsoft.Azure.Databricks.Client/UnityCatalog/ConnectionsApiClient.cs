@@ -6,7 +6,6 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Microsoft.Azure.Databricks.Client.UnityCatalog;
 
@@ -20,9 +19,7 @@ public class ConnectionsApiClient : ApiClient, IConnectionsApi
     {
         var requestUri = $"{BaseUnityCatalogUri}/connections";
         var connectionsList = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
-
         connectionsList.TryGetPropertyValue("connections", out var connections);
-
         return connections?.Deserialize<IEnumerable<Connection>>(Options) ?? Enumerable.Empty<Connection>();
     }
 
@@ -31,8 +28,7 @@ public class ConnectionsApiClient : ApiClient, IConnectionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/connections";
-        var requestJson = JsonSerializer.SerializeToNode(connectionAttributes, Options).AsObject();
-        return await HttpPost<JsonObject, Connection>(HttpClient, requestUri, requestJson, cancellationToken).ConfigureAwait(false);
+        return await HttpPost<ConnectionAttributes, Connection>(HttpClient, requestUri, connectionAttributes, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<Connection> Get(string name, CancellationToken cancellationToken = default)
@@ -49,21 +45,8 @@ public class ConnectionsApiClient : ApiClient, IConnectionsApi
         CancellationToken cancellationToken = default)
     {
         var requestUri = $"{BaseUnityCatalogUri}/connections/{connectionName}";
-
-        var request = new Dictionary<string, string>()
-        {
-            {"name", name }
-        };
-
-        var requestJson = JsonSerializer.SerializeToNode(request, Options).AsObject();
-        requestJson.Add("options", JsonSerializer.SerializeToNode(options));
-        
-        if (owner != null)
-        {
-            requestJson.Add("owner", owner);
-        }
-
-        return await HttpPatch<JsonObject, Connection>(HttpClient, requestUri, requestJson, cancellationToken).ConfigureAwait(false);
+        var request = new { name, options, owner };
+        return await HttpPatch<dynamic, Connection>(HttpClient, requestUri, request, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task Delete(string connectionName, CancellationToken cancellationToken = default)
