@@ -66,7 +66,7 @@ public class InstancePoolApiClient : ApiClient, IInstancePoolApi
         var requestUri = $"{ApiVersion}/instance-pools/list";
         var poolList = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
         return poolList.TryGetPropertyValue("instance_pools", out var instancePools)
-            ? instancePools.Deserialize<IEnumerable<InstancePoolInfo>>()
+            ? instancePools.Deserialize<IEnumerable<InstancePoolInfo>>(Options)
             : Enumerable.Empty<InstancePoolInfo>();
     }
 }

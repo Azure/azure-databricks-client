@@ -28,7 +28,7 @@ public class PipelinesApiClient : ApiClient, IPipelinesApi
 
         if (!string.IsNullOrEmpty(pageToken))
         {
-            requestUriSb.Append($"&pageToken={pageToken}");
+            requestUriSb.Append($"&page_token={pageToken}");
         }
 
         var requestUri = requestUriSb.ToString();

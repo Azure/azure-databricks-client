@@ -23,8 +23,14 @@ public enum ClusterSource
     /// </summary>
     API,
 
+    SQL,
+
+    MODELS,
+
     /// <summary>
     /// Cluster created through Pipeline.
     /// </summary>
-    PIPELINE
+    PIPELINE,
+
+    PIPELINE_MAINTENANCE
 }

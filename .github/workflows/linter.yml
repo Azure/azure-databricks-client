@@ -17,7 +17,7 @@ jobs:
           # list of changed files within `super-linter`
           fetch-depth: 0
       - name: Lint Code Base
-        uses: super-linter/super-linter@v5
+        uses: super-linter/super-linter@v6.3.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
           VALIDATE_ALL_CODEBASE: false

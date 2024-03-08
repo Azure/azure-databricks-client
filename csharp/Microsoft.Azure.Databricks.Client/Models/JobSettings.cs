@@ -16,6 +16,18 @@ public abstract record JobRunBaseSettings<TTaskSetting> : IJsonOnDeserialized
     [JsonPropertyName("tasks")]
     public List<TTaskSetting> Tasks { get; set; } = new();
 
+    /// <summary>
+    /// An optional set of email addresses that will be notified when runs of this job begin or complete as well as when this job is deleted. The default behavior is to not send any emails.
+    /// </summary>
+    [JsonPropertyName("email_notifications")]
+    public JobEmailNotifications EmailNotifications { get; set; }
+
+    /// <summary>
+    /// An optional set of webhook addresses that will be notified when runs of this job begin or complete as well as when this job is deleted. The default behavior is to not send any webhook notifications.
+    /// </summary>
+    [JsonPropertyName("webhook_notifications")]
+    public JobWebhookNotifications WebhookNotifications { get; set; }
+
     public void OnDeserialized()
     {
         var taskMap = this.Tasks.ToDictionary(
@@ -184,18 +196,6 @@ public record JobSettings : JobRunBaseSettings<JobTaskSettings>
     /// </summary>
     [JsonPropertyName("job_clusters")]
     public IEnumerable<JobCluster> JobClusters { get; set; }
-
-    /// <summary>
-    /// An optional set of email addresses that will be notified when runs of this job begin or complete as well as when this job is deleted. The default behavior is to not send any emails.
-    /// </summary>
-    [JsonPropertyName("email_notifications")]
-    public JobEmailNotifications EmailNotifications { get; set; }
-
-    /// <summary>
-    /// An optional set of webhook addreses that will be notified when runs of this job begin or complete as well as when this job is deleted. The default behavior is to not send any webhook notifications.
-    /// </summary>
-    [JsonPropertyName("webhook_notifications")]
-    public JobWebhookNotifications WebhookNotifications { get; set; }
 
     /// <summary>
     /// An optional periodic schedule for this job. The default behavior is that the job only runs when triggered by clicking "Run Now" in the Jobs UI or sending an API request to `runNow`.

@@ -47,7 +47,7 @@ public class GroupsApiClient : ApiClient, IGroupsApi
         var response = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
 
         return response.TryGetPropertyValue("members", out var members)
-            ? members.Deserialize<IEnumerable<PrincipalName>>()
+            ? members.Deserialize<IEnumerable<PrincipalName>>(Options)
             : Enumerable.Empty<PrincipalName>();
     }
 
@@ -56,7 +56,7 @@ public class GroupsApiClient : ApiClient, IGroupsApi
         var response = await HttpGet<JsonObject>(this.HttpClient, $"{ApiVersion}/groups/list", cancellationToken)
             .ConfigureAwait(false);
         return response.TryGetPropertyValue("group_names", out var groupNames)
-            ? groupNames.Deserialize<IEnumerable<string>>()
+            ? groupNames.Deserialize<IEnumerable<string>>(Options)
             : Enumerable.Empty<string>();
     }
 
@@ -70,7 +70,7 @@ public class GroupsApiClient : ApiClient, IGroupsApi
         var response = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
 
         return response.TryGetPropertyValue("group_names", out var groupNames)
-            ? groupNames.Deserialize<IEnumerable<string>>()
+            ? groupNames.Deserialize<IEnumerable<string>>(Options)
             : Enumerable.Empty<string>();
     }
 
