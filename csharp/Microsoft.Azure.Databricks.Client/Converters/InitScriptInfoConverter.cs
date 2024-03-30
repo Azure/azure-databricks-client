@@ -30,6 +30,15 @@ public class InitScriptInfoConverter : JsonConverter<InitScriptInfo>
             };
         }
 
+        if (info.TryGetPropertyValue("abfss", out var abfss))
+        {
+            return new InitScriptInfo
+            {
+                StorageDestination = abfss.Deserialize<AbfssStorageInfo>()
+            };
+        }
+
+
         if (info.TryGetPropertyValue("volumes", out var volumes))
         {
             return new InitScriptInfo
@@ -48,6 +57,10 @@ public class InitScriptInfoConverter : JsonConverter<InitScriptInfo>
             DbfsStorageInfo dbfs => new JsonObject
             {
                 ["dbfs"] = JsonSerializer.SerializeToNode(dbfs)
+            },
+            AbfssStorageInfo abfss => new JsonObject
+            {
+                ["abfss"] = JsonSerializer.SerializeToNode(abfss)
             },
             WorkspaceStorageInfo workspace => new JsonObject
             {

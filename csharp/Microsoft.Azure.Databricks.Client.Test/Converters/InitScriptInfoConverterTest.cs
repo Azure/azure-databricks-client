@@ -43,6 +43,17 @@ namespace Microsoft.Azure.Databricks.Client.Test.Converters
             var initScriptInfo3 = JsonSerializer.Deserialize<InitScriptInfo>(json3);
             Assert.IsTrue(initScriptInfo3!.StorageDestination is VolumesStorageInfo);
             Assert.AreEqual("string", initScriptInfo3.StorageDestination!.Destination);
+
+            string json4 = @"{
+                                ""abfss"": {
+                                    ""destination"": ""string""
+                                }
+                            }";
+
+            var initScriptInfo4 = JsonSerializer.Deserialize<InitScriptInfo>(json4);
+            Assert.IsTrue(initScriptInfo4!.StorageDestination is AbfssStorageInfo);
+            Assert.AreEqual("string", initScriptInfo4.StorageDestination!.Destination);
+
         }
 
         [TestMethod]
@@ -72,6 +83,10 @@ namespace Microsoft.Azure.Databricks.Client.Test.Converters
             var obj3 = new InitScriptInfo { StorageDestination = new VolumesStorageInfo { Destination = "string" } };
             var json3 = JsonSerializer.Serialize(obj3, Options);
             Assert.AreEqual(@"{""volumes"":{""destination"":""string""}}", json3);
+
+            var obj4 = new InitScriptInfo { StorageDestination = new AbfssStorageInfo() { Destination = "string" } };
+            var json4 = JsonSerializer.Serialize(obj4, Options);
+            Assert.AreEqual(@"{""abfss"":{""destination"":""string""}}", json4);
         }
 
         private record InvalidStorageDestination : StorageInfo { }
