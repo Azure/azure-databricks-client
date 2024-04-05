@@ -28,6 +28,12 @@ public abstract record JobRunBaseSettings<TTaskSetting> : IJsonOnDeserialized
     [JsonPropertyName("webhook_notifications")]
     public JobWebhookNotifications WebhookNotifications { get; set; }
 
+    /// <summary>
+    /// A list of job level parameters.
+    /// </summary>
+    [JsonPropertyName("parameters")]
+    public List<JobParameter> Parameters { get; set; } = new();
+
     public void OnDeserialized()
     {
         var taskMap = this.Tasks.ToDictionary(
@@ -235,4 +241,22 @@ public record RunSubmitSettings : JobRunBaseSettings<RunSubmitTaskSettings>
     /// </summary>
     [JsonPropertyName("run_name")]
     public string RunName { get; set; }
+}
+
+/// <summary>
+/// Job level parameter.
+/// </summary>
+public record JobParameter
+{
+    /// <summary>
+    /// A patameter name.
+    /// </summary>
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    /// <summary>
+    /// A parameter default value.
+    /// </summary>
+    [JsonPropertyName("default")]
+    public string Default { get; set; }
 }

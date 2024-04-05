@@ -114,6 +114,16 @@ public class JobApiClientTest : ApiClientTest
                         }
                     }
                 }],
+                ""parameters"": [
+                    {
+                        ""name"":""file"",
+                        ""default"":""sample.csv""
+                    },
+                    {
+                        ""name"":""retry"",
+                        ""default"":""3""
+                    }
+                ],
                 ""email_notifications"": {
                     ""on_start"": [""user.name@databricks.com""],
                     ""on_success"": [""user.name@databricks.com""],
@@ -208,6 +218,16 @@ public class JobApiClientTest : ApiClientTest
                         ""timeout_seconds"": 86400
                     }
                 ],
+                ""parameters"": [
+                    {
+                        ""name"":""file"",
+                        ""default"":""sample.csv""
+                    },
+                    {
+                        ""name"":""retry"",
+                        ""default"":""3""
+                    }
+                ],
                 ""email_notifications"": {
                     ""on_start"": [""user.name@databricks.com""],
                     ""on_success"": [""user.name@databricks.com""],
@@ -276,6 +296,11 @@ public class JobApiClientTest : ApiClientTest
                 OnStart = new[] { new JobWebhookSetting() { Id = "1234567" } },
                 OnFailure = new[] { new JobWebhookSetting() { Id = "1234567" } },
                 OnSuccess = new[] { new JobWebhookSetting() { Id = "1234567" } },
+            },
+            Parameters = new List<JobParameter>
+            {
+                new() { Name = "file", Default = "sample.csv" },
+                new() { Name = "retry", Default = "3" }
             }
         };
 
@@ -352,7 +377,12 @@ public class JobApiClientTest : ApiClientTest
                 TimezoneId = "Europe/London"
             },
             MaxConcurrentRuns = 10,
-            Format = JobFormat.MULTI_TASK
+            Format = JobFormat.MULTI_TASK,
+            Parameters = new List<JobParameter> 
+            { 
+                new() { Name = "file", Default = "sample.csv" },
+                new() { Name = "retry", Default = "3" }
+            }
         };
 
         var sessionizeTask = new SparkJarTask
