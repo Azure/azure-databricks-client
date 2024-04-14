@@ -62,7 +62,8 @@ internal static partial class SampleProgram
             //await TestWarehouseApi(client);
             //await TestReposApi(client);
             //await TestPipelineApi(client);
-            await TestUnityCatalogApi(client);
+            //await TestUnityCatalogApi(client);
+            await TestStatementExecutionApi(client);
         }
 
         Console.WriteLine("Press enter to exit");
