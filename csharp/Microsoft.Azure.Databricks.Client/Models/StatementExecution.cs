@@ -215,7 +215,8 @@ public record SqlStatementParameter
             null => string.Empty,
             byte[] bytes => System.Convert.ToHexString(bytes),
             DateOnly date => date.ToString("yyyy-MM-dd"),
-            DateTime timestamp => timestamp.ToString("yyyy-MM-ddTHH:mm:ss.ffffffzzz"),
+            DateTime timestamp => timestamp.ToString("O"),
+            DateTimeOffset timestamp => timestamp.ToString("O"),
             _ => value.ToString()
         };
 }
