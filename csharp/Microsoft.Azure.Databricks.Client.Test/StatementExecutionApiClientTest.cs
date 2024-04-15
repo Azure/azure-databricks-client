@@ -65,7 +65,7 @@ public class StatementExecutionApiClientTest : ApiClientTest
         var statement = JsonNode.Parse(expectedRequest).Deserialize<SqlStatement>(Options);
 
         var actual = await client.Execute(statement);
-        Assert.IsTrue(expected.Equals(actual));
+        Assert.AreEqual(expected, actual);
 
         handler.VerifyRequest(
             HttpMethod.Post,
@@ -124,7 +124,7 @@ public class StatementExecutionApiClientTest : ApiClientTest
 
         using var client = new StatementExecutionApiClient(hc);
         var actual = await client.Get(testId);
-        Assert.IsTrue(expected.Equals(actual));
+        Assert.AreEqual(expected, actual);
     }
 
     [TestMethod]
@@ -180,6 +180,6 @@ public class StatementExecutionApiClientTest : ApiClientTest
 
         using var client = new StatementExecutionApiClient(hc);
         var actual = await client.GetResultChunk(testId, chunkIndex);
-        Assert.IsTrue(expected.Equals(actual));
+        Assert.AreEqual(expected, actual);
     }
 }
