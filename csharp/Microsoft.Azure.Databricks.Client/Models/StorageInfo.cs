@@ -16,6 +16,8 @@ public abstract record StorageInfo
 
 public record DbfsStorageInfo : StorageInfo { }
 
+public record AbfssStorageInfo : StorageInfo { }
+
 public record WorkspaceStorageInfo : StorageInfo { }
 
 public record VolumesStorageInfo : StorageInfo { }
