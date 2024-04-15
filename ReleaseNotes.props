@@ -22,6 +22,10 @@
             - Add support for job_parameters during job run
             - Add support for Unity Catalog API.
         </PackageReleaseNotes>
+        <PackageReleaseNotes Condition="'$(VersionPrefix)' == '2.4.0'">
+            - Add support for SQL Statement Execution API.
+            - Bug fixes and improvements.
+        </PackageReleaseNotes>
         <PackageReleaseNotes>
         Changes in $(VersionPrefix): $(PackageReleaseNotes)
         </PackageReleaseNotes>
