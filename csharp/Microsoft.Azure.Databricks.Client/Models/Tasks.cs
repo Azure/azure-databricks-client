@@ -23,6 +23,18 @@ public record NotebookTask
     /// </summary>
     [JsonPropertyName("base_parameters")]
     public Dictionary<string, string> BaseParameters { get; set; }
+
+    /// <summary>
+    /// Location type of the notebook. When set to WORKSPACE, the notebook will be retrieved from the local Databricks workspace. When set to GIT, the notebook will be retrieved from a Git repository defined in git_source. If the value is empty, the task will use GIT if git_source is defined and WORKSPACE otherwise.
+    /// </summary>
+    [JsonPropertyName("source")]
+    public NotebookTaskSource Source { get; set; }
+}
+
+public enum NotebookTaskSource
+{
+    WORKSPACE,
+    GIT
 }
 
 #endregion
