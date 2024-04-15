@@ -295,7 +295,8 @@ public enum TableType
     EXTERNAL,
     VIEW,
     MATERIALIZED_VIEW,
-    STREAMING_TABLE
+    STREAMING_TABLE,
+    FOREIGN
 }
 
 public enum DataSourceFormat
@@ -308,5 +309,6 @@ public enum DataSourceFormat
     ORC,
     TEXT,
     UNITY_CATALOG,
-    DELTASHARING
+    DELTASHARING,
+    POSTGRESQL_FORMAT
 }
