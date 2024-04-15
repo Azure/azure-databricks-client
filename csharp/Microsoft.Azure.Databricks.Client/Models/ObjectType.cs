@@ -36,5 +36,11 @@ public enum ObjectType
     /// <summary>
     /// Git Repository
     /// </summary>
-    REPO
+    REPO,
+
+    /// <summary>
+    /// Lakeview Dashboard
+    /// </summary>
+    DASHBOARD
+
 }
