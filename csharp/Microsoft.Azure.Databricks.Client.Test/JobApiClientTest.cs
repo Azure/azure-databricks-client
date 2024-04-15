@@ -114,6 +114,16 @@ public class JobApiClientTest : ApiClientTest
                         }
                     }
                 }],
+                ""parameters"": [
+                    {
+                        ""name"":""file"",
+                        ""default"":""sample.csv""
+                    },
+                    {
+                        ""name"":""retry"",
+                        ""default"":""3""
+                    }
+                ],
                 ""email_notifications"": {
                     ""on_start"": [""user.name@databricks.com""],
                     ""on_success"": [""user.name@databricks.com""],
@@ -208,6 +218,16 @@ public class JobApiClientTest : ApiClientTest
                         ""timeout_seconds"": 86400
                     }
                 ],
+                ""parameters"": [
+                    {
+                        ""name"":""file"",
+                        ""default"":""sample.csv""
+                    },
+                    {
+                        ""name"":""retry"",
+                        ""default"":""3""
+                    }
+                ],
                 ""email_notifications"": {
                     ""on_start"": [""user.name@databricks.com""],
                     ""on_success"": [""user.name@databricks.com""],
@@ -221,7 +241,7 @@ public class JobApiClientTest : ApiClientTest
                 },
                 ""timeout_seconds"": 86400,
                 ""git_source"": null,
-                ""idempotency_token"": ""8f018174-4792-40d5-bcbc-3e6a527352c8"",
+                ""idempotency_token"": ""00000000-0000-0000-0000-000000000000"",
                 ""access_control_list"": [{
                         ""user_name"": ""jsmith@example.com"",
                         ""permission_level"": ""CAN_MANAGE""
@@ -276,6 +296,11 @@ public class JobApiClientTest : ApiClientTest
                 OnStart = new[] { new JobWebhookSetting() { Id = "1234567" } },
                 OnFailure = new[] { new JobWebhookSetting() { Id = "1234567" } },
                 OnSuccess = new[] { new JobWebhookSetting() { Id = "1234567" } },
+            },
+            Parameters = new List<JobParameter>
+            {
+                new() { Name = "file", Default = "sample.csv" },
+                new() { Name = "retry", Default = "3" }
             }
         };
 
@@ -352,7 +377,12 @@ public class JobApiClientTest : ApiClientTest
                 TimezoneId = "Europe/London"
             },
             MaxConcurrentRuns = 10,
-            Format = JobFormat.MULTI_TASK
+            Format = JobFormat.MULTI_TASK,
+            Parameters = new List<JobParameter>
+            {
+                new() { Name = "file", Default = "sample.csv" },
+                new() { Name = "retry", Default = "3" }
+            }
         };
 
         var sessionizeTask = new SparkJarTask
@@ -622,7 +652,7 @@ public class JobApiClientTest : ApiClientTest
         const string expectedRequest = @"
             {
               ""job_id"": 11223344,
-              ""idempotency_token"": ""8f018174-4792-40d5-bcbc-3e6a527352c8"",
+              ""idempotency_token"": ""00000000-0000-0000-0000-000000000000"",
               ""jar_params"": [
                 ""john"",
                 ""doe"",
@@ -678,7 +708,7 @@ public class JobApiClientTest : ApiClientTest
         hc.BaseAddress = BaseApiUri;
 
         using var client = new JobsApiClient(hc);
-        var runId = await client.RunNow(11223344, runParams, "8f018174-4792-40d5-bcbc-3e6a527352c8");
+        var runId = await client.RunNow(11223344, runParams, "00000000-0000-0000-0000-000000000000");
 
         Assert.AreEqual(455644833, runId);
 
@@ -698,7 +728,7 @@ public class JobApiClientTest : ApiClientTest
         const string expectedRequest = @"
             {
               ""job_id"": 11223344,
-              ""idempotency_token"": ""8f018174-4792-40d5-bcbc-3e6a527352c8""
+              ""idempotency_token"": ""00000000-0000-0000-0000-000000000000""
             }
         ";
 
@@ -719,7 +749,7 @@ public class JobApiClientTest : ApiClientTest
         hc.BaseAddress = BaseApiUri;
 
         using var client = new JobsApiClient(hc);
-        var runId = await client.RunNow(11223344, idempotencyToken: "8f018174-4792-40d5-bcbc-3e6a527352c8");
+        var runId = await client.RunNow(11223344, idempotencyToken: "00000000-0000-0000-0000-000000000000");
 
         Assert.AreEqual(455644833, runId);
 
@@ -755,7 +785,7 @@ public class JobApiClientTest : ApiClientTest
 
         var run = CreateDefaultRunSubmitSettings();
         var acr = CreateDefaultAccessControlRequest();
-        var runId = await client.RunSubmit(run, acr, "8f018174-4792-40d5-bcbc-3e6a527352c8");
+        var runId = await client.RunSubmit(run, acr, "00000000-0000-0000-0000-000000000000");
 
         Assert.AreEqual(455644833, runId);
 
