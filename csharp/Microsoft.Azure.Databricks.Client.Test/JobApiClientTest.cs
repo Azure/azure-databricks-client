@@ -378,8 +378,8 @@ public class JobApiClientTest : ApiClientTest
             },
             MaxConcurrentRuns = 10,
             Format = JobFormat.MULTI_TASK,
-            Parameters = new List<JobParameter> 
-            { 
+            Parameters = new List<JobParameter>
+            {
                 new() { Name = "file", Default = "sample.csv" },
                 new() { Name = "retry", Default = "3" }
             }
