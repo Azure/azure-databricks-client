@@ -138,37 +138,37 @@ public class DatabricksClient : IDisposable
         return new DatabricksClient(baseUrl, workspaceResourceId, databricksToken, managementToken, timeoutSeconds, httpClientConfig);
     }
 
-    public IClustersApi Clusters { get; }
+    public virtual IClustersApi Clusters { get; }
 
-    public IJobsApi Jobs { get; }
+    public virtual IJobsApi Jobs { get; }
 
-    public IDbfsApi Dbfs { get; }
+    public virtual IDbfsApi Dbfs { get; }
 
-    public ISecretsApi Secrets { get; }
+    public virtual ISecretsApi Secrets { get; }
 
-    public IGroupsApi Groups { get; }
+    public virtual IGroupsApi Groups { get; }
 
-    public ILibrariesApi Libraries { get; }
+    public virtual ILibrariesApi Libraries { get; }
 
-    public ITokenApi Token { get; }
+    public virtual ITokenApi Token { get; }
 
-    public IWorkspaceApi Workspace { get; }
+    public virtual IWorkspaceApi Workspace { get; }
 
-    public IInstancePoolApi InstancePool { get; }
+    public virtual IInstancePoolApi InstancePool { get; }
 
-    public IPermissionsApi Permissions { get; }
+    public virtual IPermissionsApi Permissions { get; }
 
-    public IClusterPoliciesApi ClusterPolicies { get; }
+    public virtual IClusterPoliciesApi ClusterPolicies { get; }
 
-    public IGlobalInitScriptsApi GlobalInitScriptsApi { get; }
+    public virtual IGlobalInitScriptsApi GlobalInitScriptsApi { get; }
 
-    public ISQLApi SQL { get; }
+    public virtual ISQLApi SQL { get; }
 
-    public IReposApi Repos { get; }
+    public virtual IReposApi Repos { get; }
 
-    public IPipelinesApi Pipelines { get; }
+    public virtual IPipelinesApi Pipelines { get; }
 
-    public UnityCatalogClient UnityCatalog { get; }
+    public virtual UnityCatalogClient UnityCatalog { get; }
 
     public void Dispose()
     {
