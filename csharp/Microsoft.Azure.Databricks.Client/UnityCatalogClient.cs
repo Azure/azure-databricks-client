@@ -25,31 +25,31 @@ public class UnityCatalogClient : ApiClient, IDisposable
         this.Lineage = new LineageApiClient(httpClient);
     }
 
-    public ICatalogsApi Catalogs { get; set; }
+    public virtual ICatalogsApi Catalogs { get; set; }
 
-    public IConnectionsApi Connections { get; set; }
+    public virtual IConnectionsApi Connections { get; set; }
 
-    public IExternalLocationsApi ExternalLocations { get; set; }
+    public virtual IExternalLocationsApi ExternalLocations { get; set; }
 
-    public IFunctionsApi Functions { get; set; }
+    public virtual IFunctionsApi Functions { get; set; }
 
-    public IMetastoresApi Metastores { get; set; }
+    public virtual IMetastoresApi Metastores { get; set; }
 
-    public ISchemasApi Schemas { get; set; }
+    public virtual ISchemasApi Schemas { get; set; }
 
-    public ISecurableWorkspaceBindingsApi SecurableWorkspaceBindings { get; set; }
+    public virtual ISecurableWorkspaceBindingsApi SecurableWorkspaceBindings { get; set; }
 
-    public IStorageCredentialsApi StorageCredentials { get; set; }
+    public virtual IStorageCredentialsApi StorageCredentials { get; set; }
 
-    public ISystemSchemas SystemSchemas { get; set; }
+    public virtual ISystemSchemas SystemSchemas { get; set; }
 
-    public ITableConstraintsApi TableConstraints { get; set; }
+    public virtual ITableConstraintsApi TableConstraints { get; set; }
 
-    public ITablesApi Tables { get; set; }
+    public virtual ITablesApi Tables { get; set; }
 
-    public IUnityCatalogPermissionsApi UnityCatalogPermissions { get; set; }
+    public virtual IUnityCatalogPermissionsApi UnityCatalogPermissions { get; set; }
 
-    public IVolumesApi Volumes { get; set; }
+    public virtual IVolumesApi Volumes { get; set; }
 
-    public ILineageApi Lineage { get; set; }
+    public virtual ILineageApi Lineage { get; set; }
 }
