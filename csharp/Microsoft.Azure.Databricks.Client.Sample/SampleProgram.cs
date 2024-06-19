@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using Azure.Identity;
 using Microsoft.Azure.Databricks.Client.Converters;
 using System;
 using System.Net.Http;
@@ -35,34 +36,43 @@ internal static partial class SampleProgram
 
     public static async Task Main(string[] args)
     {
-        if (args.Length < 2)
+        DatabricksClient client;
+        if (args.Length == 0)
         {
-            await Console.Error.WriteLineAsync("Usage: <Azure databricks base url> <access token>");
+            await Console.Error.WriteLineAsync("Usage: <Azure databricks base url>");
             return;
         }
 
-        var baseUrl = args[0];
-        var token = args[1];
+        if (args.Length == 1)
+        {
+            client = DatabricksClient.CreateClient(args[0], new DefaultAzureCredential());
+        }
+        else
+        {
+            var baseUrl = args[0];
+            var token = args[1];
+            client = DatabricksClient.CreateClient(baseUrl, token);
+        }
 
         Console.WriteLine("Creating client");
-        using (var client = DatabricksClient.CreateClient(baseUrl, token))
+        using (client)
         {
-            //await TestGlobalInitScriptsApi(client);
-            //await TestClusterPoliciesApi(client);
-            //await TestWorkspaceApi(client);
-            //await TestLibrariesApi(client);
-            //await TestSecretsApi(client);
-            //await TestTokenApi(client);
-            //await TestInstancePoolApi(client);
-            //await TestClustersApi(client);
-            //await TestGroupsApi(client);
-            //await TestDbfsApi(client);
-            //await TestJobsApi(client);
-            //await TestPermissionsApi(client);
-            //await TestWarehouseApi(client);
-            //await TestReposApi(client);
-            //await TestPipelineApi(client);
-            //await TestUnityCatalogApi(client);
+            await TestGlobalInitScriptsApi(client);
+            await TestClusterPoliciesApi(client);
+            await TestWorkspaceApi(client);
+            await TestLibrariesApi(client);
+            await TestSecretsApi(client);
+            await TestTokenApi(client);
+            await TestInstancePoolApi(client);
+            await TestClustersApi(client);
+            await TestGroupsApi(client);
+            await TestDbfsApi(client);
+            await TestJobsApi(client);
+            await TestPermissionsApi(client);
+            await TestWarehouseApi(client);
+            await TestReposApi(client);
+            await TestPipelineApi(client);
+            await TestUnityCatalogApi(client);
             await TestStatementExecutionApi(client);
         }
 
