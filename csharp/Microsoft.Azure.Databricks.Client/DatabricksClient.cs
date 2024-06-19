@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using Azure.Core;
+using Azure.Identity;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -136,6 +138,17 @@ public class DatabricksClient : IDisposable
         Action<HttpClient> httpClientConfig = default)
     {
         return new DatabricksClient(baseUrl, workspaceResourceId, databricksToken, managementToken, timeoutSeconds, httpClientConfig);
+    }
+
+    /// <summary>
+    /// Create client object with specified base URL, a TokenCredential object and timeout value.
+    /// </summary>
+    public static DatabricksClient CreateClient(string baseUrl, TokenCredential credential, long timeoutSeconds = 30, Action<HttpClient> httpClientConfig = default)
+    {
+        const string DatabricksScope = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d/.default";
+        var accessToken = credential.GetToken(new TokenRequestContext(new string[] { DatabricksScope }), default);
+        var token = accessToken.Token;
+        return new DatabricksClient(baseUrl, token, timeoutSeconds, httpClientConfig);
     }
 
     public virtual IClustersApi Clusters { get; }
