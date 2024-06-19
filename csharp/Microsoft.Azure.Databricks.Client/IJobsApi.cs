@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using Azure;
 using Microsoft.Azure.Databricks.Client.Models;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,14 @@ public interface IJobsApi : IDisposable
     /// <param name="offset">The offset of the first job to return, relative to the most recently created job.</param>
     /// <param name="name">A filter on the list based on the exact (case insensitive) job name.</param>
     /// <param name="expandTasks">Whether to include task and cluster details in the response.</param>
+    [Obsolete("The offset parameter is deprecated. Use method with pageToken to iterate through the pages.")]
     Task<JobList> List(int limit = 20, int offset = 0, string name = default, bool expandTasks = false,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// List all jobs.
+    /// </summary>
+    global::Azure.AsyncPageable<Job> ListPageable(int pageSize = 20, string name = default, bool expandTasks = false,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -129,6 +137,11 @@ public interface IJobsApi : IDisposable
     /// _start_time_from_ to filter by a time range.
     /// </param>
     Task<RunList> RunsList(string pageToken, long? jobId = default, int limit = 25,
+        bool activeOnly = default, bool completedOnly = default, RunType? runType = default,
+        bool expandTasks = default, DateTimeOffset? startTimeFrom = default,
+        DateTimeOffset? startTimeTo = default, CancellationToken cancellationToken = default);
+
+    global::Azure.AsyncPageable<Run> RunsListPageable(long? jobId = default, int pageSize = 25,
         bool activeOnly = default, bool completedOnly = default, RunType? runType = default,
         bool expandTasks = default, DateTimeOffset? startTimeFrom = default,
         DateTimeOffset? startTimeTo = default, CancellationToken cancellationToken = default);
