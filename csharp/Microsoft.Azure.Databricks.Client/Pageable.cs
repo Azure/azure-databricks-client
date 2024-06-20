@@ -25,7 +25,7 @@ namespace Microsoft.Azure.Databricks.Client
                 hasNextPage = response.Item2;
                 nextPageToken = response.Item3;
                 yield return Page<T>.FromValues(response.Item1, nextPageToken, null);
-            } while (hasNextPage && !string.IsNullOrEmpty(nextPageToken));
+            } while (hasNextPage);
         }
     }
 }

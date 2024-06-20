@@ -35,6 +35,17 @@ public class PipelinesApiClient : ApiClient, IPipelinesApi
         return await HttpGet<PipelinesList>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
     }
 
+    public global::Azure.AsyncPageable<Pipeline> ListPageable(int pageSize = 25, CancellationToken cancellationToken = default)
+    {
+        return new AsyncPageable<Pipeline>(
+            async (string pageToken) =>
+            {
+                var response = await List(pageSize, pageToken, cancellationToken).ConfigureAwait(false);
+                return (response.Pipelines.ToList(), response.HasMore, response.NextPageToken);
+            }
+        );
+    }
+
     public async Task<(string, PipelineSpecification)> Create(
         PipelineSpecification pipelineSpecification,
         bool dryRun = true,
@@ -129,6 +140,21 @@ public class PipelinesApiClient : ApiClient, IPipelinesApi
         return await HttpGet<PipelineUpdatesList>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
     }
 
+    public global::Azure.AsyncPageable<PipelineUpdate> ListUpdatesPageable(
+        string pipelineId,
+        int pageSize = 25,
+        string untilUpdateId = null,
+        CancellationToken cancellationToken = default)
+    {
+        return new AsyncPageable<PipelineUpdate>(
+            async (string pageToken) =>
+            {
+                var response = await ListUpdates(pipelineId, pageSize, pageToken, untilUpdateId, cancellationToken).ConfigureAwait(false);
+                return (response.Updates.ToList(), response.HasMore, response.NextPageToken);
+            }
+        );
+    }
+
     public async Task<string> Start(
         string pipelineId,
         bool fullRefresh = false,
@@ -166,9 +192,9 @@ public class PipelinesApiClient : ApiClient, IPipelinesApi
     public async Task<PipelineEventsList> ListEvents(
         string pipelineId,
         int maxResults = 25,
-        string orderBy = null,
-        string filter = null,
-        string pageToken = null,
+        string orderBy = default,
+        string filter = default,
+        string pageToken = default,
         CancellationToken cancellationToken = default)
     {
         var requestUriSb = new StringBuilder($"{ApiVersion}/pipelines/{pipelineId}/events?max_results={maxResults}");
@@ -191,5 +217,21 @@ public class PipelinesApiClient : ApiClient, IPipelinesApi
         var requestUri = requestUriSb.ToString();
 
         return await HttpGet<PipelineEventsList>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+    }
+
+    public global::Azure.AsyncPageable<PipelineEvent> ListEventsPageable(
+        string pipelineId,
+        int pageSize = 25,
+        string orderBy = default,
+        string filter = default,
+        CancellationToken cancellationToken = default)
+    {
+        return new AsyncPageable<PipelineEvent>(
+            async (string pageToken) =>
+            {
+                var response = await ListEvents(pipelineId, pageSize, orderBy, filter, pageToken, cancellationToken).ConfigureAwait(false);
+                return (response.Events.ToList(), response.HasMore, response.NextPageToken);
+            }
+        );
     }
 }

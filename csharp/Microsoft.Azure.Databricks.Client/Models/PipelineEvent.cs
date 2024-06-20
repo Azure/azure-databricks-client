@@ -11,6 +11,9 @@ public record PipelineEventsList
     [JsonPropertyName("next_page_token")]
     public string NextPageToken { get; set; }
 
+    [JsonIgnore]
+    public bool HasMore => !string.IsNullOrEmpty(NextPageToken);
+
     /// <summary>
     /// If present, a token to fetch the previous page of events.
     /// </summary>

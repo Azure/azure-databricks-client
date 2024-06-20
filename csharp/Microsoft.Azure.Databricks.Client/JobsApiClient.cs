@@ -1,13 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Azure;
 using Microsoft.Azure.Databricks.Client.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -15,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client;
+
 public class JobsApiClient : ApiClient, IJobsApi
 {
     protected override string ApiVersion => "2.1";
@@ -70,7 +69,7 @@ public class JobsApiClient : ApiClient, IJobsApi
 
         var url = BuildJobsListUrl(limit, name, expandTasks);
         url += $"&offset={offset}";
-        
+
         var response = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken)
             .ConfigureAwait(false);
 
@@ -82,21 +81,19 @@ public class JobsApiClient : ApiClient, IJobsApi
 
     public global::Azure.AsyncPageable<Job> ListPageable(int pageSize = 20, string name = null, bool expandTasks = false, CancellationToken cancellationToken = default)
     {
-        var getNextPageFunc = new Func<string, Task<(List<Job>, bool, string)>>(async (pageToken) =>
+        if (pageSize < 1 || pageSize > 25)
         {
-            if (pageSize < 1 || pageSize > 25)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageSize), "limit must be between 1 and 25");
-            }
+            throw new ArgumentOutOfRangeException(nameof(pageSize), "pageSize must be between 1 and 25");
+        }
 
+        return new AsyncPageable<Job>(async (nextPageToken) =>
+        {
             var url = BuildJobsListUrl(pageSize, name, expandTasks);
-            url += string.IsNullOrEmpty(pageToken) ? string.Empty : $"&page_token={pageToken}";
+            url += string.IsNullOrEmpty(nextPageToken) ? string.Empty : $"&page_token={nextPageToken}";
 
             var jobList = await HttpGet<JobList>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
             return (jobList.Jobs.ToList(), jobList.HasMore, jobList.NextPageToken);
         });
-
-        return new AsyncPageable<Job>(getNextPageFunc);
     }
 
     public async Task Delete(long jobId, CancellationToken cancellationToken = default)
@@ -224,11 +221,11 @@ public class JobsApiClient : ApiClient, IJobsApi
     {
         string url = BuildRunsListUrl(jobId, limit, activeOnly, completedOnly, runType, expandTasks, startTimeFrom, startTimeTo);
         url += string.IsNullOrEmpty(pageToken) ? string.Empty : $"&page_token={pageToken}";
-        
-        
+
+
         await Console.Out.WriteLineAsync("Request: " + url);
-        
-        
+
+
         return await HttpGet<RunList>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
     }
 
@@ -236,13 +233,12 @@ public class JobsApiClient : ApiClient, IJobsApi
         bool activeOnly = false, bool completedOnly = false, RunType? runType = null, bool expandTasks = false,
         DateTimeOffset? startTimeFrom = null, DateTimeOffset? startTimeTo = null, CancellationToken cancellationToken = default)
     {
-        var getNextPageFunc = new Func<string, Task<(List<Run>, bool, string)>>(async (nextPageToken) =>
+        return new AsyncPageable<Run>(async (nextPageToken) =>
         {
-            var response = await RunsList(nextPageToken, jobId, pageSize, activeOnly, completedOnly, runType, expandTasks, startTimeFrom, startTimeTo, cancellationToken).ConfigureAwait(false);
+            var response = await RunsList(nextPageToken, jobId, pageSize, activeOnly, completedOnly, runType, expandTasks, 
+                startTimeFrom, startTimeTo, cancellationToken).ConfigureAwait(false);
             return (response.Runs.ToList(), response.HasMore, response.NextPageToken);
         });
-
-        return new AsyncPageable<Run>(getNextPageFunc);
     }
 
     public async Task<(Run, RepairHistory)> RunsGet(long runId, bool includeHistory = default,
