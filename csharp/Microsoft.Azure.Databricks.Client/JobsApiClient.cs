@@ -235,7 +235,7 @@ public class JobsApiClient : ApiClient, IJobsApi
     {
         return new AsyncPageable<Run>(async (nextPageToken) =>
         {
-            var response = await RunsList(nextPageToken, jobId, pageSize, activeOnly, completedOnly, runType, expandTasks, 
+            var response = await RunsList(nextPageToken, jobId, pageSize, activeOnly, completedOnly, runType, expandTasks,
                 startTimeFrom, startTimeTo, cancellationToken).ConfigureAwait(false);
             return (response.Runs.ToList(), response.HasMore, response.NextPageToken);
         });

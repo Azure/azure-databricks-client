@@ -649,7 +649,6 @@ public class JobApiClientTest : ApiClientTest
     public async Task TestListPageable()
     {
         var apiUri = new Uri(JobsApiUri, "list");
-        
         var expectedRequestUrl1 = new Uri(apiUri, "?limit=2&expand_tasks=false");
         var expectedRequestUrl2 = new Uri(apiUri, "?limit=2&expand_tasks=false&page_token=second");
         var expectedRequestUrl3 = new Uri(apiUri, "?limit=2&expand_tasks=false&page_token=third");
