@@ -598,10 +598,11 @@ public class JobApiClientTest : ApiClientTest
     }
 
     [TestMethod]
+    [Obsolete]
     public async Task TestList()
     {
         var apiUri = new Uri(JobsApiUri, "list");
-        var requestUri = new Uri(apiUri, "?limit=20&offset=0&expand_tasks=false");
+        var requestUri = new Uri(apiUri, "?limit=20&expand_tasks=false&offset=0");
 
         var expectedResponse = new JobList
         {
@@ -640,6 +641,78 @@ public class JobApiClientTest : ApiClientTest
         handler.VerifyRequest(
             HttpMethod.Get,
             requestUri,
+            Times.Once()
+        );
+    }
+
+    [TestMethod]
+    public async Task TestListPageable()
+    {
+        var apiUri = new Uri(JobsApiUri, "list");
+        var expectedRequestUrl1 = new Uri(apiUri, "?limit=2&expand_tasks=false");
+        var expectedRequestUrl2 = new Uri(apiUri, "?limit=2&expand_tasks=false&page_token=second");
+        var expectedRequestUrl3 = new Uri(apiUri, "?limit=2&expand_tasks=false&page_token=third");
+
+        const string response1 = @"
+            {
+                ""jobs"":[{""job_id"": 1}, {""job_id"": 2}],
+                ""has_more"": true,
+                ""next_page_token"": ""second"",
+                ""prev_page_token"": """"
+            }
+        ";
+        const string response2 = @"
+            {
+                ""jobs"":[{""job_id"": 3}, {""job_id"": 4}],
+                ""has_more"": true,
+                ""next_page_token"": ""third"",
+                ""prev_page_token"": ""first""
+            }
+        ";
+        const string response3 = @"
+            {
+                ""jobs"":[{""job_id"": 5}, {""job_id"": 6}],
+                ""has_more"": false,
+                ""next_page_token"": """",
+                ""prev_page_token"": ""second""
+            }
+        ";
+
+        var handler = CreateMockHandler();
+        handler
+            .SetupRequest(HttpMethod.Get, expectedRequestUrl1)
+            .ReturnsResponse(HttpStatusCode.OK, response1, "application/json")
+            .Verifiable();
+        handler.SetupRequest(HttpMethod.Get, expectedRequestUrl2)
+            .ReturnsResponse(HttpStatusCode.OK, response2, "application/json")
+            .Verifiable();
+        handler.SetupRequest(HttpMethod.Get, expectedRequestUrl3)
+            .ReturnsResponse(HttpStatusCode.OK, response3, "application/json")
+            .Verifiable();
+
+        var hc = handler.CreateClient();
+        hc.BaseAddress = BaseApiUri;
+
+        using var client = new JobsApiClient(hc);
+        var jobs = client.ListPageable(pageSize: 2);
+
+        Assert.AreEqual(6, await jobs.CountAsync());
+
+        handler.VerifyRequest(
+            HttpMethod.Get,
+            expectedRequestUrl1,
+            Times.Once()
+        );
+
+        handler.VerifyRequest(
+            HttpMethod.Get,
+            expectedRequestUrl2,
+            Times.Once()
+        );
+
+        handler.VerifyRequest(
+            HttpMethod.Get,
+            expectedRequestUrl3,
             Times.Once()
         );
     }
@@ -1069,6 +1142,79 @@ public class JobApiClientTest : ApiClientTest
         handler.VerifyRequest(
             HttpMethod.Get,
             expectedRequestUrl,
+            Times.Once()
+        );
+    }
+
+    [TestMethod]
+    public async Task TestRunsListPageable()
+    {
+        var apiUri = new Uri(JobsApiUri, "runs/list");
+
+        var expectedRequestUrl1 = new Uri(apiUri, "?limit=2&job_id=11223344");
+        var expectedRequestUrl2 = new Uri(apiUri, "?limit=2&job_id=11223344&page_token=second");
+        var expectedRequestUrl3 = new Uri(apiUri, "?limit=2&job_id=11223344&page_token=third");
+
+        const string response1 = @"
+            {
+                ""runs"":[{""job_id"": 11223344,""run_id"": 1}, {""job_id"": 11223344,""run_id"": 2}],
+                ""has_more"": true,
+                ""next_page_token"": ""second"",
+                ""prev_page_token"": """"
+            }
+        ";
+        const string response2 = @"
+            {
+                ""runs"":[{""job_id"": 11223344,""run_id"": 3}, {""job_id"": 11223344,""run_id"": 4}],
+                ""has_more"": true,
+                ""next_page_token"": ""third"",
+                ""prev_page_token"": ""first""
+            }
+        ";
+        const string response3 = @"
+            {
+                ""runs"":[{""job_id"": 11223344,""run_id"": 5}, {""job_id"": 11223344,""run_id"": 6}],
+                ""has_more"": false,
+                ""next_page_token"": """",
+                ""prev_page_token"": ""second""
+            }
+        ";
+
+        var handler = CreateMockHandler();
+        handler
+            .SetupRequest(HttpMethod.Get, expectedRequestUrl1)
+            .ReturnsResponse(HttpStatusCode.OK, response1, "application/json")
+            .Verifiable();
+        handler.SetupRequest(HttpMethod.Get, expectedRequestUrl2)
+            .ReturnsResponse(HttpStatusCode.OK, response2, "application/json")
+            .Verifiable();
+        handler.SetupRequest(HttpMethod.Get, expectedRequestUrl3)
+            .ReturnsResponse(HttpStatusCode.OK, response3, "application/json")
+            .Verifiable();
+
+        var hc = handler.CreateClient();
+        hc.BaseAddress = BaseApiUri;
+
+        using var client = new JobsApiClient(hc);
+        var runs = client.RunsListPageable(jobId: 11223344, pageSize: 2);
+
+        Assert.AreEqual(6, await runs.CountAsync());
+
+        handler.VerifyRequest(
+            HttpMethod.Get,
+            expectedRequestUrl1,
+            Times.Once()
+        );
+
+        handler.VerifyRequest(
+            HttpMethod.Get,
+            expectedRequestUrl2,
+            Times.Once()
+        );
+
+        handler.VerifyRequest(
+            HttpMethod.Get,
+            expectedRequestUrl3,
             Times.Once()
         );
     }

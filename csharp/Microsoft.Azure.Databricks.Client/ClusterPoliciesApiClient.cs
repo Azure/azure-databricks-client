@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.Azure.Databricks.Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -96,11 +97,7 @@ public class ClusterPoliciesApiClient : ApiClient, IClusterPoliciesApi
     public async Task<(IEnumerable<PolicyFamily>, string)> ListPolicyFamily(int maxResults = 20, string pageToken = default, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{ApiVersion}/policy-families?max_results={maxResults}";
-
-        if (!string.IsNullOrEmpty(pageToken))
-        {
-            requestUri += $"&page_token={pageToken}";
-        }
+        requestUri += string.IsNullOrEmpty(pageToken) ? string.Empty : $"&page_token={pageToken}";
 
         var response = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
 
@@ -111,5 +108,14 @@ public class ClusterPoliciesApiClient : ApiClient, IClusterPoliciesApi
         var nextPageToken = nextPageTokenNode?.GetValue<string>() ?? string.Empty;
 
         return (families, nextPageToken);
+    }
+
+    public global::Azure.AsyncPageable<PolicyFamily> ListPolicyFamilyPageable(int pageSize, CancellationToken cancellationToken = default)
+    {
+        return new AsyncPageable<PolicyFamily>(async (pageToken) =>
+        {
+            var (policyFamilyList, nextPageToken) = await ListPolicyFamily(pageSize, pageToken, cancellationToken).ConfigureAwait(false);
+            return (policyFamilyList.ToList(), !string.IsNullOrEmpty(nextPageToken), nextPageToken);
+        });
     }
 }

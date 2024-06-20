@@ -8,6 +8,11 @@ namespace Microsoft.Azure.Databricks.Client.Models;
 
 public record RunList
 {
+    public RunList()
+    {
+        this.Runs = new List<Run>();
+    }
+
     /// <summary>
     /// A list of runs, from most recently started to least.
     /// </summary>

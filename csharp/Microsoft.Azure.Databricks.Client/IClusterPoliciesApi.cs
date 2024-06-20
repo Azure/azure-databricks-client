@@ -53,4 +53,6 @@ public interface IClusterPoliciesApi : IDisposable
     Task<PolicyFamily> GetPolicyFamily(string id, CancellationToken cancellationToken = default);
 
     Task<(IEnumerable<PolicyFamily>, string)> ListPolicyFamily(int maxResults, string pageToken = default, CancellationToken cancellationToken = default);
+
+    global::Azure.AsyncPageable<PolicyFamily> ListPolicyFamilyPageable(int pageSize, CancellationToken cancellationToken = default);
 }

@@ -11,10 +11,17 @@ public interface ITablesApi : IDisposable
 
     Task<(IEnumerable<TableSummary>, string)> ListSummaries(
         string catalogName,
-        int maxResults = 10000,
+        int? maxResults = 10000,
         string schemaNamePattern = default,
         string tableNamePattern = default,
         string pageToken = default,
+        CancellationToken cancellationToken = default);
+
+    global::Azure.AsyncPageable<TableSummary> ListSummariesPageable(
+        string catalogName,
+        int? pageSize = default,
+        string schemaNamePattern = default,
+        string tableNamePattern = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -27,6 +34,12 @@ public interface ITablesApi : IDisposable
         string pageToken = default,
         bool? includeDeltaMetadata = default,
         CancellationToken cancellationToken = default);
+
+    global::Azure.AsyncPageable<Table> ListPageable(
+        string catalogName,
+        string schemaName,
+        int? pageSize = default,
+        bool? includeDeltaMetadata = default);
 
     /// <summary>
     /// Gets a table from the metastore for a specific catalog and schema.

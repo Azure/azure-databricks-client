@@ -1,6 +1,5 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +12,8 @@ public interface IPipelinesApi : IDisposable
     /// Lists pipelines defined in the Delta Live Tables system.
     /// </summary>
     Task<PipelinesList> List(int maxResults = 25, string pageToken = default, CancellationToken cancellationToken = default);
+
+    global::Azure.AsyncPageable<Pipeline> ListPageable(int pageSize = 25, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new data processing pipeline based on the requested configuration. 
@@ -70,6 +71,12 @@ public interface IPipelinesApi : IDisposable
         string untilUpdateId = null,
         CancellationToken cancellationToken = default);
 
+    global::Azure.AsyncPageable<PipelineUpdate> ListUpdatesPageable(
+        string pipelineId,
+        int pageSize = 25,
+        string untilUpdateId = null,
+        CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Starts or queues a pipeline update.
     /// </summary>
@@ -87,8 +94,18 @@ public interface IPipelinesApi : IDisposable
     Task<PipelineEventsList> ListEvents(
         string pipelineId,
         int maxResults = 25,
-        string orderBy = null,
-        string filter = null,
-        string pageToken = null,
+        string orderBy = default,
+        string filter = default,
+        string pageToken = default,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves events for a pipeline.
+    /// </summary>
+    global::Azure.AsyncPageable<PipelineEvent> ListEventsPageable(
+        string pipelineId,
+        int pageSize = 25,
+        string orderBy = default,
+        string filter = default,
         CancellationToken cancellationToken = default);
 }

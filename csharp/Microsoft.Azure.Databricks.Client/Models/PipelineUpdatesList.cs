@@ -17,6 +17,9 @@ public record PipelineUpdatesList
     [JsonPropertyName("next_page_token")]
     public string NextPageToken { get; set; }
 
+    [JsonIgnore]
+    public bool HasMore => !string.IsNullOrEmpty(this.NextPageToken);
+
     /// <summary>
     /// If present, then this token can be used in a subsequent request to fetch the previous page.
     /// </summary>

@@ -18,6 +18,11 @@ public interface IReposApi : IDisposable
     /// <param name="pageToken">Token used to get the next page of results. If not specified, returns the first page of results as well as a next page token if there are more results.</param>
     Task<(IEnumerable<Repo>, string)> List(string pathPrefix = default, string pageToken = default, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Returns repos that the calling user has Manage permissions on. Results are paginated with each page containing twenty repos.
+    /// </summary>
+    /// <param name="pathPrefix">Filters repos that have paths starting with the given path prefix.</param>
+    global::Azure.AsyncPageable<Repo> ListPageable(string pathPrefix = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created programmatically must be linked to a remote Git repo, unlike repos created in the browser.

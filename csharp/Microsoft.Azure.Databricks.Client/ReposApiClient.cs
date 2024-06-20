@@ -64,6 +64,15 @@ public class ReposApiClient : ApiClient, IReposApi
         return (repos, nextPageToken);
     }
 
+    public global::Azure.AsyncPageable<Repo> ListPageable(string pathPrefix = null, CancellationToken cancellationToken = default)
+    {
+        return new AsyncPageable<Repo>(async (pageToken) =>
+         {
+             var (repos, nextPageToken) = await List(pathPrefix, pageToken, cancellationToken).ConfigureAwait(false);
+             return (repos.ToList(), !string.IsNullOrEmpty(nextPageToken), nextPageToken);
+         });
+    }
+
     public async Task Update(long repoId, string branch = null, string tag = null, RepoSparseCheckout sparseCheckout = null, CancellationToken cancellationToken = default)
     {
         var requestUri = $"{_apiBaseUrl}/{repoId}";

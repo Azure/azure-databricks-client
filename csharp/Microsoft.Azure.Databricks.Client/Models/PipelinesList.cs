@@ -16,4 +16,7 @@ public class PipelinesList
     /// </summary>
     [JsonPropertyName("next_page_token")]
     public string NextPageToken { get; set; }
+
+    [JsonIgnore]
+    public bool HasMore => !string.IsNullOrEmpty(this.NextPageToken);
 }

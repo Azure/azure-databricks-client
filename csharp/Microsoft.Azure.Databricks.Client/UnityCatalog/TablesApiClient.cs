@@ -18,7 +18,7 @@ public class TablesApiClient : ApiClient, ITablesApi
 
     public async Task<(IEnumerable<TableSummary>, string)> ListSummaries(
         string catalogName,
-        int maxResults = 10000,
+        int? maxResults = 10000,
         string schemaNamePattern = default,
         string tableNamePattern = default,
         string pageToken = default,
@@ -53,6 +53,27 @@ public class TablesApiClient : ApiClient, ITablesApi
         var nextPageToken = nextPageTokenNode?.Deserialize<string>(Options) ?? string.Empty;
 
         return (tables, nextPageToken);
+    }
+
+    public global::Azure.AsyncPageable<TableSummary> ListSummariesPageable(
+        string catalogName,
+        int? pageSize = default,
+        string schemaNamePattern = default,
+        string tableNamePattern = default,
+        CancellationToken cancellationToken = default)
+    {
+        return new AsyncPageable<TableSummary>(async (pageToken) =>
+        {
+            var (tableSummaries, nextPageToken) = await ListSummaries(
+                catalogName,
+                pageSize,
+                schemaNamePattern,
+                tableNamePattern,
+                pageToken,
+                cancellationToken).ConfigureAwait(false);
+
+            return (tableSummaries.ToList(), !string.IsNullOrEmpty(nextPageToken), nextPageToken);
+        });
     }
 
     public async Task<(IEnumerable<Table>, string)> List(
@@ -92,6 +113,26 @@ public class TablesApiClient : ApiClient, ITablesApi
         var nextPageToken = nextPageTokenNode?.Deserialize<string>(Options) ?? string.Empty;
 
         return (tables, nextPageToken);
+    }
+
+    public global::Azure.AsyncPageable<Table> ListPageable(
+        string catalogName,
+        string schemaName,
+        int? pageSize = default,
+        bool? includeDeltaMetadata = default)
+    {
+        return new AsyncPageable<Table>(async (pageToken) =>
+        {
+            var (tables, nextPageToken) = await List(
+                catalogName,
+                schemaName,
+                pageSize,
+                pageToken,
+                includeDeltaMetadata,
+                CancellationToken.None).ConfigureAwait(false);
+
+            return (tables.ToList(), !string.IsNullOrEmpty(nextPageToken), nextPageToken);
+        });
     }
 
     public async Task<Table> Get(
