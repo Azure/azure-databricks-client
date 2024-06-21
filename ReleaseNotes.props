@@ -26,6 +26,11 @@
             - Add support for SQL Statement Execution API.
             - Bug fixes and improvements.
         </PackageReleaseNotes>
+        <PackageReleaseNotes Condition="'$(VersionPrefix)' == '2.5.0'">
+            - Support for TokenCredential-based authentication for managed identity and service principal.
+            - List operations now support AsyncPageable if next_page_token is returned.
+            - Streaming response from HttpClient for better memory utilization.
+        </PackageReleaseNotes>
         <PackageReleaseNotes>
         Changes in $(VersionPrefix): $(PackageReleaseNotes)
         </PackageReleaseNotes>
