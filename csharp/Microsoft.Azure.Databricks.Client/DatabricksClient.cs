@@ -8,10 +8,11 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client;
 
-public class DatabricksClient : IDisposable
+public partial class DatabricksClient : IDisposable
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DatabricksClient"/> class.
@@ -97,6 +98,29 @@ public class DatabricksClient : IDisposable
         return httpClient;
     }
 
+    private static HttpClient CreateHttpClient(string baseUrl, Func<Task<string>> getToken, long timeoutSeconds = 30, Action<HttpClient> httpClientConfig = default)
+    {
+        var apiUrl = new Uri(new Uri(baseUrl), "api/");
+
+        var decompressHandler = new HttpClientHandler
+        {
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+        };
+
+        var bearerHeaderHandler = new BearerHeaderHandler(getToken, decompressHandler);
+
+        var httpClient = new HttpClient(bearerHeaderHandler, false)
+        {
+            BaseAddress = apiUrl,
+            Timeout = TimeSpan.FromSeconds(timeoutSeconds)
+        };
+
+        httpClientConfig?.Invoke(httpClient);
+
+        SetDefaultHttpHeaders(httpClient);
+        return httpClient;
+    }
+
     private static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
 
     private static void SetDefaultHttpHeaders(HttpClient httpClient)
@@ -146,9 +170,13 @@ public class DatabricksClient : IDisposable
     public static DatabricksClient CreateClient(string baseUrl, TokenCredential credential, long timeoutSeconds = 30, Action<HttpClient> httpClientConfig = default)
     {
         const string DatabricksScope = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d/.default";
-        var accessToken = credential.GetToken(new TokenRequestContext(new string[] { DatabricksScope }), default);
-        var token = accessToken.Token;
-        return new DatabricksClient(baseUrl, token, timeoutSeconds, httpClientConfig);
+        var httpClient = CreateHttpClient(
+            baseUrl,
+            async () => (await credential.GetTokenAsync(new TokenRequestContext(new string[] { DatabricksScope }), default)).Token,
+            timeoutSeconds,
+            httpClientConfig
+        );
+        return new DatabricksClient(httpClient);
     }
 
     public virtual IClustersApi Clusters { get; }
