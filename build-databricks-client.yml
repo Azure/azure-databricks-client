@@ -1,0 +1,42 @@
+# Publish NuGet packages with Azure Pipelines
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/nuget?view=azure-devops&tabs=yaml
+
+trigger:
+  - main
+
+name: $(majorMinorVersion).$(semanticVersion)
+
+variables:
+  vmImageName: 'ubuntu-20.04'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/src/Microsoft.Azure.Databricks.Client'
+  majorMinorVersion: 1.0
+  # semanticVersion counter is automatically incremented by one in each execution of pipeline
+  # second parameter is seed value to reset to every time the referenced majorMinorVersion is changed
+  semanticVersion: $[counter(variables['majorMinorVersion'], 0)]
+
+pool:
+  vmImage: '$(vmImageName)'
+
+jobs:
+- job: PublishUtilities
+  displayName: 'Publish Databricks Client to Azure Artifacts NuGet Feed'
+
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops#yaml-snippet
+  steps:
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: pack
+      packagesToPack: '$(workingDirectory)/Microsoft.Azure.Databricks.Client/*.csproj'
+      packDestination: '$(Build.ArtifactStagingDirectory)'      
+      versioningScheme: byBuildNumber
+
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/nuget-authenticate?view=azure-devops
+  - task: NuGetAuthenticate@0
+    displayName: 'NuGet Authenticate'
+
+  - task: NuGetCommand@2
+    displayName: 'NuGet push'
+    inputs:
+      command: push
+      publishVstsFeed: 'InsightFactory'
+      allowPackageConflicts: true
