@@ -12,9 +12,9 @@ public interface IRegisteredModelsApi : IDisposable
     /// List registered models. You can list registered models under a particular schema, or list all registered models in the current metastore.
     /// </summary>
     Task<IEnumerable<RegisteredModel>> ListRegisteredModels(
-        string catalog_name = default,
-        string schema_name = default,
-        int max_results = default,
+        string catalog_name = null,
+        string schema_name = null,
+        int max_results = 0,
         CancellationToken cancellationToken = default
         );
 

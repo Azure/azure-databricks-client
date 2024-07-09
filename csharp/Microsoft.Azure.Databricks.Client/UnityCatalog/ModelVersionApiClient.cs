@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -16,11 +15,10 @@ namespace Microsoft.Azure.Databricks.Client.UnityCatalog
     {
         public ModelVersionApiClient(HttpClient httpClient) : base(httpClient) { }
 
-
         public async Task<IEnumerable<ModelVersion>> ListModelVersions(
-           string full_name,
-           int max_results = default,
-           CancellationToken cancellationToken = default)
+              string full_name,
+              int max_results = 0,
+              CancellationToken cancellationToken = default)
         {
             var requestUriSb = new StringBuilder($"{BaseUnityCatalogUri}/models/{full_name}/versions");
             if (max_results > 0)
@@ -29,19 +27,17 @@ namespace Microsoft.Azure.Databricks.Client.UnityCatalog
             }
 
             var requestUri = requestUriSb.ToString();
-            var modelVersionsJson = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
+            var modelVersionsJson = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
             modelVersionsJson.TryGetPropertyValue("model_versions", out var modelVersions);
             return modelVersions?.Deserialize<IEnumerable<ModelVersion>>(Options) ?? Enumerable.Empty<ModelVersion>();
         }
 
 
+
         public async Task<ModelVersion> GetModelVersion(
            string full_name,
            int version,
-           string name = default,
-           string catalog_name = default,
-           string schema_name = default,
-           string metastore_id = default,
+           string name = null,
            CancellationToken cancellationToken = default)
         {
             var requestUriSb = new StringBuilder($"{BaseUnityCatalogUri}/models/{full_name}/versions/{version}");
@@ -49,21 +45,8 @@ namespace Microsoft.Azure.Databricks.Client.UnityCatalog
             {
                 requestUriSb.Append($"?name={name}");
             }
-            if (name != null)
-            {
-                requestUriSb.Append($"?catalog_name={catalog_name}");
-            }
-            if (name != null)
-            {
-                requestUriSb.Append($"?schema_name={schema_name}");
-            }
-            if (name != null)
-            {
-                requestUriSb.Append($"?metastore_id={metastore_id}");
-            }
-
             var requestUri = requestUriSb.ToString();
-            return await HttpGet<ModelVersion>(HttpClient, requestUri, cancellationToken);
+            return await HttpGet<ModelVersion>(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<ModelVersion> GetModelVersionByAlias(
@@ -72,11 +55,7 @@ namespace Microsoft.Azure.Databricks.Client.UnityCatalog
             CancellationToken cancellationToken = default)
         {
             var requestUri = $"{BaseUnityCatalogUri}/models/{full_name}/aliases/{alias}";
-            return await HttpGet<ModelVersion>(HttpClient, requestUri, cancellationToken);
-            // var response = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken);
-            //return response;
-            //return new ModelVersion();
-
+            return await HttpGet<ModelVersion>(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
         }
     }
 }

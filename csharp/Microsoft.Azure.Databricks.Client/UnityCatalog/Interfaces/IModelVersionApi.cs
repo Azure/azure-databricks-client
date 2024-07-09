@@ -13,7 +13,7 @@ public interface IModelVersionApi : IDisposable
     /// List model versions. You can list model versions under a particular schema, or list all model versions in the current metastore.
     /// The returned models are filtered based on the privileges of the calling user. For example, the metastore admin is able to list all the model versions. A regular user needs to be the owner or have the EXECUTE privilege on the parent registered model to recieve the model versions in the response. For the latter case, the caller must also be the owner or have the USE_CATALOG privilege on the parent catalog and the USE_SCHEMA privilege on the parent schema.
     /// </summary>
-    Task<IEnumerable<ModelVersion>> ListModelVersions(string full_name, int max_results = default, CancellationToken cancellationToken = default);
+    Task<IEnumerable<ModelVersion>> ListModelVersions(string full_name, int max_results = 0, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get a model version.
@@ -22,10 +22,7 @@ public interface IModelVersionApi : IDisposable
     Task<ModelVersion> GetModelVersion(
         string full_name,
         int version,
-        string name = default,
-        string catalog_name = default,
-        string schema_name = default,
-        string metastore_id = default,
+        string name = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>

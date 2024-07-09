@@ -1,4 +1,5 @@
 using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -14,31 +15,40 @@ public class RegisteredModelsApiClient : ApiClient, IRegisteredModelsApi
 {
     public RegisteredModelsApiClient(HttpClient httpClient) : base(httpClient) { }
 
-    public async Task<IEnumerable<RegisteredModel>> ListRegisteredModels(
-        string catalog_name = default,
-        string schema_name = default,
-        int max_results = default,
-        CancellationToken cancellationToken = default)
-    {
-        var requestUriSb = new StringBuilder($"{BaseUnityCatalogUri}/models");
 
-        if (catalog_name != null)
+    public async Task<IEnumerable<RegisteredModel>> ListRegisteredModels(
+    string catalog_name = null,
+    string schema_name = null,
+    int max_results = 0,
+    CancellationToken cancellationToken = default)
+    {
+        var queryParameters = new List<string>();
+
+        if (!string.IsNullOrEmpty(catalog_name))
         {
-            requestUriSb.Append($"&catalog_name={catalog_name}");
+            queryParameters.Add($"catalog_name={Uri.EscapeDataString(catalog_name)}");
         }
-        if (schema_name != null)
+        if (!string.IsNullOrEmpty(schema_name))
         {
-            requestUriSb.Append($"&schema_name={schema_name}");
+            queryParameters.Add($"schema_name={Uri.EscapeDataString(schema_name)}");
         }
         if (max_results > 0)
         {
-            requestUriSb.Append($"&max_results={max_results}");
+            queryParameters.Add($"max_results={max_results}");
         }
 
-        var requestUri = requestUriSb.ToString();
+        var queryString = queryParameters.Count > 0 ? "?" + string.Join("&", queryParameters) : string.Empty;
+        var requestUri = $"{BaseUnityCatalogUri}/models{queryString}";
+
+
         var registeredModelsList = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
-        registeredModelsList.TryGetPropertyValue("registered_models", out var registeredModels);
-        return registeredModels?.Deserialize<IEnumerable<RegisteredModel>>(Options) ?? Enumerable.Empty<RegisteredModel>();
+
+        if (registeredModelsList.TryGetPropertyValue("registered_models", out var registeredModels))
+        {
+            return registeredModels?.Deserialize<IEnumerable<RegisteredModel>>(Options) ?? Enumerable.Empty<RegisteredModel>();
+        }
+
+        return Enumerable.Empty<RegisteredModel>();
     }
 
     public async Task<RegisteredModel> GetRegisteredModel(string full_name, CancellationToken cancellationToken = default)

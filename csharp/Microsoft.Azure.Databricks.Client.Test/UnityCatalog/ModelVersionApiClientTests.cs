@@ -58,7 +58,7 @@ public class ModelVersionApiClientTests : UnityCatalogApiClientTest
           ],
           ""next_page_token"": ""some-page-token""
         }";
-
+        var expected = JsonNode.Parse(expectedResponse)?["model_versions"].Deserialize<IEnumerable<ModelVersion>>(Options);
 
         var handler = CreateMockHandler();
         handler
@@ -72,8 +72,6 @@ public class ModelVersionApiClientTests : UnityCatalogApiClientTest
         var response = await client.ListModelVersions(full_name);
 
         var responseJson = JsonSerializer.Serialize(response, Options);
-        Console.WriteLine(responseJson);
-        var expected = JsonNode.Parse(expectedResponse)?["model_versions"].Deserialize<IEnumerable<ModelVersion>>(Options);
         CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
     }
 
