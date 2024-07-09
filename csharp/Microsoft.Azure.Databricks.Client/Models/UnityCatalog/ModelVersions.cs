@@ -23,7 +23,7 @@ public record ModelVersion
     public string RunId { get; set; }
 
     [JsonPropertyName("run_workspace_id")]
-    public string RunWorkspaceId { get; set; }
+    public long RunWorkspaceId { get; set; }
 
     [JsonPropertyName("version")]
     public int Version { get; set; }
