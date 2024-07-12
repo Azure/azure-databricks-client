@@ -22,6 +22,5 @@ public class ExperimentApiClient : ApiClient, IExperimentApi
         var jsonResponse = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
         jsonResponse.TryGetPropertyValue("run", out var runs);
         return JsonSerializer.Deserialize<Run>(runs);
-      
     }
 }
