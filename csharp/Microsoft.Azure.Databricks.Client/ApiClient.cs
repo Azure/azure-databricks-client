@@ -21,6 +21,8 @@ public abstract class ApiClient : IDisposable
 
     protected string BaseUnityCatalogUri => "2.1/unity-catalog";
 
+    protected string BaseMLFlowApiUri => "2.0/mlflow";
+
     protected static readonly JsonSerializerOptions Options = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
