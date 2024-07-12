@@ -23,6 +23,8 @@ public class UnityCatalogClient : ApiClient, IDisposable
         this.UnityCatalogPermissions = new UnityCatalogPermissionsApiClient(httpClient);
         this.Volumes = new VolumesApiClient(httpClient);
         this.Lineage = new LineageApiClient(httpClient);
+        this.ModelVersion = new ModelVersionApiClient(httpClient);
+        this.RegisteredModels = new RegisteredModelsApiClient(httpClient);
     }
 
     public virtual ICatalogsApi Catalogs { get; set; }
@@ -52,4 +54,8 @@ public class UnityCatalogClient : ApiClient, IDisposable
     public virtual IVolumesApi Volumes { get; set; }
 
     public virtual ILineageApi Lineage { get; set; }
+
+    public virtual IModelVersionApi ModelVersion { get; set; }
+
+    public virtual IRegisteredModelsApi RegisteredModels { get; set; }
 }
