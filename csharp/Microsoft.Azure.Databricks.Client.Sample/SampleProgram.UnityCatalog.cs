@@ -75,7 +75,7 @@ internal static partial class SampleProgram
         Console.WriteLine("Catalog deleted");
 
         Console.WriteLine("Listing Regsitered Models");
-        var registeredModels= await client.UnityCatalog.RegisteredModels.ListRegisteredModels();
+        var registeredModels = await client.UnityCatalog.RegisteredModels.ListRegisteredModels();
         foreach (var model in registeredModels)
         {
             Console.WriteLine($"\t{model.MetastoreId}, {model.Name}");
