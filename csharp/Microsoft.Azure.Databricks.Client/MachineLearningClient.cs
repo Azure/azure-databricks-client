@@ -9,7 +9,6 @@ public class MachineLearningClient : ApiClient, IDisposable
     public MachineLearningClient(HttpClient httpClient) : base(httpClient)
     {
         this.Experiments = new ExperimentApiClient(httpClient);
-   
     }
 
     public virtual IExperimentApi Experiments { get; set; }
