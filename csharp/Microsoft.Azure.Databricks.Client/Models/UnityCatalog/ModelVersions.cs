@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
+
 public record ModelVersion
 {
     [JsonPropertyName("model_name")]
