@@ -8,7 +8,7 @@ name: $(majorMinorVersion).$(semanticVersion)
 
 variables:
   vmImageName: 'ubuntu-20.04'
-  workingDirectory: '$(System.DefaultWorkingDirectory)/src/Microsoft.Azure.Databricks.Client'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/Microsoft.Azure.Databricks.Client'
   majorMinorVersion: 1.0
   # semanticVersion counter is automatically incremented by one in each execution of pipeline
   # second parameter is seed value to reset to every time the referenced majorMinorVersion is changed
@@ -26,7 +26,7 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       command: pack
-      packagesToPack: '$(workingDirectory)/Microsoft.Azure.Databricks.Client/*.csproj'
+      packagesToPack: '$(workingDirectory)/*.csproj'
       packDestination: '$(Build.ArtifactStagingDirectory)'      
       versioningScheme: byBuildNumber
 
