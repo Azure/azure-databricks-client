@@ -8,7 +8,7 @@ name: $(majorMinorVersion).$(semanticVersion)
 
 variables:
   vmImageName: 'ubuntu-20.04'
-  workingDirectory: '$(System.DefaultWorkingDirectory)/Microsoft.Azure.Databricks.Client'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/csharp/Microsoft.Azure.Databricks.Client'
   majorMinorVersion: 1.0
   # semanticVersion counter is automatically incremented by one in each execution of pipeline
   # second parameter is seed value to reset to every time the referenced majorMinorVersion is changed
