@@ -37,10 +37,17 @@ public class RegisteredModelsApiClient : ApiClient, IRegisteredModelsApi
             queryParameters.Add($"max_results={max_results}");
         }
 
-        var queryString = queryParameters.Count > 0 ? "?" + string.Join("&", queryParameters) : string.Empty;
+        var queryString = string.Empty;
+
+        if (queryParameters.Count == 1 )
+        {
+            queryString = "?" + queryParameters[0];
+        } else if (queryParameters.Count > 1)
+        {
+            queryString = "?" + string.Join("&", queryParameters);
+        }
+
         var requestUri = $"{BaseUnityCatalogUri}/models{queryString}";
-
-
         var registeredModelsList = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
 
         if (registeredModelsList.TryGetPropertyValue("registered_models", out var registeredModels))

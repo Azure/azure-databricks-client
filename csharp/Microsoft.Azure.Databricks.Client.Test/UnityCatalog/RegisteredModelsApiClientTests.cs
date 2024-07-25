@@ -72,6 +72,66 @@ public class RegisteredModelsApiClientTests : UnityCatalogApiClientTest
         var responseJson = JsonSerializer.Serialize(response, Options);
         var expected = JsonNode.Parse(expectedResponse)?["registered_models"].Deserialize<IEnumerable<RegisteredModel>>(Options);
         CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
+    } [TestMethod]
+
+    public async Task ListRegisteredModelsTestQueryParams()
+    {
+        var requestUri = $"{BaseApiUri}models?catalog_name=main";
+        var expectedResponse = @"
+    {
+        ""registered_models"": [
+            {
+                ""name"": ""revenue_forecasting_model"",
+                ""catalog_name"": ""main"",
+                ""schema_name"": ""default"",
+                ""full_name"": ""main.default.revenue_forecasting_model"",
+                ""owner"": ""Alice@example.com"",
+                ""id"": ""01234567-89ab-cdef-0123-456789abcdef"",
+                ""metastore_id"": ""11111111-1111-1111-1111-111111111111"",
+                ""created_at"": 1666369196203,
+                ""created_by"": ""Alice@example.com"",
+                ""updated_at"": 1666369196203,
+                ""updated_by"": ""Alice@example.com"",
+                ""storage_location"": ""s3://my-bucket/hello/world/models/01234567-89ab-cdef-0123-456789abcdef"",
+                ""securable_type"": ""FUNCTION"",
+                ""securable_kind"": ""FUNCTION_REGISTERED_MODEL"",
+                ""comment"": ""This model contains model versions that forecast future revenue, given historical data""
+            },
+            {
+                ""name"": ""fraud_detection_model"",
+                ""catalog_name"": ""main"",
+                ""schema_name"": ""default"",
+                ""full_name"": ""main.default.fraud_detection_model"",
+                ""owner"": ""Alice@example.com"",
+                ""id"": ""9876543-21zy-abcd-3210-abcdef456789"",
+                ""metastore_id"": ""11111111-1111-1111-1111-111111111111"",
+                ""created_at"": 1666369196345,
+                ""created_by"": ""Alice@example.com"",
+                ""updated_at"": 1666369196345,
+                ""updated_by"": ""Alice@example.com"",
+                ""storage_location"": ""s3://my-bucket/hello/world/models/9876543-21zy-abcd-3210-abcdef456789"",
+                ""securable_type"": ""FUNCTION"",
+                ""securable_kind"": ""FUNCTION_REGISTERED_MODEL"",
+                ""comment"": ""This model contains model versions that identify fraudulent transactions""
+            }
+        ],
+        ""next_page_token"": ""some-page-token""
+    }";
+
+        var handler = CreateMockHandler();
+        handler
+            .SetupRequest(HttpMethod.Get, requestUri)
+            .ReturnsResponse(HttpStatusCode.OK, expectedResponse, "application/json");
+
+        var mockClient = handler.CreateClient();
+        mockClient.BaseAddress = ApiClientTest.BaseApiUri;
+
+        using var client = new RegisteredModelsApiClient(mockClient);
+        var response = await client.ListRegisteredModels(catalog_name: "main");
+
+        var responseJson = JsonSerializer.Serialize(response, Options);
+        var expected = JsonNode.Parse(expectedResponse)?["registered_models"].Deserialize<IEnumerable<RegisteredModel>>(Options);
+        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
     }
 
 
