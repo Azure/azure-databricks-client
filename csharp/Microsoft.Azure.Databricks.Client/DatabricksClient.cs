@@ -35,6 +35,7 @@ public partial class DatabricksClient : IDisposable
         this.Repos = new ReposApiClient(httpClient);
         this.Pipelines = new PipelinesApiClient(httpClient);
         this.UnityCatalog = new UnityCatalogClient(httpClient);
+        this.MachineLearning = new MachineLearningClient(httpClient);
     }
 
     /// <summary>
@@ -211,6 +212,8 @@ public partial class DatabricksClient : IDisposable
 
     public virtual UnityCatalogClient UnityCatalog { get; }
 
+    public virtual MachineLearningClient MachineLearning { get; }
+
     public void Dispose()
     {
         Clusters.Dispose();
@@ -227,6 +230,7 @@ public partial class DatabricksClient : IDisposable
         Repos.Dispose();
         Pipelines.Dispose();
         UnityCatalog.Dispose();
+        MachineLearning.Dispose();
         GC.SuppressFinalize(this);
     }
 }
