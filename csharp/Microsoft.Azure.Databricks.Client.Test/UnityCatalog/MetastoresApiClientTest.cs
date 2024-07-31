@@ -227,6 +227,324 @@ public class MetastoresApiClientTest : UnityCatalogApiClientTest
 
         var expectedResponse = @"
         {
+Change settings
+
+1 chat with new messages
+Chat
+
+
+
+has context menu
+has context menuYou were mentioned.SMS chat.Unread message.Last message:Group chat.Meeting Chat.Chat.You're starting a new conversation..This chat is muted.You can't send messages because you are not a member of the chat.
+Chat with anyone
+
+
+TT
+
+Chat
+
+Files
+
+Has context menu
+
+Meet now
+
+
+17
+
+Luke’s been practicing….. Image by Sacha Mahon
+Sacha Mahon
+28/06 2:17 pm
+
+
+Luke’s been practicing…..
+Image
+
+😆
+3 Laugh reactions.
+3
+
+❤️
+1 Heart reaction.
+1
+  nbc lonely at the top GIF by Good Girls (... by Luke Oswald
+Luke Oswald
+28/06 2:47 pm
+
+
+ 
+
+
+ 
+
+
+😆
+1 Laugh reaction.
+1
+Image by Sacha Mahon
+Sacha Mahon
+28/06 2:48 pm
+
+
+Image
+Begin Reference, 📷, Luke Oswald, 28/06/202... by Matthew Alexander
+Matthew Alexander
+28/06 2:48 pm
+
+
+Luke Oswald
+28/06/2024 2:47 pm
+📷
+If past performance is an indicator that is a problem that will not trouble you for long 
+
+😆
+2 Laugh reactions.
+2
+
+😮
+1 Surprised reaction.
+1
+Begin Reference, 3 o'clock?, Toby Cook, 28/... by Luke Oswald
+Luke Oswald
+28/06 2:48 pm
+
+
+Toby Cook
+28/06/2024 2:16 pm
+3 o'clock?
+3.15
+Begin Reference, 3.15, Luke Oswald, 28/06/2... by Sacha Mahon
+Sacha Mahon
+28/06 2:49 pm
+
+
+Luke Oswald
+28/06/2024 2:48 pm
+3.15
+3:00. Apparently you'll be able to come in 15 minutes late and still win.
+
+😆
+2 Laugh reactions.
+2
+
+❤️
+1 Heart reaction.
+1
+Begin Reference, If past performance is an ... by Luke Oswald
+Luke Oswald
+28/06 3:16 pm
+
+
+Matthew Alexander
+28/06/2024 2:48 pm
+If past performance is an indicator that is a problem that will not trouble you for long
+you're a bit chirpy for someone who's on page 2 of the leaderboard 😄
+Begin Reference, 3:00. Apparently you'll be... by Luke Oswald
+Luke Oswald
+28/06 3:17 pm
+
+Sacha Mahon
+28/06/2024 2:49 pm
+3:00. Apparently you'll be able to come in 15 minutes late and still win.
+
+
+
+  episode 2 sptv GIF by Sony Pictures Telev... by Luke Oswald
+Luke Oswald
+28/06 3:20 pm
+
+ 
+
+
+ 
+
+
+❤️
+1 Heart reaction.
+1
+Friday
+3.00pm sharp by Toby Cook
+Toby Cook
+Friday 2:30 pm
+
+
+3.00pm sharp
+
+
+❤️
+2 Heart reactions.
+2
+
+🩵
+1 Light blue heart reaction.
+1
+sharpish? by Sacha Mahon
+Sacha Mahon
+Friday 3:00 pm
+
+
+sharpish?
+
+  The Ultimate Table Tennis Serve?! - JOOLA... by David Jones
+David Jones
+Friday 3:04 pm
+
+
+ 
+
+The Ultimate Table Tennis Serve?! - JOOLA USA
+
+ 
+
+
+😆
+2 Laugh reactions.
+2
+  image   by John Koufalas
+John Koufalas
+Friday 3:17 pm
+
+
+ 
+
+image
+
+ 
+
+
+🤮
+1 Vomiting reaction.
+1
+Image by Sacha Mahon
+Sacha Mahon
+Friday 3:18 pm
+
+
+Image
+neil lost enough ranking points today to re... by Toby Cook
+Toby Cook
+Friday 3:23 pm
+
+
+neil lost enough ranking points today to reinstate luke at #1. not sure how i feel about this
+
+image
+
+ 
+
+
+❤️
+1 Heart reaction.
+1
+the power of reputation by Luke Oswald
+Luke Oswald
+Friday 3:23 pm
+
+
+the power of reputation
+
+
+😆
+1 Laugh reaction.
+1
+
+❤️
+1 Heart reaction.
+1
+It's like Donald Trump! by Sacha Mahon
+Sacha Mahon
+Friday 3:23 pm
+
+
+It's like Donald Trump!
+
+  Rick And Morty Dont Hate The Player GIF (... by Luke Oswald
+Luke Oswald
+Friday 3:24 pm
+
+
+ 
+
+
+ 
+
+Begin Reference, 📷 Image, Luke Oswald , 05... by Sacha Mahon
+Sacha Mahon
+Friday 3:24 pm
+
+
+Luke Oswald
+05/07/2024 3:24 pm
+📷 Image
+Image
+Yesterday
+  Ping Pong Sport GIF by War Child (GIF Ima... by Luke Oswald
+Luke Oswald
+Yesterday 3:13 pm
+
+
+ 
+
+
+ 
+
+
+👍
+2 Like reactions.
+2
+
+❤️
+1 Heart reaction.
+1
+I’ll pass….. Image by Sacha Mahon
+Sacha Mahon
+Yesterday 3:26 pm
+
+
+I’ll pass…..
+Image
+
+🩵
+2 Light blue heart reactions.
+2
+you'll pass out by John Koufalas
+John Koufalas
+Yesterday 3:28 pm
+
+
+you'll pass out
+
+
+😆
+4 Laugh reactions.
+4
+It’s like you know me! by Sacha Mahon
+Sacha Mahon
+Yesterday 3:29 pm
+
+
+It’s like you know me!
+scores please, we need to bump luke off bef... by John Koufalas
+John Koufalas
+Yesterday 4:43 pm
+
+
+scores please, we need to bump luke off before fridays, all hands
+
+
+😆
+3 Laugh reactions.
+3
+Begin Reference, scores please, we need to ... by Sacha Mahon
+Sacha Mahon
+Yesterday 4:46 pm
+
+
+John Koufalas
+11/07/2024 4:43 pm
+scores please, we need to bump luke off before fridays, all hands
+Image
+Last read
           ""name"": ""string"",
           ""storage_root"": ""string"",
           ""default_data_access_config_id"": ""string"",
