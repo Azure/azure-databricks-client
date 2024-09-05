@@ -21,5 +21,20 @@ public enum TriggerType
     /// <summary>
     /// This indicates a run that is triggered as a retry of a previously failed run. This occurs when the user requests to re-run the job in case of failures.
     /// </summary>
-    RETRY
+    RETRY,
+
+    /// <summary>
+    /// Indicates a run that is triggered using a Run Job task.
+    /// </summary>
+    RUN_JOB_TASK,
+
+    /// <summary>
+    /// Indicates a run that is triggered by a file arrival.
+    /// </summary>
+    FILE_ARRIVAL,
+
+    /// <summary>
+    /// Indicates a run that is triggered by a table update.
+    /// </summary>
+    TABLE
 }
