@@ -26,7 +26,7 @@ public class LineageApiClient : ApiClient, ILineageApi
         CancellationToken cancellationToken = default)
     {
         var requestUri =
-            $"{ApiVersion}/lineage-tracking/table-lineage?table_name={fullTableName}&column_name={columnName}";
+            $"{ApiVersion}/lineage-tracking/column-lineage?table_name={fullTableName}&column_name={columnName}";
 
         return await HttpGet<ColumnsLineage>(HttpClient, requestUri, cancellationToken);
     }
