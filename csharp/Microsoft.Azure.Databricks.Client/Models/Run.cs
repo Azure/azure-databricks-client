@@ -195,6 +195,7 @@ public record Run : RunIdentifier
     /// <summary>
     /// The result and lifecycle states of the run.
     /// </summary>
+    [Obsolete("This property is deprecated. Please use Status instead.")]
     [JsonPropertyName("state")]
     public RunState State { get; set; }
 
