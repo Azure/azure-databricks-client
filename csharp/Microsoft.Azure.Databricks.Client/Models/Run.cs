@@ -199,6 +199,12 @@ public record Run : RunIdentifier
     public RunState State { get; set; }
 
     /// <summary>
+    /// The current status of the run
+    /// </summary>
+    [JsonPropertyName("status")]
+    public RunStatus Status { get; set; }
+
+    /// <summary>
     /// The cron schedule that triggered this run if it was triggered by the periodic scheduler.
     /// </summary>
     [JsonPropertyName("schedule")]
