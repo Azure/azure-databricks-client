@@ -943,7 +943,15 @@ public class JobApiClientTest : ApiClientTest
                         988297789683452
                       ]
                     }
-                  ]
+                  ],
+                ""status"": {
+                ""state"": ""TERMINATED"",
+                ""termination_details"": {
+                    ""code"": ""RUN_EXECUTION_ERROR"",
+                    ""type"": ""CLIENT_ERROR"",
+                    ""message"": ""Task deliver_lineitems failed with message: Workload failed, see run output for details. This caused all downstream tasks to get skipped.""
+                }
+            }
                 }
         ";
 
@@ -1006,7 +1014,17 @@ public class JobApiClientTest : ApiClientTest
             RunName = "A multitask job run",
             RunPageUrl = "https://my-workspace.cloud.databricks.com/#job/39832/run/20",
             RunType = RunType.JOB_RUN,
-            AttemptNumber = 0
+            AttemptNumber = 0,
+            Status = new RunStatus
+            {
+                State = RunStatusState.TERMINATED,
+                TerminationDetails = new TerminationDetails
+                {
+                    Code = RunTerminationCode.RUN_EXECUTION_ERROR,
+                    Type = TerminationType.CLIENT_ERROR,
+                    Message = "Task deliver_lineitems failed with message: Workload failed, see run output for details. This caused all downstream tasks to get skipped."
+                }
+            }
         };
 
         var expectedRepair = new RepairHistory
