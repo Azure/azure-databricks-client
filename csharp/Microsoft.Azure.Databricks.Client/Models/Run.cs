@@ -195,8 +195,15 @@ public record Run : RunIdentifier
     /// <summary>
     /// The result and lifecycle states of the run.
     /// </summary>
+    [Obsolete("This property is deprecated. Please use Status instead.")]
     [JsonPropertyName("state")]
     public RunState State { get; set; }
+
+    /// <summary>
+    /// The current status of the run
+    /// </summary>
+    [JsonPropertyName("status")]
+    public RunStatus Status { get; set; }
 
     /// <summary>
     /// The cron schedule that triggered this run if it was triggered by the periodic scheduler.
