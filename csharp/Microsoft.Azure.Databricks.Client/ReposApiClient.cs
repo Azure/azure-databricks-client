@@ -40,7 +40,7 @@ public class ReposApiClient : ApiClient, IReposApi
         return await HttpGet<Repo>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<(IEnumerable<Repo>, string)> List(string pathPrefix = null, string pageToken = null, CancellationToken cancellationToken = default)
+    public async Task<(IEnumerable<Repo>, string)> List(string pathPrefix = default, string pageToken = default, CancellationToken cancellationToken = default)
     {
         var requestUri = this._apiBaseUrl + "?";
         if (pathPrefix != null)
