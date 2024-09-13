@@ -323,5 +323,5 @@ public record Run : RunIdentifier
     /// Indication if the run has been completed.
     /// </summary>
     [JsonIgnore]
-    public bool IsCompleted => State?.ResultState != null;
+    public bool IsCompleted => Status.State == RunStatusState.TERMINATED;
 }

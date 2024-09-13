@@ -64,12 +64,12 @@ internal static partial class SampleProgram
         {
             EmailNotifications = new JobEmailNotifications
             {
-                OnSuccess = new[] { "someone@example.com" }
+                OnSuccess = ["someone@example.com"]
             }
         });
 
         // Removing email notifications and libraries.
-        await client.Jobs.Update(jobId, null, new[] { "email_notifications" });
+        await client.Jobs.Update(jobId, null, ["email_notifications"]);
 
 
         // Reset job by pausing schedule and attaching libraries to each task.
@@ -123,6 +123,7 @@ internal static partial class SampleProgram
         await client.Workspace.Delete(SampleWorkspacePath, true);
     }
 
+#pragma warning disable CS0618 // Type or member is obsolete
     private static async Task WaitForRun(IJobsApi jobClient, long runId, int pollIntervalSeconds = 15)
     {
         var retryPolicy = Policy.Handle<WebException>()
@@ -151,7 +152,6 @@ internal static partial class SampleProgram
             Console.WriteLine(
                 $"[{DateTime.UtcNow:s}]Run:{runId}\tLifeCycleState:{run.State.LifeCycleState}\tResultState:{run.State.ResultState}\tCompleted:{run.IsCompleted}"
             );
-
             return run.State;
         });
     }

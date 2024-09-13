@@ -955,6 +955,7 @@ public class JobApiClientTest : ApiClientTest
                 }
         ";
 
+#pragma warning disable CS0618 // Type or member is obsolete
         var expectedRun = new Run
         {
             JobId = 11223344,
@@ -1021,11 +1022,12 @@ public class JobApiClientTest : ApiClientTest
                 TerminationDetails = new TerminationDetails
                 {
                     Code = RunTerminationCode.RUN_EXECUTION_ERROR,
-                    Type = TerminationType.CLIENT_ERROR,
+                    Type = RunTerminationType.CLIENT_ERROR,
                     Message = "Task deliver_lineitems failed with message: Workload failed, see run output for details. This caused all downstream tasks to get skipped."
                 }
             }
         };
+#pragma warning restore CS0618 // Type or member is obsolete
 
         var expectedRepair = new RepairHistory
         {

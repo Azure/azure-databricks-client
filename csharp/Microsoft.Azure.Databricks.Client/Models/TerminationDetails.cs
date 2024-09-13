@@ -17,11 +17,19 @@ public class TerminationDetails
     /// The describes the overall termination type.
     /// </summary>
     [JsonPropertyName("type")]
-    public TerminationType Type { get; set; }
+    public RunTerminationType Type { get; set; }
 
     /// <summary>
     /// A descriptive message with the queuing details. This field is unstructured, and its exact format is subject to change.
     /// </summary>
     [JsonPropertyName("message")]
     public string Message { get; set; }
+}
+
+public enum RunTerminationType
+{
+    SUCCESS,
+    INTERNAL_ERROR,
+    CLIENT_ERROR,
+    CLOUD_FAILURE
 }
