@@ -82,10 +82,10 @@ public class ExperimentApiClientTests : MachineLearningApiClientTest
         .ReturnsResponse(HttpStatusCode.OK, expectedResponse, "application/json");
 
         var mockClient = handler.CreateClient();
-        mockClient.BaseAddress = ApiClientTest.BaseApiUri;
+        mockClient.BaseAddress = BaseApiUri;
 
         using var client = new ExperimentApiClient(mockClient);
-        var response = client.GetRun(run_id).Result;
+        var response = await client.GetRun(run_id);
 
         var expected = JsonNode.Parse(expectedResponse)?["run"].Deserialize<Run>(Options);
 

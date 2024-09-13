@@ -14,7 +14,7 @@ public record ModelVersion
     public string SchemaName { get; set; }
 
     [JsonPropertyName("comment")]
-    public string? Comment { get; set; }
+    public string Comment { get; set; }
 
     [JsonPropertyName("source")]
     public string Source { get; set; }
@@ -53,7 +53,7 @@ public record ModelVersion
     public string StorageLocation { get; set; }
 
     [JsonPropertyName("aliases")]
-    public IEnumerable<Alias>? Aliases { get; set; }
+    public IEnumerable<Alias> Aliases { get; set; }
 }
 
 public record Alias

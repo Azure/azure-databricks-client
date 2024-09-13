@@ -54,7 +54,7 @@ public record RegisteredModel
 public record RegisteredModelAlias
 {
     [JsonPropertyName("alias_name")]
-    public string? AliasName { get; set; }
+    public string AliasName { get; set; }
 
     [JsonPropertyName("version_num")]
     public int VersionNum { get; set; }
