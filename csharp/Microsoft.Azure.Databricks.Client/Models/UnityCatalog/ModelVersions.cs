@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 namespace Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
@@ -38,13 +39,13 @@ public record ModelVersion
     public string MetastoreId { get; set; }
 
     [JsonPropertyName("created_at")]
-    public long CreatedAt { get; set; }
+    public DateTimeOffset? CreatedAt { get; set; }
 
     [JsonPropertyName("created_by")]
     public string CreatedBy { get; set; }
 
     [JsonPropertyName("updated_at")]
-    public long UpdatedAt { get; set; }
+    public DateTimeOffset? UpdatedAt { get; set; }
 
     [JsonPropertyName("updated_by")]
     public string UpdatedBy { get; set; }
