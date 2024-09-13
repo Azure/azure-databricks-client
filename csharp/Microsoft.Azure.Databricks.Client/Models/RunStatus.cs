@@ -17,11 +17,11 @@ public class RunStatus
     /// If the run is in a TERMINATING or TERMINATED state, details about the reason for terminating the run.
     /// </summary>
     [JsonPropertyName("termination_details")]
-    public TerminationDetails? TerminationDetails { get; set; }
+    public TerminationDetails TerminationDetails { get; set; }
 
     /// <summary>
     /// If the run was queued, details about the reason for queuing the run.
     /// </summary>
     [JsonPropertyName("queue_details")]
-    public QueueDetails? QueueDetails { get; set; }
+    public QueueDetails QueueDetails { get; set; }
 }
