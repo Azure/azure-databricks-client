@@ -6,6 +6,7 @@ using Moq;
 using Moq.Contrib.HttpClient;
 using Polly;
 using System.Net;
+using System.Reflection.Metadata;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Policy = Polly.Policy;
@@ -72,6 +73,38 @@ public class ClustersApiClientTest : ApiClientTest
             .WithNodeType("Standard_D3_v2")
             .WithAutoScale(2, 50)
             .WithRuntimeVersion(RuntimeVersions.Runtime_7_3);
+
+        var clusterId = await client.Create(clusterInfo);
+        Assert.AreEqual(expectedResponse.cluster_id, clusterId);
+
+        handler.VerifyRequest(
+            HttpMethod.Post,
+            apiUri,
+            GetMatcher(expectedRequest),
+            Times.Once()
+        );
+    }
+
+    //Test the DataSecurityMode property
+    [TestMethod]
+    public async Task TestCreateWithDataSecurityMode()
+    {
+        var apiUri = new Uri(ClusterApiUri, "create");
+        const string expectedRequest = "{\"cluster_name\":\"single_user_mode_cluster\", \"data_security_mode\":\"SINGLE_USER\"}";
+        var expectedResponse = new { cluster_id = "1234-567890-fixin123" };
+
+        var handler = CreateMockHandler();
+        handler
+            .SetupRequest(HttpMethod.Post, apiUri)
+            .ReturnsResponse(HttpStatusCode.OK, JsonSerializer.Serialize(expectedResponse, Options), "application/json")
+            .Verifiable();
+
+        var hc = handler.CreateClient();
+        hc.BaseAddress = BaseApiUri;
+
+        using var client = new ClustersApiClient(hc);
+        var clusterInfo = ClusterAttributes.GetNewClusterConfiguration("single_user_mode_cluster")
+            .WithDataSecurityMode(DataSecurityMode.SINGLE_USER);
 
         var clusterId = await client.Create(clusterInfo);
         Assert.AreEqual(expectedResponse.cluster_id, clusterId);

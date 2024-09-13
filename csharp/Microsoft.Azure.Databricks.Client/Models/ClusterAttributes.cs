@@ -25,6 +25,52 @@ public enum ClusterMode
     SingleNode
 }
 
+/// <summary>
+/// An enumeration representing the data security mode for a cluster.
+/// </summary>
+public enum DataSecurityMode
+{
+    /// <summary>
+    /// No security isolation for multiple users sharing the cluster. Data governance features are not available in this mode.
+    /// </summary>
+    NONE,
+
+    /// <summary>
+    /// A secure cluster that can only be exclusively used by a single user specified in single_user_name. Most programming languages, cluster features and data governance features are available in this mode.
+    /// </summary>
+    SINGLE_USER,
+
+    /// <summary>
+    /// A secure cluster that can be shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data and credentials. Most data governance features are supported in this mode. But programming languages and cluster features might be limited.
+    /// </summary>
+    USER_ISOLATION,
+
+    /// <summary>
+    /// This mode is for users migrating from legacy Table ACL clusters.
+    /// </summary>
+    [Obsolete("This mode is for users migrating from legacy Table ACL clusters. Deprecated starting with Databricks Runtime 15.0 and will be removed for future Databricks Runtime versions")]
+    LEGACY_TABLE_ACL,
+
+    /// <summary>
+    /// This mode is for users migrating from legacy Passthrough on high concurrency clusters.
+    /// </summary>
+    [Obsolete("This mode is for users migrating from legacy Passthrough on high concurrency clusters. Deprecated starting with Databricks Runtime 15.0 and will be removed for future Databricks Runtime versions")]
+    LEGACY_PASSTHROUGH,
+
+    /// <summary>
+    /// This mode is for users migrating from legacy Passthrough on standard clusters.
+    /// </summary>
+    [Obsolete("This mode is for users migrating from legacy Passthrough on standard clusters. Deprecated starting with Databricks Runtime 15.0 and will be removed for future Databricks Runtime versions")]
+    LEGACY_SINGLE_USER,
+
+    /// <summary>
+    /// This mode provides a way that doesn’t have UC nor passthrough enabled.
+    /// </summary>
+    [Obsolete("This mode provides a way that doesn’t have UC nor passthrough enabled. Deprecated starting with Databricks Runtime 15.0 and will be removed for future Databricks Runtime versions")]
+    LEGACY_SINGLE_USER_STANDARD
+}
+
+
 public record ClusterAttributes : ClusterSize
 {
     /// <summary>
@@ -165,6 +211,12 @@ public record ClusterAttributes : ClusterSize
     public RuntimeEngine? RuntimeEngine { get; set; }
 
     /// <summary>
+    /// Data security mode decides what data governance model to use when accessing data from a cluster.
+    /// </summary>
+    [JsonPropertyName("data_security_mode")]
+    public DataSecurityMode? DataSecurityMode { get; set; }
+
+    /// <summary>
     /// Specifies the single user's AAD user name, who is allowed to run commands on this cluster when Credential Passthrough is enabled.
     /// </summary>
     [JsonPropertyName("single_user_name")]
@@ -189,6 +241,12 @@ public record ClusterAttributes : ClusterSize
     {
         NumberOfWorkers = numWorkers;
         AutoScale = null;
+        return this;
+    }
+
+    public ClusterAttributes WithDataSecurityMode(DataSecurityMode dataSecurityMode)
+    {
+        DataSecurityMode = dataSecurityMode;
         return this;
     }
 
