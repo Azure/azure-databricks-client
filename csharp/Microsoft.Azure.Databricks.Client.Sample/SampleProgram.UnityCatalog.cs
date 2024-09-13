@@ -73,5 +73,22 @@ internal static partial class SampleProgram
         Console.WriteLine($"Deleting created catalog {catalog.Name}...");
         await client.UnityCatalog.Catalogs.Delete(catalog.Name);
         Console.WriteLine("Catalog deleted");
+
+        Console.WriteLine("Listing Regsitered Models");
+        var registeredModels = await client.UnityCatalog.RegisteredModels.ListRegisteredModels();
+        foreach (var model in registeredModels)
+        {
+            Console.WriteLine($"\t{model.MetastoreId}, {model.Name}");
+        }
+        PrintDelimiter();
+
+        var fullName = "main.default.revenue_forecasting";
+        Console.WriteLine("Listing Regsitered Models");
+        var modelVersionsList = await client.UnityCatalog.ModelVersion.ListModelVersions(fullName);
+        foreach (var model in modelVersionsList)
+        {
+            Console.WriteLine($"\t{model.MetastoreId}, {model.CatalogName}");
+        }
+        PrintDelimiter();
     }
 }
