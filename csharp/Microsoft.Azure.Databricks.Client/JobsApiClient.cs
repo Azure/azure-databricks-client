@@ -190,7 +190,7 @@ public class JobsApiClient : ApiClient, IJobsApi
             url.Append($"&run_type={runType.Value}");
         }
 
-        url.Append(expandTasks ? "&expand_task=true" : string.Empty);
+        url.Append(expandTasks ? "&expand_tasks=true" : string.Empty);
 
         if (startTimeFrom.HasValue)
         {
