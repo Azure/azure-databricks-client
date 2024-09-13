@@ -43,7 +43,7 @@ public class RegisteredModelsApiClient : ApiClient, IRegisteredModelsApi
 
         var registeredModelsList = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
 
-        registeredModelsList.TryGetPropertyValue("registered_models", out var registeredModels)
+        registeredModelsList.TryGetPropertyValue("registered_models", out var registeredModels);
         return registeredModels?.Deserialize<IEnumerable<RegisteredModel>>(Options) ?? Enumerable.Empty<RegisteredModel>();
     }
 

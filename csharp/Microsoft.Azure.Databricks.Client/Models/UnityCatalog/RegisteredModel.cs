@@ -58,5 +58,4 @@ public record RegisteredModelAlias
 
     [JsonPropertyName("version_num")]
     public int VersionNum { get; set; }
-
 }
