@@ -29,8 +29,9 @@ public interface IRegisteredModelsApi : IDisposable
     /// The caller must be a metastore admin or an owner of the registered model.For the latter case, the caller must also be the owner or have the USE_CATALOG privilege on the parent catalog and the USE_SCHEMA privilege on the parent schema.
     /// </summary>
     Task<RegisteredModelAlias> SetRegisteredModelAlias(
-    string full_name,
-    string alias,
-    int version_num,
-    CancellationToken cancellationToken = default);
+        string full_name,
+        string alias,
+        int version_num,
+        CancellationToken cancellationToken = default
+    );
 }

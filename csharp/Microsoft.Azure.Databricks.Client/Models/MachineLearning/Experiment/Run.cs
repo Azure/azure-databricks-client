@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models.MachineLearning.Experiment;
@@ -23,6 +24,7 @@ public record Info
     [JsonPropertyName("experiment_id")]
     public string ExperimentId { get; set; }
 
+    [Obsolete("This field is deprecated as of MLflow 1.0, and will be removed in a future MLflow release. Use 'mlflow.user' tag instead.")]
     [JsonPropertyName("user_id")]
     public string UserId { get; set; }
 
@@ -30,10 +32,10 @@ public record Info
     public string Status { get; set; }
 
     [JsonPropertyName("start_time")]
-    public long StartTime { get; set; }
+    public DateTimeOffset? StartTime { get; set; }
 
     [JsonPropertyName("end_time")]
-    public long EndTime { get; set; }
+    public DateTimeOffset? EndTime { get; set; }
 
     [JsonPropertyName("artifact_uri")]
     public string ArtifactUri { get; set; }
@@ -63,7 +65,7 @@ public record Metric
     public double Value { get; set; }
 
     [JsonPropertyName("timestamp")]
-    public long Timestamp { get; set; }
+    public DateTimeOffset? Timestamp { get; set; }
 
     [JsonPropertyName("step")]
     public string Step { get; set; }

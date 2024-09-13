@@ -37,14 +37,10 @@ namespace Microsoft.Azure.Databricks.Client.UnityCatalog
         public async Task<ModelVersion> GetModelVersion(
            string full_name,
            int version,
-           string name = null,
-           CancellationToken cancellationToken = default)
+           CancellationToken cancellationToken = default
+        )
         {
             var requestUriSb = new StringBuilder($"{BaseUnityCatalogUri}/models/{full_name}/versions/{version}");
-            if (name != null)
-            {
-                requestUriSb.Append($"?name={name}");
-            }
             var requestUri = requestUriSb.ToString();
             return await HttpGet<ModelVersion>(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
         }

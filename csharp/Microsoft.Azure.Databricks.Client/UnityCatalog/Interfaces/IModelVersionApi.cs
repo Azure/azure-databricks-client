@@ -22,8 +22,8 @@ public interface IModelVersionApi : IDisposable
     Task<ModelVersion> GetModelVersion(
         string full_name,
         int version,
-        string name = null,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default
+    );
 
     /// <summary>
     /// Get a model version by alias
