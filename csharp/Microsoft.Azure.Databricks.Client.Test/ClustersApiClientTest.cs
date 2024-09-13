@@ -6,7 +6,6 @@ using Moq;
 using Moq.Contrib.HttpClient;
 using Polly;
 using System.Net;
-using System.Reflection.Metadata;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Policy = Polly.Policy;
