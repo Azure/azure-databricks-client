@@ -13,9 +13,9 @@ namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 public class RegisteredModelsApiClientTests : UnityCatalogApiClientTest
 {
     [TestMethod]
-    public async Task ListRegisteredModelsTest()
+    public async Task ListTest()
     {
-        var requestUri = $"{BaseApiUri}models";
+        var requestUri = $"{BaseApiUri}models?";
         var expectedResponse = @"
         {
             ""registered_models"": [
@@ -57,6 +57,7 @@ public class RegisteredModelsApiClientTests : UnityCatalogApiClientTest
             ""next_page_token"": ""some-page-token""
             }";
 
+        var expected = JsonNode.Parse(expectedResponse)?["registered_models"].Deserialize<IEnumerable<RegisteredModel>>(Options);
 
         var handler = CreateMockHandler();
         handler
@@ -67,16 +68,14 @@ public class RegisteredModelsApiClientTests : UnityCatalogApiClientTest
         mockClient.BaseAddress = ApiClientTest.BaseApiUri;
 
         using var client = new RegisteredModelsApiClient(mockClient);
-        var response = await client.ListRegisteredModels();
-
-        var responseJson = JsonSerializer.Serialize(response, Options);
-        var expected = JsonNode.Parse(expectedResponse)?["registered_models"].Deserialize<IEnumerable<RegisteredModel>>(Options);
-        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
+        var (actual, token) = await client.List();
+        CollectionAssert.AreEqual(expected!.ToArray(), actual.ToArray());
+        Assert.AreEqual("some-page-token", token);
     }
 
 
     [TestMethod]
-    public void GetRegisteredModelTest()
+    public async Task GetTest()
     {
         var expectedResponse = @"
         {
@@ -110,14 +109,14 @@ public class RegisteredModelsApiClientTests : UnityCatalogApiClientTest
         mockClient.BaseAddress = ApiClientTest.BaseApiUri;
 
         using var client = new RegisteredModelsApiClient(mockClient);
-        var response = client.GetRegisteredModel(full_name).Result;
+        var response = await client.Get(full_name);
 
         var responseJson = JsonSerializer.Serialize(response, Options);
         AssertJsonDeepEquals(expectedResponse, responseJson);
     }
 
     [TestMethod]
-    public async Task SetRegisteredModelAliasTest()
+    public async Task SetTest()
     {
         var full_name = "main.default.revenue_forecasting_model";
         var alias = "champion";
@@ -126,15 +125,15 @@ public class RegisteredModelsApiClientTests : UnityCatalogApiClientTest
 
 
         var expectedRequest = @"
-    {
-        ""version_num"": 2
-    }";
+        {
+            ""version_num"": 2
+        }";
 
         var expectedResponse = @"
-    {
-        ""alias_name"": ""champion"",
-        ""version_num"": 2
-    }";
+        {
+            ""alias_name"": ""champion"",
+            ""version_num"": 2
+        }";
 
         var handler = CreateMockHandler();
         handler
@@ -146,7 +145,7 @@ public class RegisteredModelsApiClientTests : UnityCatalogApiClientTest
         mockClient.BaseAddress = ApiClientTest.BaseApiUri;
 
         using var client = new RegisteredModelsApiClient(mockClient);
-        var response = await client.SetRegisteredModelAlias(full_name, alias, version_num);
+        var response = await client.SetAlias(full_name, alias, version_num);
         var responseJson = JsonSerializer.Serialize(response, Options);
         AssertJsonDeepEquals(expectedResponse, responseJson);
 

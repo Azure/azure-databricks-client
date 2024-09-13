@@ -11,10 +11,10 @@ namespace Microsoft.Azure.Databricks.Client.Test.UnityCatalog;
 public class ModelVersionApiClientTests : UnityCatalogApiClientTest
 {
     [TestMethod]
-    public async Task ListModelVersionsTest()
+    public async Task ListTest()
     {
         var full_name = "main.default.revenue_forecasting";
-        var requestUri = $"{BaseApiUri}models/{full_name}/versions";
+        var requestUri = $"{BaseApiUri}models/{full_name}/versions?";
 
         var expectedResponse = @"
         {
@@ -69,15 +69,16 @@ public class ModelVersionApiClientTests : UnityCatalogApiClientTest
         mockClient.BaseAddress = ApiClientTest.BaseApiUri;
 
         using var client = new ModelVersionApiClient(mockClient);
-        var response = await client.ListModelVersions(full_name);
 
-        var responseJson = JsonSerializer.Serialize(response, Options);
-        CollectionAssert.AreEqual(expected?.ToList(), response?.ToList());
+        var (actual, token) = await client.List(full_name);
+
+        CollectionAssert.AreEqual(expected!.ToArray(), actual.ToArray());
+        Assert.AreEqual("some-page-token", token);
     }
 
 
     [TestMethod]
-    public async Task GetModelVersionTest()
+    public async Task GetTest()
     {
         var expectedResponse = @"
         {
@@ -113,14 +114,14 @@ public class ModelVersionApiClientTests : UnityCatalogApiClientTest
         mockClient.BaseAddress = ApiClientTest.BaseApiUri;
 
         using var client = new ModelVersionApiClient(mockClient);
-        var response = await client.GetModelVersion(full_name, version);
+        var response = await client.Get(full_name, version);
 
         var responseJson = JsonSerializer.Serialize(response, Options);
         AssertJsonDeepEquals(expectedResponse, responseJson);
     }
 
     [TestMethod]
-    public async Task GetModelVersionByAliasTest()
+    public async Task GetByAliasTest()
     {
         var full_name = "main.default.revenue_forecasting_model";
         var alias = "champion";
@@ -165,7 +166,7 @@ public class ModelVersionApiClientTests : UnityCatalogApiClientTest
 
         using var client = new ModelVersionApiClient(mockClient);
 
-        var response = await client.GetModelVersionByAlias(full_name, alias);
+        var response = await client.GetByAlias(full_name, alias);
         var responseJson = JsonSerializer.Serialize(response, Options);
         AssertJsonDeepEquals(expectedResponse, responseJson);
     }

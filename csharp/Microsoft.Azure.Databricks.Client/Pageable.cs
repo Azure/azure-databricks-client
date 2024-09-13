@@ -14,7 +14,7 @@ namespace Microsoft.Azure.Databricks.Client
             this._getNextPage = getNextPage;
         }
 
-        public override async IAsyncEnumerable<Page<T>> AsPages(string continuationToken = null, int? pageSizeHint = null)
+        public override async IAsyncEnumerable<Page<T>> AsPages(string continuationToken = default, int? pageSizeHint = default)
         {
             var nextPageToken = continuationToken;
             var hasNextPage = true;
