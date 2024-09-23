@@ -36,5 +36,10 @@ public enum TriggerType
     /// <summary>
     /// Indicates a run that is triggered by a table update.
     /// </summary>
-    TABLE
+    TABLE,
+
+    /// <summary>
+    /// When you run your job with the continuous trigger, Databricks Jobs ensures there is always one active run of the job.
+    /// </summary>
+    CONTINUOUS
 }
