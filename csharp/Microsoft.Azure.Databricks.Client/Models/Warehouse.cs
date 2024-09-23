@@ -49,8 +49,8 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// <value>The minimum number of available clusters that will be maintained for this SQL warehouse.</value>
         /// <remarks>
         /// Supported values:
-        /// - Must be > 0
-        /// - Must be <= min(max_num_clusters, 30)
+        /// - Must be &gt; 0
+        /// - Must be &lt;= min(max_num_clusters, 30)
         /// - Defaults to 1
         /// </remarks>
         [JsonPropertyName("min_num_clusters")]
@@ -63,8 +63,8 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// <value>The maximum number of clusters that the autoscaler will create to handle concurrent queries.</value>
         /// <remarks>
         /// Supported values:
-        /// - Must be >= min_num_clusters
-        /// - Must be <= 30.
+        /// - Must be &gt;= min_num_clusters
+        /// - Must be &lt;= 30.
         /// - Defaults to min_clusters if unset.
         /// </remarks>
         [JsonPropertyName("max_num_clusters")]
@@ -77,7 +77,7 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// <value>The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it is automatically stopped.</value>
         /// <remarks>
         /// Supported values:
-        /// - Must be == 0 or >= 10 mins
+        /// - Must be == 0 or &gt;= 10 mins
         /// - 0 indicates no autostop.
         /// - Defaults to 120 mins
         /// </remarks>
@@ -98,7 +98,7 @@ namespace Microsoft.Azure.Databricks.Client.Models
         /// <value>The set of key-value pairs that will be tagged on all resources associated with this SQL warehouse.</value>
         /// <remarks>
         /// Supported values:
-        /// - Number of tags < 45.
+        /// - Number of tags &lt; 45.
         /// </remarks>
         [JsonPropertyName("tags")]
         public Tags Tags { get; set; }

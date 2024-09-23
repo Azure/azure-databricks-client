@@ -5,7 +5,7 @@
     <SignAssembly>true</SignAssembly>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>1570,1573,1587,1591</NoWarn>
+    <NoWarn>1573,1591</NoWarn>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Company>Microsoft</Company>
     <Authors>Microsoft</Authors>
@@ -21,8 +21,8 @@
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <VersionPrefix>2.1.1</VersionPrefix>
-	<IncludeSymbols>true</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <Import Project="../../ReleaseNotes.props" />
   <ItemGroup>
@@ -31,7 +31,6 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.12.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />

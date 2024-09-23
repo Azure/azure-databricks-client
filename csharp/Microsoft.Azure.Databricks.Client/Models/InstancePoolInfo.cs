@@ -8,7 +8,7 @@ namespace Microsoft.Azure.Databricks.Client.Models;
 
 /// <summary>
 /// The state of an instance pool. The current allowable state transitions are as follows:
-/// ACTIVE -> DELETE
+/// ACTIVE -&gt; DELETE
 /// </summary>
 public enum InstancePoolState
 {

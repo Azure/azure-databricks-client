@@ -114,10 +114,10 @@ public record PipelineNotification
 
     /// <summary>
     /// A list of alerts that trigger the sending of notifications to the configured destinations. The supported alerts are:
-    //    on-update-success: A pipeline update completes successfully.
-    //    on-update-failure: Each time a pipeline update fails.
-    //    on-update-fatal-failure: A pipeline update fails with a non-retryable (fatal) error.
-    //    on-flow-failure: A single data flow fails.
+    ///    on-update-success: A pipeline update completes successfully.
+    ///    on-update-failure: Each time a pipeline update fails.
+    ///    on-update-fatal-failure: A pipeline update fails with a non-retryable (fatal) error.
+    ///    on-flow-failure: A single data flow fails.
     /// </summary>
     [JsonPropertyName("alerts")]
     public IEnumerable<string> Alerts { get; set; }
