@@ -315,7 +315,7 @@ public record DBTTask
     public string WarehouseId { get; set; }
 
     /// <summary>
-    /// Optional name of the catalog to use. The value is the top level in the 3-level namespace of Unity Catalog (catalog / schema / relation). The catalog value can only be specified if a warehouse_id is specified. Requires dbt-databricks >= 1.1.1.
+    /// Optional name of the catalog to use. The value is the top level in the 3-level namespace of Unity Catalog (catalog / schema / relation). The catalog value can only be specified if a warehouse_id is specified. Requires dbt-databricks &gt;= 1.1.1.
     /// </summary>
     [JsonPropertyName("catalog")]
     public string Catalog { get; set; }

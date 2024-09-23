@@ -5,16 +5,16 @@ namespace Microsoft.Azure.Databricks.Client.Models;
 
 /// <summary>
 /// The state of a cluster. The current allowable state transitions are as follows:
-///     PENDING -> RUNNING
-///     PENDING -> TERMINATING
-///     RUNNING -> RESIZING
-///     RUNNING -> RESTARTING
-///     RUNNING -> TERMINATING
-///     RESTARTING -> RUNNING
-///     RESTARTING -> TERMINATING
-///     RESIZING -> RUNNING
-///     RESIZING -> TERMINATING
-///     TERMINATING -> TERMINATED
+///     PENDING -&gt; RUNNING
+///     PENDING -&gt; TERMINATING
+///     RUNNING -&gt; RESIZING
+///     RUNNING -&gt; RESTARTING
+///     RUNNING -&gt; TERMINATING
+///     RESTARTING -&gt; RUNNING
+///     RESTARTING -&gt; TERMINATING
+///     RESIZING -&gt; RUNNING
+///     RESIZING -&gt; TERMINATING
+///     TERMINATING -&gt; TERMINATED
 /// </summary>
 public enum ClusterState
 {
