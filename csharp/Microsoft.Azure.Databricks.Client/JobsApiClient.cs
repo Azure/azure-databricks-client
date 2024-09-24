@@ -221,11 +221,6 @@ public class JobsApiClient : ApiClient, IJobsApi
     {
         string url = BuildRunsListUrl(jobId, limit, activeOnly, completedOnly, runType, expandTasks, startTimeFrom, startTimeTo);
         url += string.IsNullOrEmpty(pageToken) ? string.Empty : $"&page_token={pageToken}";
-
-
-        await Console.Out.WriteLineAsync("Request: " + url);
-
-
         return await HttpGet<RunList>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
     }
 
