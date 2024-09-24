@@ -84,6 +84,38 @@ public class ClustersApiClientTest : ApiClientTest
         );
     }
 
+    //Test the DataSecurityMode property
+    [TestMethod]
+    public async Task TestCreateWithDataSecurityMode()
+    {
+        var apiUri = new Uri(ClusterApiUri, "create");
+        const string expectedRequest = "{\"cluster_name\":\"single_user_mode_cluster\", \"data_security_mode\":\"SINGLE_USER\"}";
+        var expectedResponse = new { cluster_id = "1234-567890-fixin123" };
+
+        var handler = CreateMockHandler();
+        handler
+            .SetupRequest(HttpMethod.Post, apiUri)
+            .ReturnsResponse(HttpStatusCode.OK, JsonSerializer.Serialize(expectedResponse, Options), "application/json")
+            .Verifiable();
+
+        var hc = handler.CreateClient();
+        hc.BaseAddress = BaseApiUri;
+
+        using var client = new ClustersApiClient(hc);
+        var clusterInfo = ClusterAttributes.GetNewClusterConfiguration("single_user_mode_cluster")
+            .WithDataSecurityMode(DataSecurityMode.SINGLE_USER);
+
+        var clusterId = await client.Create(clusterInfo);
+        Assert.AreEqual(expectedResponse.cluster_id, clusterId);
+
+        handler.VerifyRequest(
+            HttpMethod.Post,
+            apiUri,
+            GetMatcher(expectedRequest),
+            Times.Once()
+        );
+    }
+
     [TestMethod]
     public async Task TestCreateSingleNode()
     {
