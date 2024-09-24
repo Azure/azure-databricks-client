@@ -31,6 +31,12 @@
             - List operations now support AsyncPageable if next_page_token is returned.
             - Streaming response from HttpClient for better memory utilization.
         </PackageReleaseNotes>
+        <PackageReleaseNotes Condition="'$(VersionPrefix)' == '2.6.0'">
+            - Added MLFlow API endpoints
+            - Added Unity Catalog model versions and registered models API endpoints
+            - Targeting .NET 8
+            - Bug fixes
+        </PackageReleaseNotes>
         <PackageReleaseNotes>
         Changes in $(VersionPrefix): $(PackageReleaseNotes)
         </PackageReleaseNotes>
