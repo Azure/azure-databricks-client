@@ -108,5 +108,10 @@ public enum RunTerminationCode
     /// <summary>
     /// The run was skipped due to reaching the job level queue size limit.
     /// </summary>
-    MAX_JOB_QUEUE_SIZE_EXCEEDED
+    MAX_JOB_QUEUE_SIZE_EXCEEDED, 
+
+    /// <summary>
+    /// The run was successfully canceled during execution by a user.
+    /// </summary>
+    USER_CANCELED
 }
