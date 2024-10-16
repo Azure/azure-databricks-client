@@ -1,38 +1,38 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
-	<SignAssembly>true</SignAssembly>
-	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<NoWarn>1573,1591</NoWarn>
-	<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-	<Company>Microsoft</Company>
-	<Authors>Microsoft</Authors>
-	<Description>Client library for managing Azure Databricks clusters and submitting jobs.</Description>
-	<RepositoryUrl>https://github.com/Azure/azure-databricks-client</RepositoryUrl>
-	<PackageTags>Databricks,Client</PackageTags>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<PackageProjectUrl>https://github.com/Azure/azure-databricks-client</PackageProjectUrl>
-	<DelaySign>false</DelaySign>
-	<AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-	<Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
-	<RepositoryType>git</RepositoryType>
-	<EnableNETAnalyzers>True</EnableNETAnalyzers>
-	<PackageReadmeFile>README.md</PackageReadmeFile>
-	<VersionPrefix>2.1.1</VersionPrefix>
-	<IncludeSymbols>true</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <SignAssembly>true</SignAssembly>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1573,1591</NoWarn>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Company>Microsoft</Company>
+    <Authors>Microsoft</Authors>
+    <Description>Client library for managing Azure Databricks clusters and submitting jobs.</Description>
+    <RepositoryUrl>https://github.com/Azure/azure-databricks-client</RepositoryUrl>
+    <PackageTags>Databricks,Client</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Azure/azure-databricks-client</PackageProjectUrl>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <VersionPrefix>2.1.1</VersionPrefix>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <Import Project="../../ReleaseNotes.props" />
   <ItemGroup>
-	<None Include="..\..\README.md">
-		<Pack>True</Pack>
-		<PackagePath>\</PackagePath>
-	</None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="Azure.Core" Version="1.44.1" />
-	<PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="Azure.Core" Version="1.44.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 </Project>
