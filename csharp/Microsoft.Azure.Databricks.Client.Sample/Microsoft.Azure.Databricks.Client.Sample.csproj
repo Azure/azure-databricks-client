@@ -1,20 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <IsPackable>false</IsPackable>
+	<OutputType>Exe</OutputType>
+	<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+	<LangVersion>latest</LangVersion>
+	<IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.12.0" />
-    <PackageReference Include="Polly" Version="8.4.0" />
-    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+	<PackageReference Include="Azure.Identity" Version="1.13.0" />
+	<PackageReference Include="Polly" Version="8.4.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Azure.Databricks.Client\Microsoft.Azure.Databricks.Client.csproj" />
+	<ProjectReference Include="..\Microsoft.Azure.Databricks.Client\Microsoft.Azure.Databricks.Client.csproj" />
   </ItemGroup>
 
 </Project>
