@@ -7,13 +7,56 @@ using Moq.Contrib.HttpClient;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Test;
 
 [TestClass]
 public class StatementExecutionApiClientTest : ApiClientTest
 {
+    public record Lead
+    {
+        public string Id { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+
+        public Lead(JsonArray array)
+        {
+            Id = array[0]?.GetValue<string>() ?? string.Empty;
+            Firstname = array[1]?.GetValue<string>() ?? string.Empty;
+            Lastname = array[2]?.GetValue<string>() ?? string.Empty;
+        }
+    }
+
+    
+
     private static readonly Uri StatementExecutionApiUri = new(BaseApiUri, "2.0/sql/statements");
+
+    [TestMethod]
+    public void TestDeserialization()
+    {
+        const string result = @"
+        {
+            ""chunk_index"": 0,
+            ""row_offset"": 0,
+            ""row_count"": 2,
+            ""data_array"": [
+              [
+                ""00QRt000008qygoMAA"", ""Loni"", ""Moment""
+              ],
+              [
+                ""00QRt000008qygoMAB"", ""Les"", ""Paul""
+              ]
+            ]
+        }
+        ";
+
+        var deserialized = JsonSerializer.Deserialize<StatementExecutionResultChunk>(result, Options);
+        Assert.IsNotNull(deserialized);
+        
+        var leads = deserialized.DataArray!.Select(row => new Lead((JsonArray)row!));
+        Assert.AreEqual(2, leads.Count());
+    }
 
     [TestMethod]
     public async Task TestExecute()
