@@ -5,6 +5,11 @@ namespace Microsoft.Azure.Databricks.Client.Models;
 
 public class PipelinesList
 {
+    public PipelinesList()
+    {
+        this.Pipelines = new List<Pipeline>();
+    }
+
     /// <summary>
     /// The list of events matching the request criteria.
     /// </summary>
