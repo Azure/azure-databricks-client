@@ -596,7 +596,7 @@ public class JobApiClientTest : ApiClientTest
             Times.Once()
         );
     }
-    
+
     [TestMethod]
     [Obsolete]
     public async Task TestList()
@@ -1292,7 +1292,6 @@ public class JobApiClientTest : ApiClientTest
         );
     }
 
-    
     [TestMethod]
     public async Task TestRunsGet_JobParams()
     {
@@ -1462,7 +1461,7 @@ public class JobApiClientTest : ApiClientTest
             Times.Once()
         );
     }
-    
+
     [TestMethod]
     [Obsolete]
     public async Task TestRunsListWithOffSet()
