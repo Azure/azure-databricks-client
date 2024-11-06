@@ -39,6 +39,13 @@ public partial class DatabricksClient : IDisposable
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="DatabricksClient"/> class for mocking.
+    /// </summary>
+    protected DatabricksClient()
+    {
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="DatabricksClient"/> class.
     /// </summary>
     /// <param name="baseUrl">The base URL of the databricks portal. ex. https://southcentralus.azuredatabricks.net</param>
