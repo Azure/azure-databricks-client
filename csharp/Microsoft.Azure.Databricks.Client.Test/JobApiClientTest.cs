@@ -1293,6 +1293,176 @@ public class JobApiClientTest : ApiClientTest
     }
 
     [TestMethod]
+    public async Task TestRunsGet_JobParams()
+    {
+        var apiUri = new Uri(JobsApiUri, "runs/get");
+
+        const string response = @"
+                {
+                  ""job_id"": 11223344,
+                  ""run_id"": 455644833,
+                  ""creator_user_name"": ""user.name@databricks.com"",
+                  ""original_attempt_run_id"": 455644833,
+                  ""state"": {
+                    ""life_cycle_state"": ""PENDING"",
+                    ""result_state"": ""SUCCESS"",
+                    ""user_cancelled_or_timedout"": false,
+                    ""state_message"": """"
+                  },
+                  ""job_parameters"": [
+                      {
+                          ""name"": ""Environment"",
+                          ""default"": ""dev""
+                      },
+                      {
+                          ""name"": ""foo"",
+                          ""default"": """",
+                          ""value"": ""bar""
+                      }
+                  ],
+                  ""tasks"": [
+                    {
+                      ""run_id"": 2112892,
+                      ""task_key"": ""Orders_Ingest"",
+                      ""description"": ""Ingests order data"",
+                      ""existing_cluster_id"": ""0923-164208-meows279"",
+                      ""spark_jar_task"": {
+                        ""main_class_name"": ""com.databricks.OrdersIngest""
+                      },
+                      ""state"": {
+                        ""life_cycle_state"": ""INTERNAL_ERROR"",
+                        ""result_state"": ""FAILED"",
+                        ""state_message"": """",
+                        ""user_cancelled_or_timedout"": false
+                      },
+                      ""cluster_instance"": {
+                        ""cluster_id"": ""0923-164208-meows279"",
+                        ""spark_context_id"": ""4348585301701786933""
+                      },
+                      ""attempt_number"": 0
+                    }],
+                  ""cluster_spec"": {
+                    ""existing_cluster_id"": ""0923-164208-meows279""
+                  },
+                  ""cluster_instance"": {
+                    ""cluster_id"": ""0923-164208-meows279"",
+                    ""spark_context_id"": ""4348585301701786933""
+                  },
+                  ""git_source"": null,
+                  ""trigger"": ""PERIODIC"",
+                  ""run_name"": ""A multitask job run"",
+                  ""run_page_url"": ""https://my-workspace.cloud.databricks.com/#job/39832/run/20"",
+                  ""run_type"": ""JOB_RUN"",
+                  ""attempt_number"": 0,
+                ""status"": {
+                ""state"": ""TERMINATED"",
+                    ""termination_details"": {
+                        ""code"": ""RUN_EXECUTION_ERROR"",
+                        ""type"": ""CLIENT_ERROR"",
+                        ""message"": ""Task deliver_lineitems failed with message: Workload failed, see run output for details. This caused all downstream tasks to get skipped.""
+                    }
+                }
+            }
+        ";
+
+#pragma warning disable CS0618 // Type or member is obsolete
+        var expectedRun = new Run
+        {
+            JobId = 11223344,
+            RunId = 455644833,
+            CreatorUserName = "user.name@databricks.com",
+            OriginalAttemptRunId = 455644833,
+            State = new RunState
+            {
+                LifeCycleState = RunLifeCycleState.PENDING,
+                ResultState = RunResultState.SUCCESS,
+                UserCancelledOrTimedOut = false,
+                StateMessage = ""
+            },
+            JobParameters = new[]{
+                new JobRunParameter(){Name = "Environment", Default = "dev"},
+                new JobRunParameter(){Name = "foo", Default = "", Value = "bar"}
+            },
+            Tasks = new[]
+            {
+                new RunTask
+                {
+                    RunId = 2112892,
+                    TaskKey = "Orders_Ingest",
+                    Description = "Ingests order data",
+                    ExistingClusterId = "0923-164208-meows279",
+                    SparkJarTask = new SparkJarTask
+                    {
+                        MainClassName = "com.databricks.OrdersIngest"
+                    },
+                    State = new RunState
+                    {
+                        LifeCycleState = RunLifeCycleState.INTERNAL_ERROR,
+                        ResultState = RunResultState.FAILED,
+                        UserCancelledOrTimedOut = false,
+                        StateMessage = ""
+                    },
+                    ClusterInstance = new ClusterInstance
+                    {
+                        ClusterId = "0923-164208-meows279",
+                        SparkContextId = "4348585301701786933"
+                    },
+                    AttemptNumber = 0
+                }
+            },
+            ClusterSpec = new ClusterSpec
+            {
+                ExistingClusterId = "0923-164208-meows279"
+            },
+            ClusterInstance = new ClusterInstance
+            {
+                ClusterId = "0923-164208-meows279",
+                SparkContextId = "4348585301701786933"
+            },
+            Trigger = TriggerType.PERIODIC,
+            RunName = "A multitask job run",
+            RunPageUrl = "https://my-workspace.cloud.databricks.com/#job/39832/run/20",
+            RunType = RunType.JOB_RUN,
+            AttemptNumber = 0,
+            Status = new RunStatus
+            {
+                State = RunStatusState.TERMINATED,
+                TerminationDetails = new TerminationDetails
+                {
+                    Code = RunTerminationCode.RUN_EXECUTION_ERROR,
+                    Type = RunTerminationType.CLIENT_ERROR,
+                    Message = "Task deliver_lineitems failed with message: Workload failed, see run output for details. This caused all downstream tasks to get skipped."
+                }
+            }
+        };
+#pragma warning restore CS0618 // Type or member is obsolete
+
+        var handler = CreateMockHandler();
+        handler
+            .SetupRequest(HttpMethod.Get, new Uri(apiUri, "?run_id=455644833&include_history=false"))
+            .ReturnsResponse(HttpStatusCode.OK, response, "application/json")
+            .Verifiable();
+
+        var hc = handler.CreateClient();
+        hc.BaseAddress = BaseApiUri;
+
+        using var client = new JobsApiClient(hc);
+
+        var (run, _) = await client.RunsGet(455644833, false);
+
+        AssertJsonDeepEquals(
+            JsonSerializer.Serialize(expectedRun, Options),
+            JsonSerializer.Serialize(run, Options)
+        );
+
+        handler.VerifyRequest(
+            HttpMethod.Get,
+            new Uri(apiUri, "?run_id=455644833&include_history=false"),
+            Times.Once()
+        );
+    }
+
+    [TestMethod]
     [Obsolete]
     public async Task TestRunsListWithOffSet()
     {

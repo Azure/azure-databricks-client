@@ -260,3 +260,12 @@ public record JobParameter
     [JsonPropertyName("default")]
     public string Default { get; set; }
 }
+
+public record JobRunParameter : JobParameter
+{
+    /// <summary>
+    /// Parameter value. Null if no value was provided.
+    /// </summary>
+    [JsonPropertyName("value")]
+    public string Value { get; set; }
+}

@@ -206,6 +206,12 @@ public record Run : RunIdentifier
     public RunStatus Status { get; set; }
 
     /// <summary>
+    /// Parameters for the job
+    /// </summary>
+    [JsonPropertyName("job_parameters")]
+    public IEnumerable<JobRunParameter> JobParameters { get; set; }
+
+    /// <summary>
     /// The cron schedule that triggered this run if it was triggered by the periodic scheduler.
     /// </summary>
     [JsonPropertyName("schedule")]
