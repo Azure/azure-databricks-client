@@ -37,7 +37,7 @@ public class ExperimentApiClientTests : MachineLearningApiClientTest
                   ""key"": ""string"",
                   ""value"": 0.1,
                   ""timestamp"": 0,
-                  ""step"": ""0""
+                  ""step"": 0
                 }
               ],
               ""params"": [
