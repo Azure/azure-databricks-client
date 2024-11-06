@@ -7,7 +7,6 @@ using Moq.Contrib.HttpClient;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Test;
 
@@ -27,8 +26,6 @@ public class StatementExecutionApiClientTest : ApiClientTest
             Lastname = array[2]?.GetValue<string>() ?? string.Empty;
         }
     }
-
-    
 
     private static readonly Uri StatementExecutionApiUri = new(BaseApiUri, "2.0/sql/statements");
 
@@ -53,7 +50,7 @@ public class StatementExecutionApiClientTest : ApiClientTest
 
         var deserialized = JsonSerializer.Deserialize<StatementExecutionResultChunk>(result, Options);
         Assert.IsNotNull(deserialized);
-        
+
         var leads = deserialized.DataArray!.Select(row => new Lead((JsonArray)row!));
         Assert.AreEqual(2, leads.Count());
     }
