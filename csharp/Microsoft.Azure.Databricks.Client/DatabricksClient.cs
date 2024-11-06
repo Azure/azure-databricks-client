@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Azure.Core;
-using Azure.Identity;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading.Tasks;
+
+using Azure.Core;
 
 namespace Microsoft.Azure.Databricks.Client;
 
