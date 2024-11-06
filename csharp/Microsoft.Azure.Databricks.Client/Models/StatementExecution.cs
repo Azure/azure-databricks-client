@@ -592,8 +592,22 @@ public record StatementExecutionResultChunk : StatementExecutionResult
     public virtual bool Equals(StatementExecutionResultChunk other)
     {
         return other is not null
-            && DataArray.Equals(other.DataArray)
+            && JsonArrayEquals(DataArray, other.DataArray)
             && ExternalLinks.SequenceEqual(other.ExternalLinks);
+    }
+
+    private static bool JsonArrayEquals(JsonArray array1, JsonArray array2)
+    {
+        if (array1.Count != array2.Count)
+            return false;
+
+        for (int i = 0; i < array1.Count; i++)
+        {
+            if (!JsonNode.DeepEquals(array1[i], array2[i]))
+                return false;
+        }
+
+        return true;
     }
 
     public override int GetHashCode()
