@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using System.Text.Json.Nodes;
 
 namespace Microsoft.Azure.Databricks.Client.Models;
 
@@ -580,7 +581,7 @@ public record StatementExecutionResultChunk : StatementExecutionResult
     /// The JSON_ARRAY format is an array of arrays of values, where each non-null value is formatted as a string. Null values are encoded as JSON null.
     /// </summary>
     [JsonPropertyName("data_array")]
-    public string[][] DataArray { get; set; } = Array.Empty<string[]>();
+    public JsonArray DataArray { get; set; } = new JsonArray();
 
     /// <summary>
     /// The list of external links to the result data in cloud storage. This field is not available when using INLINE disposition.
@@ -590,18 +591,23 @@ public record StatementExecutionResultChunk : StatementExecutionResult
 
     public virtual bool Equals(StatementExecutionResultChunk other)
     {
-        if (other is null)
-        {
-            return false;
-        }
-
-        if (DataArray.Length != other.DataArray.Length)
-        {
-            return false;
-        }
-
-        return base.Equals(other)
+        return other is not null
+            && JsonArrayEquals(DataArray, other.DataArray)
             && ExternalLinks.SequenceEqual(other.ExternalLinks);
+    }
+
+    private static bool JsonArrayEquals(JsonArray array1, JsonArray array2)
+    {
+        if (array1.Count != array2.Count)
+            return false;
+
+        for (int i = 0; i < array1.Count; i++)
+        {
+            if (!JsonNode.DeepEquals(array1[i], array2[i]))
+                return false;
+        }
+
+        return true;
     }
 
     public override int GetHashCode()
