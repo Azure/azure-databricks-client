@@ -68,7 +68,7 @@ public record Metric
     public DateTimeOffset? Timestamp { get; set; }
 
     [JsonPropertyName("step")]
-    public string Step { get; set; }
+    public long Step { get; set; }
 }
 
 public record Param
