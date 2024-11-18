@@ -13,7 +13,61 @@ namespace Microsoft.Azure.Databricks.Client.Test;
 [TestClass]
 public class StatementExecutionApiClientTest : ApiClientTest
 {
+    public record Person
+    {
+        public string Id { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+
+        public static Person FromJsonArray(JsonArray array, StatementExecutionSchema schema) => new(array);
+
+        public Person(JsonArray array)
+        {
+            Id = array[0]?.GetValue<string>() ?? string.Empty;
+            Firstname = array[1]?.GetValue<string>() ?? string.Empty;
+            Lastname = array[2]?.GetValue<string>() ?? string.Empty;
+        }
+    }
+
     private static readonly Uri StatementExecutionApiUri = new(BaseApiUri, "2.0/sql/statements");
+
+    [TestMethod]
+    public void TestDeserialization()
+    {
+        const string result = @"
+        {
+            ""chunk_index"": 0,
+            ""row_offset"": 0,
+            ""row_count"": 2,
+            ""data_array"": [
+              [
+                ""id1"", ""Anthony"", ""Clark""
+              ],
+              [
+                ""id2"", ""Clarissa"", ""Bradley""
+              ]
+            ]
+        }
+        ";
+
+        var deserialized = JsonSerializer.Deserialize<StatementExecutionResultChunk>(result, Options);
+        Assert.IsNotNull(deserialized);
+
+        var columns = new StatementExecutionSchemaColumn[] {
+            new() { Name = "id", Position = 0, TypeName = "string", TypeText = "string" },
+            new() { Name = "firstname", Position = 1, TypeName = "string", TypeText = "string" },
+            new() { Name = "lastname", Position = 2, TypeName = "string", TypeText = "string" }
+        };
+
+        var execution = new StatementExecution
+        {
+            Manifest = new StatementExecutionManifest { Schema = new StatementExecutionSchema { ColumnCount = 3, Columns = columns }, Format = StatementFormat.JSON_ARRAY },
+            Result = deserialized
+        };
+
+        var leads = execution.DeserializeResults(Person.FromJsonArray);
+        Assert.AreEqual(2, leads.Count());
+    }
 
     [TestMethod]
     public async Task TestExecute()
