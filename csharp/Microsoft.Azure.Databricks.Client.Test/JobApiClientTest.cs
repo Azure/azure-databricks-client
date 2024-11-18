@@ -1493,7 +1493,7 @@ public class JobApiClientTest : ApiClientTest
             startTimeTo: DateTimeOffset.FromUnixTimeMilliseconds(1642608000000)
         );
 
-        Assert.IsTrue(runsList.Runs.IsNullOrEmpty());
+        Assert.IsTrue(!runsList.Runs.Any());
         Assert.IsFalse(runsList.HasMore);
 
         handler.VerifyRequest(
@@ -1535,7 +1535,7 @@ public class JobApiClientTest : ApiClientTest
             startTimeTo: DateTimeOffset.FromUnixTimeMilliseconds(1642608000000)
         );
 
-        Assert.IsTrue(runsList.Runs.IsNullOrEmpty());
+        Assert.IsTrue(!runsList.Runs.Any());
         Assert.IsFalse(runsList.HasMore);
         Assert.AreEqual("def", runsList.NextPageToken);
         Assert.AreEqual("xyz", runsList.PrevPageToken);
