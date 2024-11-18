@@ -286,6 +286,16 @@ public record StatementExecution
     /// </summary>
     [JsonPropertyName("result")]
     public StatementExecutionResultChunk Result { get; set; }
+
+    public IEnumerable<T> DeserializeResults<T>(Func<JsonArray, StatementExecutionSchema, T> rowFactory)
+    {
+        if (this.Manifest.Format == StatementFormat.JSON_ARRAY)
+        {
+            return this.Result.DataArray.Select(row => rowFactory((JsonArray)row, this.Manifest.Schema));
+        }
+
+        throw new NotSupportedException($"The format {this.Manifest.Format} is not supported by this method.");
+    }
 }
 
 public record StatementExecutionStatus
