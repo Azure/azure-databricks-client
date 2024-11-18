@@ -14,7 +14,7 @@ indent_style = space
 # C# Files
 [*.{cs}]
 indent_size = 4
-indent_style = tab
+indent_style = space
 
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = true
