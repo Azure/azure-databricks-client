@@ -1,0 +1,29 @@
+# top-most EditorConfig file
+root = true
+
+# All Files
+[*]
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C# Files
+[*.{csproj}]
+indent_size = 2
+indent_style = space
+
+# C# Files
+[*.{cs}]
+indent_size = 4
+indent_style = space
+
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+
+# IDE0005: Using directive is unnecessary
+dotnet_diagnostic.IDE0005.severity = warning
+
+# IDE0161: Prefer file scoped namespace
+csharp_style_namespace_declarations = file_scoped:warning
+
+# IDE2000: Do not allow multiple blank lines
+dotnet_style_allow_multiple_blank_lines_experimental = false:warning
