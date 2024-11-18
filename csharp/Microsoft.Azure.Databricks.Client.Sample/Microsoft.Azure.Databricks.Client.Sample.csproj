@@ -2,18 +2,19 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.13.0" />
-    <PackageReference Include="Polly" Version="8.4.2" />
+    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Polly" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Azure.Databricks.Client\Microsoft.Azure.Databricks.Client.csproj" />
   </ItemGroup>
-
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Include="System.Text.Json" VersionOverride="8.0.5" />
+  </ItemGroup>
 </Project>
