@@ -291,7 +291,17 @@ public record StatementExecution
     {
         if (this.Manifest.Format == StatementFormat.JSON_ARRAY)
         {
-            return this.Result.DataArray.Select(row => rowFactory((JsonArray)row, this.Manifest.Schema));
+            return this.Result.DataJsonArray.Select(row => rowFactory((JsonArray)row, this.Manifest.Schema));
+        }
+
+        throw new NotSupportedException($"The format {this.Manifest.Format} is not supported by this method.");
+    }
+
+    public IEnumerable<T> DeserializeResults<T>(Func<string[], StatementExecutionSchema, T> rowFactory)
+    {
+        if (this.Manifest.Format == StatementFormat.JSON_ARRAY)
+        {
+            return this.Result.DataArray.Select(row => rowFactory(row, this.Manifest.Schema));
         }
 
         throw new NotSupportedException($"The format {this.Manifest.Format} is not supported by this method.");
@@ -591,7 +601,28 @@ public record StatementExecutionResultChunk : StatementExecutionResult
     /// The JSON_ARRAY format is an array of arrays of values, where each non-null value is formatted as a string. Null values are encoded as JSON null.
     /// </summary>
     [JsonPropertyName("data_array")]
-    public JsonArray DataArray { get; set; } = new JsonArray();
+    public string[][] DataArray { get; set; } = Array.Empty<string[]>();
+
+    [JsonIgnore]
+    public JsonArray DataJsonArray
+    {
+        get
+        {
+            var jsonArray = new JsonArray();
+            foreach (var row in DataArray)
+            {
+                var jsonRow = new JsonArray();
+                foreach (var value in row)
+                {
+                    jsonRow.Add(value);
+                }
+
+                jsonArray.Add(jsonRow);
+            }
+
+            return jsonArray;
+        }
+    }
 
     /// <summary>
     /// The list of external links to the result data in cloud storage. This field is not available when using INLINE disposition.
@@ -602,22 +633,16 @@ public record StatementExecutionResultChunk : StatementExecutionResult
     public virtual bool Equals(StatementExecutionResultChunk other)
     {
         return other is not null
-            && JsonArrayEquals(DataArray, other.DataArray)
+            && DataArrayEquals(DataArray, other.DataArray)
             && ExternalLinks.SequenceEqual(other.ExternalLinks);
     }
 
-    private static bool JsonArrayEquals(JsonArray array1, JsonArray array2)
+    private static bool DataArrayEquals(string[][] array1, string[][] array2)
     {
-        if (array1.Count != array2.Count)
-            return false;
-
-        for (int i = 0; i < array1.Count; i++)
-        {
-            if (!JsonNode.DeepEquals(array1[i], array2[i]))
-                return false;
-        }
-
-        return true;
+        return array1.Length == array2.Length &&
+            array1
+            .Zip(array2, (row1, row2) => row1.SequenceEqual(row2))
+            .All(equal => equal);
     }
 
     public override int GetHashCode()

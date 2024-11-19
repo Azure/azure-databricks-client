@@ -2,8 +2,10 @@
 // Licensed under the MIT License.
 
 using Microsoft.Azure.Databricks.Client.Models;
+
 using Moq;
 using Moq.Contrib.HttpClient;
+
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -21,11 +23,20 @@ public class StatementExecutionApiClientTest : ApiClientTest
 
         public static Person FromJsonArray(JsonArray array, StatementExecutionSchema schema) => new(array);
 
+        public static Person FromStringArray(string[] array, StatementExecutionSchema schema) => new(array);
+
         public Person(JsonArray array)
         {
             Id = array[0]?.GetValue<string>() ?? string.Empty;
             Firstname = array[1]?.GetValue<string>() ?? string.Empty;
             Lastname = array[2]?.GetValue<string>() ?? string.Empty;
+        }
+
+        public Person(string[] array)
+        {
+            Id = array[0];
+            Firstname = array[1];
+            Lastname = array[2];
         }
     }
 
@@ -65,8 +76,11 @@ public class StatementExecutionApiClientTest : ApiClientTest
             Result = deserialized
         };
 
-        var leads = execution.DeserializeResults(Person.FromJsonArray);
-        Assert.AreEqual(2, leads.Count());
+        var persons = execution.DeserializeResults(Person.FromJsonArray);
+        Assert.AreEqual(2, persons.Count());
+
+        persons = execution.DeserializeResults(Person.FromStringArray);
+        Assert.AreEqual(2, persons.Count());
     }
 
     [TestMethod]
