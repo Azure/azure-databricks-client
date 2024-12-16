@@ -296,7 +296,8 @@ public enum TableType
     VIEW,
     MATERIALIZED_VIEW,
     STREAMING_TABLE,
-    FOREIGN
+    FOREIGN,
+    MANAGED_SHALLOW_CLONE
 }
 
 public enum DataSourceFormat
