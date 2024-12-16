@@ -190,6 +190,12 @@ public record JobSettings : JobRunBaseSettings<JobTaskSettings>
     /// </summary>
     [JsonPropertyName("name")]
     public string Name { get; set; }
+    
+    /// <summary>
+    /// An optional description for the job.
+    /// </summary>
+    [JsonPropertyName("description")]
+    public string Description { get; set; }
 
     /// <summary>
     /// A map of tags associated with the job. These are forwarded to the cluster as cluster tags for jobs clusters, and are subject to the same limitations as cluster tags. A maximum of 25 tags can be added to the job.
