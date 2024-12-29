@@ -1,4 +1,6 @@
 using System;
+
+
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -296,9 +298,11 @@ public enum TableType
     VIEW,
     MATERIALIZED_VIEW,
     STREAMING_TABLE,
-    FOREIGN,
     MANAGED_SHALLOW_CLONE,
     EXTERNAL_SHALLOW_CLONE
+
+    EXTERNAL_SHALLOW_CLONE
+
 }
 
 public enum DataSourceFormat
@@ -309,7 +313,20 @@ public enum DataSourceFormat
     AVRO,
     PARQUET,
     ORC,
-    TEXT,
+    DATABRICKS_FORMAT,
+    MYSQL_FORMAT,
+    POSTGRESQL_FORMAT,
+    REDSHIFT_FORMAT,
+    SNOWFLAKE_FORMAT,
+    SQLDW_FORMAT,
+    SQLSERVER_FORMAT,
+    SALESFORCE_FORMAT,
+    BIGQUERY_FORMAT,
+    NETSUITE_FORMAT,
+    WORKDAY_RAAS_FORMAT,
+    HIVE_SERDE,
+    HIVE_CUSTOM,
+    VECTOR_INDEX_FORMAT
     UNITY_CATALOG,
     DELTASHARING,
     POSTGRESQL_FORMAT
