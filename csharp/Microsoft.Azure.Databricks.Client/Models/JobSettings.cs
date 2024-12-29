@@ -190,7 +190,7 @@ public record JobSettings : JobRunBaseSettings<JobTaskSettings>
     /// </summary>
     [JsonPropertyName("name")]
     public string Name { get; set; }
-    
+
     /// <summary>
     /// An optional description for the job.
     /// </summary>
