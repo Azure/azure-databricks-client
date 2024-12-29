@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -297,7 +297,8 @@ public enum TableType
     MATERIALIZED_VIEW,
     STREAMING_TABLE,
     FOREIGN,
-    MANAGED_SHALLOW_CLONE
+    MANAGED_SHALLOW_CLONE,
+    EXTERNAL_SHALLOW_CLONE
 }
 
 public enum DataSourceFormat
