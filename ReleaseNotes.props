@@ -37,6 +37,10 @@
             - Targeting .NET 8
             - Bug fixes
         </PackageReleaseNotes>
+        <PackageReleaseNotes Condition="'$(VersionPrefix)' == '2.7.0'">
+            - Targeting .NET 9
+            - Bug fixes
+        </PackageReleaseNotes>
         <PackageReleaseNotes>
         Changes in $(VersionPrefix): $(PackageReleaseNotes)
         </PackageReleaseNotes>
