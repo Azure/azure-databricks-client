@@ -19,6 +19,9 @@ public record ObjectsLineageStream
 
     [JsonPropertyName("pipelineInfos")]
     public IEnumerable<PipelineInfo> PipelineInfos { get; set; }
+
+    [JsonPropertyName("jobInfos")]
+    public IEnumerable<JobInfo> JobInfos { get; set; }
 }
 
 public record PipelineInfo
@@ -28,4 +31,13 @@ public record PipelineInfo
 
     [JsonPropertyName("update_id")]
     public string UpdateId { get; set; }
+}
+
+public record JobInfo
+{
+    [JsonPropertyName("workspace_id")]
+    public long WorkspaceId { get; set; }
+
+    [JsonPropertyName("job_id")]
+    public long JobId { get; set; }
 }
