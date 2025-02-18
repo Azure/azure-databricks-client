@@ -17,6 +17,7 @@ public class UnityCatalogClient : ApiClient, IDisposable
         this.Metastores = new MetastoresApiClient(httpClient);
         this.Schemas = new SchemasApiClient(httpClient);
         this.SecurableWorkspaceBindings = new SecurableWorkspaceBindingsApiClient(httpClient);
+        this.Shares = new SharesApiClient(httpClient);
         this.StorageCredentials = new StorageCredentialsApiClient(httpClient);
         this.SystemSchemas = new SystemSchemasApiClient(httpClient);
         this.TableConstraints = new TableConstraintsApiClient(httpClient);
@@ -41,6 +42,8 @@ public class UnityCatalogClient : ApiClient, IDisposable
     public virtual ISchemasApi Schemas { get; set; }
 
     public virtual ISecurableWorkspaceBindingsApi SecurableWorkspaceBindings { get; set; }
+
+    public virtual ISharesApi Shares { get; set; }
 
     public virtual IStorageCredentialsApi StorageCredentials { get; set; }
 
