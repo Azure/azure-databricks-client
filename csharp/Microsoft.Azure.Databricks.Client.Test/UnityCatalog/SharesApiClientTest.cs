@@ -67,7 +67,7 @@ public class SharesApiClientTest : UnityCatalogApiClientTest
 
         var handler = CreateMockHandler();
         handler
-            .SetupRequest(HttpMethod.Get, requestUri)
+            .SetupRequest(HttpMethod.Get, x => SharesApiUri.IsBaseOf(x.RequestUri!))
             .ReturnsResponse(HttpStatusCode.OK, expectedResponse, "application/json");
 
         var mockClient = handler.CreateClient();
@@ -75,8 +75,7 @@ public class SharesApiClientTest : UnityCatalogApiClientTest
 
         using var client = new SharesApiClient(mockClient);
         var actual = await client.List();
-        var responseObj = new { shares = actual };
-        var responseJson = JsonSerializer.Serialize(responseObj, Options);
+        var responseJson = JsonSerializer.Serialize(actual, Options);
 
         AssertJsonDeepEquals(expectedResponse, responseJson);
     }
@@ -243,7 +242,7 @@ public class SharesApiClientTest : UnityCatalogApiClientTest
                 {
                     Name = "string",
                     DataObjectType = DataObjectType.TABLE,
-                    AddedAt = 0,
+                    AddedAt = DateTimeOffset.FromUnixTimeMilliseconds(1727704621000),
                     AddedBy = "string",
                     Comment = "string",
                     SharedAs = "string",
@@ -266,7 +265,7 @@ public class SharesApiClientTest : UnityCatalogApiClientTest
                     CdfEnabled = true,
                     HistoryDataSharingStatus = HistoryDataSharingStatus.DISABLED,
                     StartVersion = 0,
-                    Status = Status.ACTIVE,
+                    Status = ShareObjectStatus.ACTIVE,
                     Content = "string",
                     StringSharedAs = "string"
                 }
@@ -282,7 +281,7 @@ public class SharesApiClientTest : UnityCatalogApiClientTest
               ""data_object"": {
                 ""name"": ""string"",
                 ""data_object_type"": ""TABLE"",
-                ""added_at"": 0,
+                ""added_at"": 1727704621000,
                 ""added_by"": ""string"",
                 ""comment"": ""string"",
                 ""shared_as"": ""string"",
@@ -419,7 +418,7 @@ public class SharesApiClientTest : UnityCatalogApiClientTest
 
         var handler = CreateMockHandler();
         handler
-            .SetupRequest(HttpMethod.Get, requestUri)
+            .SetupRequest(HttpMethod.Get, x => SharesApiUri.IsBaseOf(x.RequestUri!))
             .ReturnsResponse(HttpStatusCode.OK, expectedReponse, "application/json");
 
         var mockClient = handler.CreateClient();
@@ -428,8 +427,7 @@ public class SharesApiClientTest : UnityCatalogApiClientTest
         using var client = new SharesApiClient(mockClient);
 
         var actual = await client.GetPermissions(shareName);
-        var responseObj = new { privilege_assignments = actual };
-        var actualJson = JsonSerializer.Serialize(responseObj, Options);
+        var actualJson = JsonSerializer.Serialize(actual, Options);
 
         AssertJsonDeepEquals(expectedReponse, actualJson);
     }

@@ -127,10 +127,10 @@ public record ShareObject
     public DataObjectType? DataObjectType { get; set; }
 
     /// <summary>
-    /// The time when this data object is added to the share, in epoch milliseconds.
+    /// The time when this data object is added to the share.
     /// </summary>
     [JsonPropertyName("added_at")]
-    public long? AddedAt { get; set; }
+    public DateTimeOffset? AddedAt { get; set; }
 
     /// <summary>
     /// Username of the sharer.
@@ -142,7 +142,7 @@ public record ShareObject
     /// One of: ACTIVE, PERMISSION_DENIED.
     /// </summary>
     [JsonPropertyName("status")]
-    public Status? Status { get; set; }
+    public ShareObjectStatus? Status { get; set; }
 }
 
 public enum DataObjectType
@@ -158,7 +158,7 @@ public enum DataObjectType
     FEATURE_SPEC
 }
 
-public enum Status
+public enum ShareObjectStatus
 {
     ACTIVE,
     PERMISSION_DENIED

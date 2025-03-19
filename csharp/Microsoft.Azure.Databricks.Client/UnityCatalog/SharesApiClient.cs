@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
@@ -17,14 +19,33 @@ public class SharesApiClient : ApiClient, ISharesApi
     {
     }
 
-    public async Task<IEnumerable<Share>> List(CancellationToken cancellationToken = default)
+    public async Task<SharesList> List(int maxResults = 0, string pageToken = default, CancellationToken cancellationToken = default)
     {
-        var requestUri = $"{BaseUnityCatalogUri}/shares";
-        var sharesList = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+        if (maxResults < 0 || maxResults > 1000)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxResults), "maxResults must be between 0 and 1000");
+        }
 
-        sharesList.TryGetPropertyValue("shares", out var shares);
+        StringBuilder requestUriSb = new($"{BaseUnityCatalogUri}/shares?max_results={maxResults}");
 
-        return shares?.Deserialize<IEnumerable<Share>>(Options) ?? Enumerable.Empty<Share>();
+        if (!string.IsNullOrEmpty(pageToken))
+        {
+            requestUriSb.Append($"&page_token={pageToken}");
+        }
+
+        var requestUri = requestUriSb.ToString();
+        return await HttpGet<SharesList>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+    }
+
+    public global::Azure.AsyncPageable<Share> ListPageable(int maxResultsPerPage = 0, CancellationToken cancellationToken = default)
+    {
+        return new AsyncPageable<Share>(
+            async (string pageToken) =>
+            {
+                var response = await List(maxResultsPerPage, pageToken, cancellationToken).ConfigureAwait(false);
+                return (response.Shares.ToList(), response.HasMore, response.NextPageToken);
+            }
+        );
     }
 
     public async Task<Share> Create(ShareAttributes share, CancellationToken cancellationToken = default)
@@ -55,13 +76,33 @@ public class SharesApiClient : ApiClient, ISharesApi
         await HttpDelete(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<Permission>> GetPermissions(string shareName, CancellationToken cancellationToken = default)
+    public async Task<PermissionsList> GetPermissions(string shareName, int maxResults = 0, string pageToken = default, CancellationToken cancellationToken = default)
     {
-        var requestUri = $"{BaseUnityCatalogUri}/shares/{shareName}/permissions";
-        var permissionsList = await HttpGet<JsonObject>(HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
-        permissionsList.TryGetPropertyValue("privilege_assignments", out var permissions);
+        if (maxResults < 0 || maxResults > 1000)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxResults), "maxResults must be between 0 and 1000");
+        }
 
-        return permissions.Deserialize<IEnumerable<Permission>>(Options) ?? Enumerable.Empty<Permission>();
+        StringBuilder requestUriSb = new($"{BaseUnityCatalogUri}/shares/{shareName}/permissions?max_results={maxResults}");
+
+        if (!string.IsNullOrEmpty(pageToken))
+        {
+            requestUriSb.Append($"&page_token={pageToken}");
+        }
+
+        var requestUri = requestUriSb.ToString();
+        return await HttpGet<PermissionsList>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+    }
+
+    public global::Azure.AsyncPageable<Permission> GetPermissionsPageable(string shareName, int maxResultsPerPage = 0, CancellationToken cancellationToken = default)
+    {
+        return new AsyncPageable<Permission>(
+            async (string pageToken) =>
+            {
+                var response = await GetPermissions(shareName, maxResultsPerPage, pageToken, cancellationToken).ConfigureAwait(false);
+                return (response.Permissions.ToList(), response.HasMore, response.NextPageToken);
+            }
+        );
     }
 
     public async Task<IEnumerable<Permission>> UpdatePermissions(string shareName, IEnumerable<PermissionsUpdate> changes, CancellationToken cancellationToken = default)
