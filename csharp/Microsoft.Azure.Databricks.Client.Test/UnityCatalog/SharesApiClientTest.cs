@@ -233,7 +233,7 @@ public class SharesApiClientTest : UnityCatalogApiClientTest
         var owner = "string";
         var comment = "string";
         var storage_root = "string";
-        var updates = new []
+        var updates = new[]
         {
             new ShareObjectUpdate
             {
@@ -439,7 +439,7 @@ public class SharesApiClientTest : UnityCatalogApiClientTest
         var requestUri = $"{SharesApiUri}/{shareName}/permissions";
 
         // new values, same as in expected request
-        var changes = new []
+        var changes = new[]
         {
             new PermissionsUpdate
             {
