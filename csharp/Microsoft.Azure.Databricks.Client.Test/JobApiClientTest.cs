@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Castle.Core.Internal;
 using Microsoft.Azure.Databricks.Client.Models;
 using Moq;
 using Moq.Contrib.HttpClient;
@@ -286,7 +285,6 @@ public class JobApiClientTest : ApiClientTest
             TimeoutSeconds = 86400,
             EmailNotifications = new JobEmailNotifications
             {
-                NoAlertForSkippedRuns = false,
                 OnStart = new[] { "user.name@databricks.com" },
                 OnFailure = new[] { "user.name@databricks.com" },
                 OnSuccess = new[] { "user.name@databricks.com" }
@@ -319,7 +317,6 @@ public class JobApiClientTest : ApiClientTest
             MainClassName = "com.databricks.OrdersIngest",
             Parameters = new List<string> { "--data", "dbfs:/path/to/order-data.json" }
         };
-
 
         var task2 = runSubmit.AddTask("Orders_Ingest", ingestTask, timeoutSeconds: 86400)
             .AttachLibrary(new JarLibrary { Jar = "dbfs:/mnt/databricks/OrderIngest.jar" })
@@ -358,7 +355,6 @@ public class JobApiClientTest : ApiClientTest
             },
             EmailNotifications = new JobEmailNotifications
             {
-                NoAlertForSkippedRuns = false,
                 OnStart = new[] { "user.name@databricks.com" },
                 OnFailure = new[] { "user.name@databricks.com" },
                 OnSuccess = new[] { "user.name@databricks.com" }
@@ -794,6 +790,60 @@ public class JobApiClientTest : ApiClientTest
     }
 
     [TestMethod]
+    public async Task TestRunNowWithQueue()
+    {
+        var apiUri = new Uri(JobsApiUri, "run-now");
+
+        const string expectedRequest = @"
+            {
+              ""job_id"": 11223344,
+              ""idempotency_token"": ""00000000-0000-0000-0000-000000000000"",
+              ""jar_params"": [
+                ""john"",
+                ""doe"",
+                ""35""
+              ],
+              ""queue"": {
+                ""enabled"": true
+              }
+            }
+        ";
+
+        const string expectedResponse = @"
+            {
+              ""run_id"": 455644833,
+              ""number_in_job"": 455644833
+            }
+        ";
+
+        var runParams = new RunParameters
+        {
+            JarParams = ["john", "doe", "35"]
+        };
+
+        var handler = CreateMockHandler();
+        handler
+            .SetupRequest(HttpMethod.Post, apiUri)
+            .ReturnsResponse(HttpStatusCode.OK, expectedResponse, "application/json")
+            .Verifiable();
+
+        var hc = handler.CreateClient();
+        hc.BaseAddress = BaseApiUri;
+
+        using var client = new JobsApiClient(hc);
+        var runId = await client.RunNow(11223344, runParams, "00000000-0000-0000-0000-000000000000", new QueueSettings { Enabled = true });
+
+        Assert.AreEqual(455644833, runId);
+
+        handler.VerifyRequest(
+            HttpMethod.Post,
+            apiUri,
+            GetMatcher(expectedRequest),
+            Times.Once()
+        );
+    }
+
+    [TestMethod]
     public async Task TestRunNowNoParam()
     {
         var apiUri = new Uri(JobsApiUri, "run-now");
@@ -975,8 +1025,8 @@ public class JobApiClientTest : ApiClientTest
                 TimezoneId = "Europe/London",
                 PauseStatus = PauseStatus.PAUSED
             },
-            Tasks = new[]
-            {
+            Tasks =
+            [
                 new RunTask
                 {
                     RunId = 2112892,
@@ -1001,7 +1051,7 @@ public class JobApiClientTest : ApiClientTest
                     },
                     AttemptNumber = 0
                 }
-            },
+            ],
             ClusterSpec = new ClusterSpec
             {
                 ExistingClusterId = "0923-164208-meows279"
@@ -1031,8 +1081,8 @@ public class JobApiClientTest : ApiClientTest
 
         var expectedRepair = new RepairHistory
         {
-            Items = new List<RepairHistoryItem>
-            {
+            Items =
+            [
                 new()
                 {
                     Type = RepairHistoryItemType.ORIGINAL,
@@ -1048,12 +1098,12 @@ public class JobApiClientTest : ApiClientTest
                     Id = 734650698524280,
                     TaskRunIds = new []{1106460542112844, 988297789683452}
                 }
-            }
+            ]
         };
 
         var handler = CreateMockHandler();
         handler
-            .SetupRequest(HttpMethod.Get, new Uri(apiUri, "?run_id=455644833&include_history=true"))
+            .SetupRequest(HttpMethod.Get, new Uri(apiUri, "?run_id=455644833&include_history=true&include_resolved_values=false"))
             .ReturnsResponse(HttpStatusCode.OK, response, "application/json")
             .Verifiable();
 
@@ -1076,7 +1126,7 @@ public class JobApiClientTest : ApiClientTest
 
         handler.VerifyRequest(
             HttpMethod.Get,
-            new Uri(apiUri, "?run_id=455644833&include_history=true"),
+            new Uri(apiUri, "?run_id=455644833&include_history=true&include_resolved_values=false"),
             Times.Once()
         );
     }
@@ -1264,7 +1314,7 @@ public class JobApiClientTest : ApiClientTest
 
         var handler = CreateMockHandler();
         handler
-            .SetupRequest(HttpMethod.Get, new Uri(apiUri, "?run_id=455644833&include_history=true"))
+            .SetupRequest(HttpMethod.Get, new Uri(apiUri, "?run_id=455644833&include_history=true&include_resolved_values=false"))
             .ReturnsResponse(HttpStatusCode.OK, response, "application/json")
             .Verifiable();
 
@@ -1287,7 +1337,7 @@ public class JobApiClientTest : ApiClientTest
 
         handler.VerifyRequest(
             HttpMethod.Get,
-            new Uri(apiUri, "?run_id=455644833&include_history=true"),
+            new Uri(apiUri, "?run_id=455644833&include_history=true&include_resolved_values=false"),
             Times.Once()
         );
     }
@@ -1439,7 +1489,7 @@ public class JobApiClientTest : ApiClientTest
 
         var handler = CreateMockHandler();
         handler
-            .SetupRequest(HttpMethod.Get, new Uri(apiUri, "?run_id=455644833&include_history=false"))
+            .SetupRequest(HttpMethod.Get, new Uri(apiUri, "?run_id=455644833&include_history=false&include_resolved_values=false"))
             .ReturnsResponse(HttpStatusCode.OK, response, "application/json")
             .Verifiable();
 
@@ -1457,7 +1507,7 @@ public class JobApiClientTest : ApiClientTest
 
         handler.VerifyRequest(
             HttpMethod.Get,
-            new Uri(apiUri, "?run_id=455644833&include_history=false"),
+            new Uri(apiUri, "?run_id=455644833&include_history=false&include_resolved_values=false"),
             Times.Once()
         );
     }
