@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.Azure.Databricks.Client.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -122,7 +123,7 @@ public class JobsApiClient : ApiClient, IJobsApi
             .ConfigureAwait(false);
     }
 
-    public async Task<long> RunNow(long jobId, RunParameters runParams = default, string idempotencyToken = default,
+    public async Task<long> RunNow(long jobId, RunParameters runParams = default, string idempotencyToken = default, QueueSettings queueSettings = default,
         CancellationToken cancellationToken = default)
     {
         var request = runParams == null
@@ -130,6 +131,11 @@ public class JobsApiClient : ApiClient, IJobsApi
             : JsonSerializer.SerializeToNode(runParams, Options)!.AsObject();
 
         request.Add("job_id", jobId);
+
+        if (queueSettings != null)
+        {
+            request.Add("queue", JsonSerializer.SerializeToNode(queueSettings));
+        }
 
         if (!string.IsNullOrEmpty(idempotencyToken))
         {
@@ -236,10 +242,10 @@ public class JobsApiClient : ApiClient, IJobsApi
         });
     }
 
-    public async Task<(Run, RepairHistory)> RunsGet(long runId, bool includeHistory = default,
+    public async Task<(Run, RepairHistory)> RunsGet(long runId, bool includeHistory = default, bool includeResolvedValues = default,
         CancellationToken cancellationToken = default)
     {
-        var url = $"{ApiVersion}/jobs/runs/get?run_id={runId}&include_history={JsonValue.Create(includeHistory)}";
+        var url = $"{ApiVersion}/jobs/runs/get?run_id={runId}&include_history={JsonValue.Create(includeHistory)}&include_resolved_values={JsonValue.Create(includeResolvedValues)}";
         var response = await HttpGet<JsonObject>(this.HttpClient, url, cancellationToken).ConfigureAwait(false);
         return (response.Deserialize<Run>(Options), response.Deserialize<RepairHistory>(Options));
     }

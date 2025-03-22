@@ -162,18 +162,30 @@ public abstract record TaskSettings : BaseTask
     /// </summary>
     [JsonPropertyName("timeout_seconds")]
     public int? TimeoutSeconds { get; set; }
+
+    /// <summary>
+    /// An optional set of email addresses that is notified when runs of this task begin or complete as well as when this task is deleted. The default behavior is to not send any emails.
+    /// </summary>
+    [JsonPropertyName("email_notifications")]
+    public JobEmailNotifications EmailNotifications { get; set; }
+
+    /// <summary>
+    /// A collection of system notification IDs to notify when runs of this task begin or complete. The default behavior is to not send any system notifications.
+    /// </summary>
+    [JsonPropertyName("webhook_notifications")]
+    public JobWebhookNotifications WebhookNotifications { get; set; }
+
+    /// <summary>
+    /// Optional notification settings that are used when sending notifications to each of the email_notifications and webhook_notifications for this task.
+    /// </summary>
+    [JsonPropertyName("notification_settings")]
+    public NotificationSettings NotificationSettings { get; set; }
 }
 
 public record JobTaskSettings : TaskSettings
 {
     [JsonPropertyName("job_cluster_key")]
     public string JobClusterKey { get; set; }
-
-    /// <summary>
-    /// An optional set of email addresses that will be notified when runs of this job begin or complete as well as when this job is deleted. The default behavior is to not send any emails.
-    /// </summary>
-    [JsonPropertyName("email_notifications")]
-    public JobEmailNotifications EmailNotifications { get; set; }
 
     /// <summary>
     /// An optional maximum number of times to retry an unsuccessful run. A run is considered to be unsuccessful if it completes with a FAILED result_state or INTERNAL_ERROR life_cycle_state. The value -1 means to retry indefinitely and the value 0 means to never retry. The default behavior is to never retry.
@@ -217,8 +229,21 @@ public record JobTaskSettings : TaskSettings
         {
             OnStart = onStart,
             OnSuccess = onSuccess,
-            OnFailure = onFailure,
-            NoAlertForSkippedRuns = noAlertForSkippedRuns
+            OnFailure = onFailure
+        };
+
+        return this.WithNotificationSettings(noAlertForSkippedRuns);
+    }
+
+    public JobTaskSettings WithNotificationSettings(
+        bool noAlertForSkippedRuns = default, bool noAlertForCanceledRuns = default,
+        bool alertOnLastAttempt = default)
+    {
+        this.NotificationSettings = new NotificationSettings
+        {
+            NoAlertForSkippedRuns = noAlertForSkippedRuns,
+            NoAlertForCanceledRuns = noAlertForCanceledRuns,
+            AlertOnLastAttempt = alertOnLastAttempt
         };
 
         return this;

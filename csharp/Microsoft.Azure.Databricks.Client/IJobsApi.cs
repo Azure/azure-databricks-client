@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Azure;
 using Microsoft.Azure.Databricks.Client.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -69,7 +69,7 @@ public interface IJobsApi : IDisposable
     /// <summary>
     /// Runs the job now, and returns the run_id of the triggered run.
     /// </summary>
-    Task<long> RunNow(long jobId, RunParameters runParams = default, string idempotencyToken = default,
+    Task<long> RunNow(long jobId, RunParameters runParams = default, string idempotencyToken = default, QueueSettings queueSettings = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -151,7 +151,8 @@ public interface IJobsApi : IDisposable
     /// </summary>
     /// <param name="runId">The canonical identifier of the run for which to retrieve the metadata. This field is required.</param>
     /// <param name="includeHistory">Whether to include the repair history in the response.</param>
-    Task<(Run, RepairHistory)> RunsGet(long runId, bool includeHistory = default,
+    /// <param name="includeResolvedValues">Whether to include resolved parameter values in the response.</param>
+    Task<(Run, RepairHistory)> RunsGet(long runId, bool includeHistory = default, bool includeResolvedValues = default,
         CancellationToken cancellationToken = default);
 
     /// <summary>

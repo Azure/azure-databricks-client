@@ -28,11 +28,17 @@ public abstract record JobRunBaseSettings<TTaskSetting> : IJsonOnDeserialized
     [JsonPropertyName("webhook_notifications")]
     public JobWebhookNotifications WebhookNotifications { get; set; }
 
+    [JsonPropertyName("notification_settings")]
+    public NotificationSettings NotificationSettings { get; set; }
+
     /// <summary>
     /// A list of job level parameters.
     /// </summary>
     [JsonPropertyName("parameters")]
     public List<JobParameter> Parameters { get; set; } = new();
+
+    [JsonPropertyName("queue")]
+    public QueueSettings QueueSettings { get; set; }
 
     public void OnDeserialized()
     {
@@ -235,6 +241,34 @@ public record JobSettings : JobRunBaseSettings<JobTaskSettings>
     /// </summary>
     [JsonPropertyName("run_as")]
     public RunAs RunAs { get; set; }
+}
+
+public record QueueSettings
+{
+    [JsonPropertyName("enabled")]
+    public bool Enabled { get; set; }
+}
+
+public record NotificationSettings
+{
+    /// <summary>
+    /// If true, do not send notifications to recipients specified in on_failure if the run is skipped.
+    /// </summary>
+    [JsonPropertyName("no_alert_for_skipped_runs")]
+    public bool NoAlertForSkippedRuns { get; set; }
+
+    /// <summary>
+    /// If true, do not send notifications to recipients specified in on_failure if the run is canceled.
+    /// </summary>
+    [JsonPropertyName("no_alert_for_canceled_runs")]
+    public bool NoAlertForCanceledRuns { get; set; }
+
+    /// <summary>
+    /// If true, do not send notifications to recipients specified in on_start for the retried runs and
+    /// do not send notifications to recipients specified in on_failure until the last retry of the run.
+    /// </summary>
+    [JsonPropertyName("alert_on_last_attempt")]
+    public bool AlertOnLastAttempt { get; set; }
 }
 
 /// <summary>
