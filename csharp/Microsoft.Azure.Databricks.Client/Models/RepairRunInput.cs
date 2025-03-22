@@ -29,4 +29,17 @@ public record RepairRunInput
     /// </summary>
     [JsonPropertyName("latest_repair_id")]
     public long LatestRepairId { get; set; }
+
+    /// <summary>
+    /// If true, repair all failed tasks. Only one of <see cref="RerunTasks"/> or <see cref="RerunAllFailedTasks"/> can be used.
+    /// </summary>
+    [JsonPropertyName("rerun_all_failed_tasks")]
+    public bool RerunAllFailedTasks { get; set; }
+
+    /// <summary>
+    /// If true, repair all tasks that depend on the tasks in <see cref="RerunTasks"/>, even if they were previously successful.
+    /// Can be also used in combination with <see cref="RerunAllFailedTasks"/>.
+    /// </summary>
+    [JsonPropertyName("rerun_dependent_tasks")]
+    public bool RerunDependentTasks { get; set; }
 }
