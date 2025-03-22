@@ -41,6 +41,11 @@
             - Targeting .NET 9
             - Bug fixes
         </PackageReleaseNotes>
+        <PackageReleaseNotes Condition="'$(VersionPrefix)' == '2.8.0'">
+            - Add support for UnityCatalog Shares API
+            - Support for RepairRun - rerun_dependent_tasks property
+            - Add support for job notification settings and job queue settings
+        </PackageReleaseNotes>
         <PackageReleaseNotes>
         Changes in $(VersionPrefix): $(PackageReleaseNotes)
         </PackageReleaseNotes>
