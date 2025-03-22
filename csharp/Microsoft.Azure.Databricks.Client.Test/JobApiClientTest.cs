@@ -2,8 +2,10 @@
 // Licensed under the MIT License.
 
 using Microsoft.Azure.Databricks.Client.Models;
+
 using Moq;
 using Moq.Contrib.HttpClient;
+
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -1096,7 +1098,7 @@ public class JobApiClientTest : ApiClientTest
                         StateMessage = ""
                     },
                     Id = 734650698524280,
-                    TaskRunIds = new []{1106460542112844, 988297789683452}
+                    TaskRunIds = [1106460542112844, 988297789683452]
                 }
             ]
         };

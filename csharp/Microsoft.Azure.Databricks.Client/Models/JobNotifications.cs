@@ -44,7 +44,7 @@ public record JobNotifications<T>
     public IEnumerable<T> OnStreamingBacklogExceeded { get; set; }
 }
 
-public record JobEmailNotifications: JobNotifications<string>
+public record JobEmailNotifications : JobNotifications<string>
 {
     /// <summary>
     /// If true, do not send email to recipients specified in on_failure if the run is skipped.
@@ -55,6 +55,6 @@ public record JobEmailNotifications: JobNotifications<string>
     public bool NoAlertForSkippedRuns { get; set; }
 }
 
-public record JobWebhookNotifications: JobNotifications<JobWebhookSetting>
+public record JobWebhookNotifications : JobNotifications<JobWebhookSetting>
 {
 }
