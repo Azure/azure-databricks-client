@@ -67,6 +67,7 @@ internal static partial class SampleProgram
             await TestClustersApi(client);
             await TestGroupsApi(client);
             await TestDbfsApi(client);
+            await TestFilesApi(client);
             await TestJobsApi(client);
             await TestPermissionsApi(client);
             await TestWarehouseApi(client);
