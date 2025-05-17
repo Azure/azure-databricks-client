@@ -9,6 +9,11 @@ namespace Microsoft.Azure.Databricks.Client.Models;
 public enum RuntimeEngine
 {
     /// <summary>
+    /// No runtime engine.
+    /// </summary>
+    NULL,
+
+    /// <summary>
     /// The Photon runtime engine.
     /// </summary>
     PHOTON,
