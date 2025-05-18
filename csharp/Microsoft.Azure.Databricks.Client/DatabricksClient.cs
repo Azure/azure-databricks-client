@@ -223,21 +223,23 @@ public partial class DatabricksClient : IDisposable
 
     public void Dispose()
     {
-        Clusters.Dispose();
-        Jobs.Dispose();
-        Dbfs.Dispose();
-        Secrets.Dispose();
-        Groups.Dispose();
-        Libraries.Dispose();
-        Token.Dispose();
-        Workspace.Dispose();
-        InstancePool.Dispose();
-        ClusterPolicies.Dispose();
-        GlobalInitScriptsApi.Dispose();
-        Repos.Dispose();
-        Pipelines.Dispose();
-        UnityCatalog.Dispose();
-        MachineLearning.Dispose();
+        Clusters?.Dispose();
+        Jobs?.Dispose();
+        Dbfs?.Dispose();
+        Secrets?.Dispose();
+        Groups?.Dispose();
+        Libraries?.Dispose();
+        Token?.Dispose();
+        Workspace?.Dispose();
+        InstancePool?.Dispose();
+        Permissions?.Dispose();
+        ClusterPolicies?.Dispose();
+        GlobalInitScriptsApi?.Dispose();
+        SQL?.Dispose();
+        Repos?.Dispose();
+        Pipelines?.Dispose();
+        UnityCatalog?.Dispose();
+        MachineLearning?.Dispose();
         GC.SuppressFinalize(this);
     }
 }
