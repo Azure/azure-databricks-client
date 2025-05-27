@@ -61,6 +61,7 @@ namespace Microsoft.Azure.Databricks.Client
         /// The file contents will be written asynchronously to the stream passed as argument.
         /// </summary>
         /// <param name="filePath">The absolute path of the file.</param>
+        /// <param name="stream">The data stream to write to.</param>
         /// <param name="range">The range of bytes to retrieve. The range is inclusive and zero-based, see RFC 9110 for further details.</param>
         /// <param name="ifUnmodifiedSince">Download the file only if it has not been modified since the specified timestamp. If it has, a 412 Precondition Failed error will be returned. See RFC 9110 for further details.</param>
         Task Download(string filePath, Stream stream, string range = default, string ifUnmodifiedSince = default, CancellationToken cancellationToken = default);
@@ -82,8 +83,9 @@ namespace Microsoft.Azure.Databricks.Client
         /// If the request is successful, there is no response body.
         /// </summary>
         /// <param name="filePath">The absolute path of the file.</param>
+        /// <param name="stream">The data stream to read from.</param>
         /// <param name="overwrite">If true or unspecified, an existing file will be overwritten. If false, an error will be returned if the path points to an existing file.</param>
-        Task Upload(string filePath, byte[] fileContents, bool? overwrite = default, CancellationToken cancellationToken = default);
+        Task Upload(string filePath, Stream stream, bool? overwrite = default, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes a file.

@@ -31,7 +31,7 @@ internal static partial class SampleProgram
         var response = await httpClient.GetAsync("https://norvig.com/big.txt",
             HttpCompletionOption.ResponseHeadersRead);
 
-        var fileContents = await response.Content.ReadAsByteArrayAsync();
+        var fileContents = await response.Content.ReadAsStreamAsync();
         await client.Files.Upload(uploadPath, fileContents, true);
 
         // Read the file first 100 bytes

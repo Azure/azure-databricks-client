@@ -104,12 +104,14 @@ public sealed class FilesApiClient : ApiClient, IFilesApi
         return response.Content.Headers;
     }
 
-    public async Task Upload(string filePath, byte[] fileContents, bool? overwrite = default, CancellationToken cancellationToken = default)
+    public async Task Upload(string filePath, Stream stream, bool? overwrite = default,
+        CancellationToken cancellationToken = default)
     {
         var requestUri = overwrite == null ? $"{_apiBaseUrl}/files{filePath}" : $"{_apiBaseUrl}/files{filePath}?overwrite={overwrite.ToString().ToLowerInvariant()}";
-        var body = new ByteArrayContent(fileContents);
 
-        var response = await this.HttpClient.PutAsync(requestUri, body, cancellationToken).ConfigureAwait(false);
+        using var content = new StreamContent(stream);
+        content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        var response = await this.HttpClient.PutAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
 
         if (!response.IsSuccessStatusCode)
         {

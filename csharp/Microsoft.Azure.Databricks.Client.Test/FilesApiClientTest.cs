@@ -134,7 +134,7 @@ public class FilesApiClientTest : ApiClientTest
     {
         var requestUri = $"{FilesApiUri}{FileRelativePath}?overwrite=true";
 
-        var fileContents = Guid.NewGuid().ToByteArray();
+        var fileContents = new MemoryStream(Guid.NewGuid().ToByteArray());
 
         var handler = CreateMockHandler();
         handler
