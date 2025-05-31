@@ -23,5 +23,15 @@ public enum ExportFormat
     /// <summary>
     /// The notebook will be imported/exported as Databricks archive format.
     /// </summary>
-    DBC
+    DBC,
+
+    /// <summary>
+    /// The notebook is imported/exported to R Markdown format.
+    /// </summary>
+    R_MARKDOWN,
+
+    /// <summary>
+    /// The object is exported depending on the objects type.
+    /// </summary>
+    AUTO
 }

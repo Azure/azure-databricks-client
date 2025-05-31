@@ -22,7 +22,7 @@ public interface IWorkspaceApi : IDisposable
     /// Exports a notebook or contents of an entire directory. If path does not exist, this call returns an error RESOURCE_DOES_NOT_EXIST. One can only export a directory in DBC format. If the exported data would exceed size limit, this call returns an error MAX_NOTEBOOK_SIZE_EXCEEDED. This API does not support exporting a library.
     /// </summary>
     /// <param name="path">The absolute path of the notebook or directory. Exporting directory is only support for DBC format. This field is required.</param>
-    /// <param name="format">This specifies the format of the exported file. By default, this is SOURCE. However it may be one of: SOURCE, HTML, JUPYTER, DBC. The value is case sensitive.</param>
+    /// <param name="format">This specifies the format of the exported file. By default, this is SOURCE. However it may be one of: SOURCE, HTML, JUPYTER, DBC, R_MARKDOWN, AUTO. The value is case sensitive.</param>
     Task<byte[]> Export(string path, ExportFormat format, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -35,7 +35,7 @@ public interface IWorkspaceApi : IDisposable
     /// Imports a notebook or the contents of an entire directory. If path already exists and overwrite is set to false, this call returns an error RESOURCE_ALREADY_EXISTS. One can only use DBC format to import a directory.
     /// </summary>
     /// <param name="path">The absolute path of the notebook or directory. Importing directory is only support for DBC format. This field is required.</param>
-    /// <param name="format">This specifies the format of the file to be imported. By default, this is SOURCE. However it may be one of: SOURCE, HTML, JUPYTER, DBC. The value is case sensitive.</param>
+    /// <param name="format">This specifies the format of the file to be imported. By default, this is SOURCE. However it may be one of: SOURCE, HTML, JUPYTER, DBC, R_MARKDOWN, AUTO. The value is case sensitive.</param>
     /// <param name="language">The language. If format is set to SOURCE, this field is required; otherwise, it will be ignored.</param>
     /// <param name="content">The base64-encoded content. This has a limit of 10 MB. If the limit (10MB) is exceeded, exception with error code MAX_NOTEBOOK_SIZE_EXCEEDED will be thrown. This parameter might be absent, and instead a posted file will be used.</param>
     /// <param name="overwrite">The flag that specifies whether to overwrite existing object. It is false by default. For DBC format, overwrite is not supported since it may contain a directory.</param>
