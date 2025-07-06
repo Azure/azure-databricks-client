@@ -10,7 +10,7 @@ public record RegisteredModel
     /// List of aliases associated with the registered model
     /// </summary>
     [JsonPropertyName("aliases")]
-    public IEnumerable<RegisteredModelAlias> Aliases { get; set; }
+    public IReadOnlyList<RegisteredModelAlias> Aliases { get; set; } = Array.Empty<RegisteredModelAlias>();
 
     /// <summary>
     /// Indicates whether the principal is limited to retrieving metadata for the associated object through the BROWSE privilege when include_browse is enabled in the request.
