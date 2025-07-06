@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,15 +23,15 @@ public sealed class FilesApiClient : ApiClient, IFilesApi
         _apiBaseUrl = $"{ApiVersion}/fs";
     }
 
-    public async Task<DirectoriesList> ListDirectoryContents(string directoryPath, long? pageSize = default, string pageToken = default,
-        CancellationToken cancellationToken = default)
+    public async Task<(IEnumerable<DirectoryEntry>, string)> ListDirectoryContents(string directoryPath, long? pageSize = default,
+        string pageToken = default, CancellationToken cancellationToken = default)
     {
         if (pageSize < 0 || pageSize > 1000)
         {
             throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be between 0 and 1000.");
         }
 
-        StringBuilder requestUriSb = new($"{_apiBaseUrl}/directories{directoryPath}");
+        StringBuilder requestUriSb = new($"{_apiBaseUrl}/directories{directoryPath}?");
         if (pageSize != null)
         {
             requestUriSb.Append($"&page_size={pageSize}");
@@ -39,12 +43,34 @@ public sealed class FilesApiClient : ApiClient, IFilesApi
         }
 
         var requestUri = requestUriSb.ToString();
-        return await HttpGet<DirectoriesList>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+        var response = await HttpGet<JsonObject>(this.HttpClient, requestUri, cancellationToken).ConfigureAwait(false);
+
+        response.TryGetPropertyValue("contents", out var contentNode);
+        response.TryGetPropertyValue("next_page_token", out var nextPageTokenNode);
+
+        var entries = contentNode?.Deserialize<IEnumerable<DirectoryEntry>>(Options) ?? Enumerable.Empty<DirectoryEntry>();
+        var nextPageToken = nextPageTokenNode?.Deserialize<string>(Options) ?? string.Empty;
+
+        return (entries, nextPageToken);
+    }
+
+    public global::Azure.AsyncPageable<DirectoryEntry> ListDirectoryContentsPageable(string directoryPath, long? pageSize = null, CancellationToken cancellationToken = default)
+    {
+        return new AsyncPageable<DirectoryEntry>(async (pageToken) =>
+        {
+            var (entries, nextPageToken) = await ListDirectoryContents(
+                directoryPath,
+                pageSize,
+                pageToken,
+                cancellationToken).ConfigureAwait(false);
+
+            return (entries.ToList(), !string.IsNullOrEmpty(nextPageToken), nextPageToken);
+        });
     }
 
     public async Task<HttpContentHeaders> GetDirectoryMetadata(string directoryPath, CancellationToken cancellationToken = default)
     {
-        return await HttpHead<object>(this.HttpClient, $"{_apiBaseUrl}/directories{directoryPath}", null, cancellationToken);
+        return await HttpHead(this.HttpClient, $"{_apiBaseUrl}/directories{directoryPath}", cancellationToken);
     }
 
     public async Task CreateDirectory(string directoryPath, CancellationToken cancellationToken = default)
@@ -77,8 +103,8 @@ public sealed class FilesApiClient : ApiClient, IFilesApi
             throw CreateApiException(response);
         }
 
-        var fileContents = await response.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-        await stream.WriteAsync(fileContents.AsMemory(0, fileContents.Length), cancellationToken).ConfigureAwait(false);
+        using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        await contentStream.CopyToAsync(stream, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<HttpContentHeaders> GetFileMetadata(string filePath, string range = default, string ifUnmodifiedSince = default, CancellationToken cancellationToken = default)
@@ -123,4 +149,6 @@ public sealed class FilesApiClient : ApiClient, IFilesApi
     {
         await HttpDelete(this.HttpClient, $"{_apiBaseUrl}/files{filePath}", cancellationToken).ConfigureAwait(false);
     }
+
+
 }

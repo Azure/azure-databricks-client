@@ -66,7 +66,7 @@ public abstract class ApiClient : IDisposable
     }
 
     private static async Task<HttpContentHeaders> SendHeadRequest<TBody>(HttpClient httpClient, HttpMethod method,
-        string requestUri, TBody body, CancellationToken cancellationToken = default)
+        string requestUri, TBody body = default, CancellationToken cancellationToken = default)
     {
         using var response = await FetchResponse(httpClient, method, requestUri, body, cancellationToken).ConfigureAwait(false);
         return response.Content.Headers;
@@ -132,10 +132,15 @@ public abstract class ApiClient : IDisposable
         await SendRequest<object>(httpClient, HttpMethod.Delete, requestUri, null, cancellationToken).ConfigureAwait(false);
     }
 
-    protected static async Task<HttpContentHeaders> HttpHead<TBody>(HttpClient httpClient, string requestUri, TBody body,
+    protected static async Task<HttpContentHeaders> HttpHead<TBody>(HttpClient httpClient, string requestUri, TBody body = default,
         CancellationToken cancellationToken = default)
     {
         return await SendHeadRequest(httpClient, HttpMethod.Head, requestUri, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    protected static async Task<HttpContentHeaders> HttpHead(HttpClient httpClient, string requestUri, CancellationToken cancellationToken = default)
+    {
+        return await SendHeadRequest<object>(httpClient, HttpMethod.Head, requestUri, null, cancellationToken).ConfigureAwait(false);
     }
 
     protected virtual void Dispose(bool disposing)
