@@ -1,9 +1,10 @@
 ﻿using Microsoft.Azure.Databricks.Client.Models.UnityCatalog;
 using Microsoft.Azure.Databricks.Client.UnityCatalog;
+
 using Moq;
 using Moq.Contrib.HttpClient;
+
 using System.Net;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -79,6 +80,7 @@ public class RegisteredModelsApiClientTests : UnityCatalogApiClientTest
     {
         var expectedResponse = @"
         {
+          ""aliases"": [],
           ""name"": ""my_model"",
           ""catalog_name"": ""main"",
           ""schema_name"": ""default"",
