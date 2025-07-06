@@ -79,6 +79,7 @@ public class RegisteredModelsApiClientTests : UnityCatalogApiClientTest
     {
         var expectedResponse = @"
         {
+          ""aliases"": [],
           ""name"": ""my_model"",
           ""catalog_name"": ""main"",
           ""schema_name"": ""default"",
