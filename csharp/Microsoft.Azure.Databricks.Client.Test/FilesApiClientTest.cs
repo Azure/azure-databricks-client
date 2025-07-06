@@ -112,7 +112,7 @@ public class FilesApiClientTest : ApiClientTest
           ""next_page_token"": ""test-token""
         }";
 
-        var requestUri = $"{DirectoriesApiUri}{DirectoryRelativePath}";
+        var requestUri = $"{DirectoriesApiUri}{DirectoryRelativePath}?";
 
         var handler = CreateMockHandler();
         handler
@@ -125,7 +125,7 @@ public class FilesApiClientTest : ApiClientTest
         using var client = new FilesApiClient(mockClient);
         var actual = await client.ListDirectoryContents(DirectoryRelativePath);
 
-        var actualJson = JsonSerializer.Serialize(actual, Options);
+        var actualJson = JsonSerializer.Serialize(new { contents = actual.Item1, next_page_token = actual.Item2 }, Options);
         AssertJsonDeepEquals(expectedResponse, actualJson);
     }
 
