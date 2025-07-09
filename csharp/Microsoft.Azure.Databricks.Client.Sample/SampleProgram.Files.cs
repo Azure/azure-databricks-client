@@ -54,7 +54,7 @@ internal static partial class SampleProgram
         // List directory contents
         Console.WriteLine($"Listing test directory contents...");
 
-        await foreach (var entry in client.Files.ListDirectoryContentsPageable("/"))
+        await foreach (var entry in client.Files.ListDirectoryContentsPageable(directoryPath))
         {
             Console.WriteLine(entry);
         }
