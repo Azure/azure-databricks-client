@@ -46,6 +46,9 @@
             - Support for RepairRun - rerun_dependent_tasks property
             - Add support for job notification settings and job queue settings
         </PackageReleaseNotes>
+        <PackageReleaseNotes Condition="'$(VersionPrefix)' == '2.9.0'">
+            - Add support for Files API
+        </PackageReleaseNotes>
         <PackageReleaseNotes>
         Changes in $(VersionPrefix): $(PackageReleaseNotes)
         </PackageReleaseNotes>
