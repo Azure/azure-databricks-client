@@ -2,12 +2,11 @@
 // Licensed under the MIT License.
 
 using Azure.Identity;
+
 using Microsoft.Azure.Databricks.Client.Converters;
-using System;
-using System.Net.Http;
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Microsoft.Azure.Databricks.Client.Sample;
 
@@ -67,6 +66,7 @@ internal static partial class SampleProgram
             await TestClustersApi(client);
             await TestGroupsApi(client);
             await TestDbfsApi(client);
+            await TestFilesApi(client);
             await TestJobsApi(client);
             await TestPermissionsApi(client);
             await TestWarehouseApi(client);

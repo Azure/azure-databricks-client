@@ -22,6 +22,7 @@ public partial class DatabricksClient : IDisposable
         this.Clusters = new ClustersApiClient(httpClient);
         this.Jobs = new JobsApiClient(httpClient);
         this.Dbfs = new DbfsApiClient(httpClient);
+        this.Files = new FilesApiClient(httpClient);
         this.Secrets = new SecretsApiClient(httpClient);
         this.Groups = new GroupsApiClient(httpClient);
         this.Libraries = new LibrariesApiClient(httpClient);
@@ -193,6 +194,8 @@ public partial class DatabricksClient : IDisposable
 
     public virtual IDbfsApi Dbfs { get; }
 
+    public virtual IFilesApi Files { get; }
+
     public virtual ISecretsApi Secrets { get; }
 
     public virtual IGroupsApi Groups { get; }
@@ -226,6 +229,7 @@ public partial class DatabricksClient : IDisposable
         Clusters?.Dispose();
         Jobs?.Dispose();
         Dbfs?.Dispose();
+        Files?.Dispose();
         Secrets?.Dispose();
         Groups?.Dispose();
         Libraries?.Dispose();

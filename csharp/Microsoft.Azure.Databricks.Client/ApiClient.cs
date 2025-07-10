@@ -2,8 +2,10 @@
 // Licensed under the MIT License.
 
 using Microsoft.Azure.Databricks.Client.Converters;
+
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
@@ -52,35 +54,40 @@ public abstract class ApiClient : IDisposable
 
     private static async Task<TResult> SendRequest<TBody, TResult>(HttpClient httpClient, HttpMethod method, string requestUri, TBody body, CancellationToken cancellationToken = default)
     {
-        var request = new HttpRequestMessage(method, requestUri)
-        {
-            Content = body == null ? null : new StringContent(JsonSerializer.Serialize(body, Options), Encoding.UTF8, MediaTypeNames.Application.Json)
-        };
+        using var response = await FetchResponse(httpClient, method, requestUri, body, cancellationToken).ConfigureAwait(false);
+        await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
 
-        using var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw CreateApiException(response);
-        }
-
-        using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         return await JsonSerializer.DeserializeAsync<TResult>(responseStream, Options, cancellationToken).ConfigureAwait(false);
     }
 
     private static async Task SendRequest<TBody>(HttpClient httpClient, HttpMethod method, string requestUri, TBody body, CancellationToken cancellationToken = default)
+    {
+        await FetchResponse(httpClient, method, requestUri, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static async Task<HttpContentHeaders> SendHeadRequest<TBody>(HttpClient httpClient, HttpMethod method,
+        string requestUri, TBody body = default, CancellationToken cancellationToken = default)
+    {
+        using var response = await FetchResponse(httpClient, method, requestUri, body, cancellationToken).ConfigureAwait(false);
+        return response.Content.Headers;
+    }
+
+    private static async Task<HttpResponseMessage> FetchResponse<TBody>(HttpClient httpClient, HttpMethod method,
+        string requestUri, TBody body, CancellationToken cancellationToken = default)
     {
         var request = new HttpRequestMessage(method, requestUri)
         {
             Content = body == null ? null : new StringContent(JsonSerializer.Serialize(body, Options), Encoding.UTF8, MediaTypeNames.Application.Json)
         };
 
-        using var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+        var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
         if (!response.IsSuccessStatusCode)
         {
             throw CreateApiException(response);
         }
+
+        return response;
     }
 
     protected static async Task<T> HttpGet<T>(HttpClient httpClient, string requestUri, CancellationToken cancellationToken = default)
@@ -123,6 +130,17 @@ public abstract class ApiClient : IDisposable
         CancellationToken cancellationToken = default)
     {
         await SendRequest<object>(httpClient, HttpMethod.Delete, requestUri, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    protected static async Task<HttpContentHeaders> HttpHead<TBody>(HttpClient httpClient, string requestUri, TBody body = default,
+        CancellationToken cancellationToken = default)
+    {
+        return await SendHeadRequest(httpClient, HttpMethod.Head, requestUri, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    protected static async Task<HttpContentHeaders> HttpHead(HttpClient httpClient, string requestUri, CancellationToken cancellationToken = default)
+    {
+        return await SendHeadRequest<object>(httpClient, HttpMethod.Head, requestUri, null, cancellationToken).ConfigureAwait(false);
     }
 
     protected virtual void Dispose(bool disposing)
