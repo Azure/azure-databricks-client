@@ -27,6 +27,7 @@ You must have personal access tokens (PAT) or Azure Active Directory tokens (AAD
 | [Clusters](https://docs.databricks.com/api/azure/workspace/clusters)                       | 2.0     | The Clusters API allows you to create, start, edit, list, terminate, and delete clusters.                                                                                                                             |
 | [Jobs](https://docs.databricks.com/api/azure/workspace/jobs)                               | 2.1     | The Jobs API allows you to programmatically manage Azure Databricks jobs.                                                                                                                                             |
 | [Dbfs](https://docs.databricks.com/api/azure/workspace/dbfs)                               | 2.0     | The DBFS API is a Databricks API that makes it simple to interact with various data sources without having to include your credentials every time you read a file.                                                    |
+| [Files](https://docs.databricks.com/api/workspace/files)                              | 2.0     | The Files API (Public preview) is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI. The API makes working with file content as raw bytes easier and more efficient.                                  |
 | [Secrets](https://docs.databricks.com/api/azure/workspace/secrets)                         | 2.0     | The Secrets API allows you to manage secrets, secret scopes, and access permissions.                                                                                                                                  |
 | [Groups](https://docs.databricks.com/api/azure/workspace/groups)                           | 2.0     | The Groups API allows you to manage groups of users.                                                                                                                                                                  |
 | [Libraries](https://docs.databricks.com/api/azure/workspace/libraries)                     | 2.0     | The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster.                                                                                                         |
@@ -118,6 +119,74 @@ await WaitForCluster(client.Clusters, clusterId);
 
 ```cs
 await client.Clusters.Delete(clusterId);
+```
+
+### Files API
+
+- Create a directory :
+
+```cs
+// Create empty directory
+var directoryPath = "/Volumes/my-catalog/my-schema/my-volume/directory";
+
+await client.Files.CreateDirectory(directoryPath);
+```
+
+- Upload a file :
+
+```cs
+// Example loading from a local directory
+var localFilePath = @"C:\path\to\your\file.txt";
+
+// Using the previously created directory
+var uploadPath = $"{directoryPath}/sample-file.txt";
+
+using (FileStream fileStream = File.OpenRead(filePath))
+{
+    await client.Files.Upload(uploadPath, fileStream, true); // Will overwrite the remote file if already existing
+}
+```
+
+- Download a file :
+
+```cs
+// Download the file to memory
+using (MemoryStream memStream = new MemoryStream())
+{
+    // Using the previously created directory and uploaded file
+    await client.Files.Download(uploadPath, memStream, "bytes=0-"); // Explicitly download the whole file to the memory stream
+    
+    // You can now use the memory stream as needed, for example, save it to a local file
+    using (FileStream outputFileStream = File.Create(@"C:\path\to\your\downloaded-file.txt"))
+    {
+        memStream.Seek(0, SeekOrigin.Begin); // Reset the stream position to the beginning
+        await memStream.CopyToAsync(outputFileStream);
+    }
+}
+```
+
+- List files in a directory:
+
+```cs
+// List files in the previously created directory
+await foreach (var entry in client.Files.ListDirectoryContentsPageable(directoryPath))
+{
+    Console.WriteLine(entry);
+}
+```
+
+- Delete a file :
+
+```cs
+// Delete the previously uploaded file
+await client.Files.Delete(uploadPath);
+```
+
+- Delete a directory :
+
+```cs
+// Delete the previously created directory
+await client.Files.DeleteDirectory(directoryPath);
 ```
 
 ### Jobs API
