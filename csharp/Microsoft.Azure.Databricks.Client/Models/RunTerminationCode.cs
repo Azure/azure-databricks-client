@@ -113,5 +113,20 @@ public enum RunTerminationCode
     /// <summary>
     /// The run was successfully canceled during execution by a user.
     /// </summary>
-    USER_CANCELED
+    USER_CANCELED,
+
+    /// <summary>
+    /// The run was never executed because it was disabled explicitly by the user.
+    /// </summary>
+    DISABLED,
+    
+    /// <summary>
+    /// The run was completed successfully but some child runs failed.
+    /// </summary>
+    SUCCESS_WITH_FAILURES,
+    
+    /// <summary>
+    /// The run failed due to exceeding a budget policy limit.
+    /// </summary>
+    BUDGET_POLICY_LIMIT_EXCEEDED
 }
