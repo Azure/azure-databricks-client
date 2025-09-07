@@ -11,6 +11,16 @@ public enum RunTerminationCode
     SUCCESS,
 
     /// <summary>
+    /// The run was completed successfully but some child runs failed.
+    /// </summary>
+    SUCCESS_WITH_FAILURES,
+
+    /// <summary>
+    /// The run was successfully canceled during execution by a user.
+    /// </summary>
+    USER_CANCELED,
+
+    /// <summary>
     /// The run was canceled during execution by the Azure Databricks platform; for example, if the maximum run duration was exceeded.
     /// </summary>
     CANCELED,
@@ -111,7 +121,12 @@ public enum RunTerminationCode
     MAX_JOB_QUEUE_SIZE_EXCEEDED,
 
     /// <summary>
-    /// The run was successfully canceled during execution by a user.
+    /// The run was never executed because it was disabled explicitly by the user.
     /// </summary>
-    USER_CANCELED
+    DISABLED,
+    
+    /// <summary>
+    /// The run failed due to exceeding a budget policy limit.
+    /// </summary>
+    BUDGET_POLICY_LIMIT_EXCEEDED
 }
