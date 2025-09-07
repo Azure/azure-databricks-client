@@ -46,6 +46,21 @@ public enum DataSecurityMode
     USER_ISOLATION,
 
     /// <summary>
+    /// Databricks will choose the most appropriate access mode depending on your compute configuration.
+    /// </summary>
+    DATA_SECURITY_MODE_AUTO,
+
+    /// <summary>
+    /// Alias for USER_ISOLATION.
+    /// </summary>
+    DATA_SECURITY_MODE_STANDARD = USER_ISOLATION,
+
+    /// <summary>
+    /// Alias for SINGLE_USER.
+    /// </summary>
+    DATA_SECURITY_MODE_DEDICATED = SINGLE_USER,
+
+    /// <summary>
     /// This mode is for users migrating from legacy Table ACL clusters.
     /// </summary>
     [Obsolete("This mode is for users migrating from legacy Table ACL clusters. Deprecated starting with Databricks Runtime 15.0 and will be removed for future Databricks Runtime versions")]
