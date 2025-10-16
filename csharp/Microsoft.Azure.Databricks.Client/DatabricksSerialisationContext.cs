@@ -21,4 +21,4 @@ namespace Microsoft.Azure.Databricks.Client;
         typeof(TableConstraintConverter),
     }
 )]
-internal sealed partial class DatabricksSerializationContext : JsonSerializerContext { }
+internal sealed partial class DatabricksSerializationContext : JsonSerializerContext;
