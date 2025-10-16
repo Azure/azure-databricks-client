@@ -33,7 +33,4 @@
   <ItemGroup>
     <PackageReference Include="Azure.Core" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <PackageReference Include="System.Text.Json" VersionOverride="8.0.5" />
-  </ItemGroup>
 </Project>
