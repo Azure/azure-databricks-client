@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
