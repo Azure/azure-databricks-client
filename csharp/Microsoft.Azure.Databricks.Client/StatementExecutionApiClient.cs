@@ -4,9 +4,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Net.Mime;
-using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,14 +31,12 @@ public class StatementExecutionApiClient : ApiClient, IStatementExecutionApi
 
     public async Task<StatementExecution?> Execute(SqlStatement statement, CancellationToken cancellationToken = default)
     {
-        var request = JsonSerializer.Serialize(statement, DatabricksSerializationContext.Default.SqlStatement);
-        var body = new StringContent(request, Encoding.UTF8, MediaTypeNames.Application.Json);
-
+        var content = JsonContent.Create(statement, DatabricksSerializationContext.Default.SqlStatement, new MediaTypeHeaderValue(MediaTypeNames.Application.Json));
         return await SendRequest(
             this.HttpClient,
             HttpMethod.Post,
             this._apiBaseUrl,
-            body,
+            content,
             DatabricksSerializationContext.Default.StatementExecution,
             cancellationToken
         ).ConfigureAwait(false);

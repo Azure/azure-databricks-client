@@ -55,7 +55,7 @@ public abstract class ApiClient : IDisposable
         return new ClientApiException(errorContent, statusCode);
     }
 
-    protected static async Task<TResult?> SendRequest<TResult>(HttpClient httpClient, HttpMethod method, string requestUri, StringContent? content, JsonTypeInfo<TResult> typeInfo, CancellationToken cancellationToken = default)
+    protected static async Task<TResult?> SendRequest<TResult>(HttpClient httpClient, HttpMethod method, string requestUri, HttpContent? content, JsonTypeInfo<TResult> typeInfo, CancellationToken cancellationToken = default)
     {
         using var response = await FetchResponse(httpClient, method, requestUri, content, cancellationToken).ConfigureAwait(false);
         await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
@@ -106,7 +106,7 @@ public abstract class ApiClient : IDisposable
     }
 
     private static async Task<HttpResponseMessage> FetchResponse(HttpClient httpClient, HttpMethod method,
-        string requestUri, StringContent? content, CancellationToken cancellationToken = default)
+        string requestUri, HttpContent? content, CancellationToken cancellationToken = default)
     {
         var request = new HttpRequestMessage(method, requestUri)
         {
