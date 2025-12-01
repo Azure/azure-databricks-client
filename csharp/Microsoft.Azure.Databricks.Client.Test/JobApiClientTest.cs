@@ -1853,4 +1853,272 @@ public class JobApiClientTest : ApiClientTest
         Assert.AreEqual(734650698524281, repairId);
         handler.VerifyRequest(HttpMethod.Post, apiUri, GetMatcher(expectedRequest), Times.Once());
     }
+
+    [TestMethod]
+    public void TestJobSettingsWithContinuousTrigger()
+    {
+        var job = new JobSettings
+        {
+            Name = "Continuous job"
+        };
+
+        job.WithContinuous(new ContinuousTrigger
+        {
+            PauseStatus = PauseStatus.UNPAUSED
+        });
+
+        Assert.IsNotNull(job.Continuous);
+        Assert.AreEqual(PauseStatus.UNPAUSED, job.Continuous.PauseStatus);
+    }
+
+    [TestMethod]
+    public void TestJobSettingsWithFileArrivalTrigger()
+    {
+        var job = new JobSettings
+        {
+            Name = "File arrival job"
+        };
+
+        job.WithTrigger(new TriggerSettings
+        {
+            FileArrival = new FileArrivalTrigger
+            {
+                Url = "/Volumes/mycatalog/myschema/myvolume/",
+                MinTimeBetweenTriggersSeconds = 60,
+                WaitAfterLastChangeSeconds = 300
+            }
+        });
+
+        Assert.IsNotNull(job.Trigger);
+        Assert.IsNotNull(job.Trigger.FileArrival);
+        Assert.AreEqual("/Volumes/mycatalog/myschema/myvolume/", job.Trigger.FileArrival.Url);
+        Assert.AreEqual(60, job.Trigger.FileArrival.MinTimeBetweenTriggersSeconds);
+        Assert.AreEqual(300, job.Trigger.FileArrival.WaitAfterLastChangeSeconds);
+    }
+
+    [TestMethod]
+    public void TestJobSettingsWithTableUpdateTrigger()
+    {
+        var job = new JobSettings
+        {
+            Name = "Table update job"
+        };
+
+        job.WithTrigger(new TriggerSettings
+        {
+            TableUpdate = new TableUpdateTrigger
+            {
+                TableNames = new List<string> { "catalog.schema.table1", "catalog.schema.table2" },
+                Condition = TableUpdateTriggerCondition.ANY_UPDATED,
+                MinTimeBetweenTriggersSeconds = 120,
+                WaitAfterLastChangeSeconds = 60
+            }
+        });
+
+        Assert.IsNotNull(job.Trigger);
+        Assert.IsNotNull(job.Trigger.TableUpdate);
+        Assert.AreEqual(2, job.Trigger.TableUpdate.TableNames.Count);
+        Assert.AreEqual("catalog.schema.table1", job.Trigger.TableUpdate.TableNames[0]);
+        Assert.AreEqual(TableUpdateTriggerCondition.ANY_UPDATED, job.Trigger.TableUpdate.Condition);
+        Assert.AreEqual(120, job.Trigger.TableUpdate.MinTimeBetweenTriggersSeconds);
+    }
+
+    [TestMethod]
+    public void TestContinuousTriggerSerialization()
+    {
+        var trigger = new ContinuousTrigger
+        {
+            PauseStatus = PauseStatus.UNPAUSED
+        };
+
+        var json = JsonSerializer.Serialize(trigger, Options);
+
+        var expected = @"{""pause_status"":""UNPAUSED""}";
+        AssertJsonDeepEquals(expected, json);
+    }
+
+    [TestMethod]
+    public void TestFileArrivalTriggerSerialization()
+    {
+        var trigger = new FileArrivalTrigger
+        {
+            Url = "/Volumes/catalog/schema/volume/",
+            MinTimeBetweenTriggersSeconds = 120,
+            WaitAfterLastChangeSeconds = 60
+        };
+
+        var json = JsonSerializer.Serialize(trigger, Options);
+
+        var expected = @"{""url"":""/Volumes/catalog/schema/volume/"",""min_time_between_triggers_seconds"":120,""wait_after_last_change_seconds"":60}";
+        AssertJsonDeepEquals(expected, json);
+    }
+
+    [TestMethod]
+    public void TestTableUpdateTriggerSerialization()
+    {
+        var trigger = new TableUpdateTrigger
+        {
+            TableNames = new List<string> { "catalog.schema.table" },
+            Condition = TableUpdateTriggerCondition.ALL_UPDATED,
+            MinTimeBetweenTriggersSeconds = 60
+        };
+
+        var json = JsonSerializer.Serialize(trigger, Options);
+
+        var expected = @"{""table_names"":[""catalog.schema.table""],""condition"":""ALL_UPDATED"",""min_time_between_triggers_seconds"":60}";
+        AssertJsonDeepEquals(expected, json);
+    }
+
+    [TestMethod]
+    public void TestTriggerSettingsSerialization()
+    {
+        var settings = new TriggerSettings
+        {
+            FileArrival = new FileArrivalTrigger
+            {
+                Url = "/Volumes/catalog/schema/volume/"
+            },
+            PauseStatus = PauseStatus.PAUSED
+        };
+
+        var json = JsonSerializer.Serialize(settings, Options);
+
+        var expected = @"{""file_arrival"":{""url"":""/Volumes/catalog/schema/volume/""},""pause_status"":""PAUSED""}";
+        AssertJsonDeepEquals(expected, json);
+    }
+
+    [TestMethod]
+    public void TestJobSettingsWithTriggersSerializedCorrectly()
+    {
+        var job = new JobSettings
+        {
+            Name = "Triggered job",
+            Continuous = new ContinuousTrigger
+            {
+                PauseStatus = PauseStatus.UNPAUSED
+            },
+            Trigger = new TriggerSettings
+            {
+                FileArrival = new FileArrivalTrigger
+                {
+                    Url = "/Volumes/catalog/schema/volume/"
+                }
+            }
+        };
+
+        var json = JsonSerializer.Serialize(job, Options);
+        var parsed = JsonNode.Parse(json)!.AsObject();
+
+        Assert.IsTrue(parsed.ContainsKey("continuous"));
+        Assert.IsTrue(parsed.ContainsKey("trigger"));
+        Assert.AreEqual("UNPAUSED", parsed["continuous"]!["pause_status"]!.GetValue<string>());
+        Assert.AreEqual("/Volumes/catalog/schema/volume/", parsed["trigger"]!["file_arrival"]!["url"]!.GetValue<string>());
+    }
+
+    [TestMethod]
+    public void TestContinuousTriggerDeserialization()
+    {
+        const string json = @"{""pause_status"":""PAUSED""}";
+
+        var trigger = JsonSerializer.Deserialize<ContinuousTrigger>(json, Options);
+
+        Assert.IsNotNull(trigger);
+        Assert.AreEqual(PauseStatus.PAUSED, trigger.PauseStatus);
+    }
+
+    [TestMethod]
+    public void TestFileArrivalTriggerDeserialization()
+    {
+        const string json = @"{""url"":""/Volumes/catalog/schema/volume/"",""min_time_between_triggers_seconds"":120,""wait_after_last_change_seconds"":60}";
+
+        var trigger = JsonSerializer.Deserialize<FileArrivalTrigger>(json, Options);
+
+        Assert.IsNotNull(trigger);
+        Assert.AreEqual("/Volumes/catalog/schema/volume/", trigger.Url);
+        Assert.AreEqual(120, trigger.MinTimeBetweenTriggersSeconds);
+        Assert.AreEqual(60, trigger.WaitAfterLastChangeSeconds);
+    }
+
+    [TestMethod]
+    public void TestTableUpdateTriggerDeserialization()
+    {
+        const string json = @"{""table_names"":[""catalog.schema.table1"",""catalog.schema.table2""],""condition"":""ANY_UPDATED"",""min_time_between_triggers_seconds"":60}";
+
+        var trigger = JsonSerializer.Deserialize<TableUpdateTrigger>(json, Options);
+
+        Assert.IsNotNull(trigger);
+        Assert.AreEqual(2, trigger.TableNames.Count);
+        Assert.AreEqual("catalog.schema.table1", trigger.TableNames[0]);
+        Assert.AreEqual(TableUpdateTriggerCondition.ANY_UPDATED, trigger.Condition);
+        Assert.AreEqual(60, trigger.MinTimeBetweenTriggersSeconds);
+    }
+
+    [TestMethod]
+    public void TestTriggerSettingsDeserialization()
+    {
+        const string json = @"{""file_arrival"":{""url"":""/Volumes/catalog/schema/volume/""},""pause_status"":""PAUSED""}";
+
+        var settings = JsonSerializer.Deserialize<TriggerSettings>(json, Options);
+
+        Assert.IsNotNull(settings);
+        Assert.IsNotNull(settings.FileArrival);
+        Assert.AreEqual("/Volumes/catalog/schema/volume/", settings.FileArrival.Url);
+        Assert.AreEqual(PauseStatus.PAUSED, settings.PauseStatus);
+    }
+
+    [TestMethod]
+    public void TestJobSettingsWithTriggersDeserialization()
+    {
+        const string json = @"{
+            ""name"": ""Triggered job"",
+            ""continuous"": {
+                ""pause_status"": ""UNPAUSED""
+            },
+            ""trigger"": {
+                ""file_arrival"": {
+                    ""url"": ""/Volumes/catalog/schema/volume/"",
+                    ""min_time_between_triggers_seconds"": 120
+                },
+                ""pause_status"": ""UNPAUSED""
+            },
+            ""tasks"": []
+        }";
+
+        var job = JsonSerializer.Deserialize<JobSettings>(json, Options);
+
+        Assert.IsNotNull(job);
+        Assert.AreEqual("Triggered job", job.Name);
+        Assert.IsNotNull(job.Continuous);
+        Assert.AreEqual(PauseStatus.UNPAUSED, job.Continuous.PauseStatus);
+        Assert.IsNotNull(job.Trigger);
+        Assert.IsNotNull(job.Trigger.FileArrival);
+        Assert.AreEqual("/Volumes/catalog/schema/volume/", job.Trigger.FileArrival.Url);
+        Assert.AreEqual(120, job.Trigger.FileArrival.MinTimeBetweenTriggersSeconds);
+        Assert.AreEqual(PauseStatus.UNPAUSED, job.Trigger.PauseStatus);
+    }
+
+    [TestMethod]
+    public void TestBackwardCompatibilityWithCronSchedule()
+    {
+        var job = new JobSettings
+        {
+            Name = "Scheduled job",
+            Schedule = new CronSchedule
+            {
+                QuartzCronExpression = "20 30 * * * ?",
+                TimezoneId = "Europe/London",
+                PauseStatus = PauseStatus.UNPAUSED
+            }
+        };
+
+        var json = JsonSerializer.Serialize(job, Options);
+        var deserialized = JsonSerializer.Deserialize<JobSettings>(json, Options);
+
+        Assert.IsNotNull(deserialized);
+        Assert.IsNotNull(deserialized.Schedule);
+        Assert.AreEqual("20 30 * * * ?", deserialized.Schedule.QuartzCronExpression);
+        Assert.AreEqual("Europe/London", deserialized.Schedule.TimezoneId);
+        Assert.IsNull(deserialized.Continuous);
+        Assert.IsNull(deserialized.Trigger);
+    }
 }

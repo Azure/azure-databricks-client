@@ -192,6 +192,29 @@ public record JobSettings : JobRunBaseSettings<JobTaskSettings>
     }
 
     /// <summary>
+    /// Adds a continuous trigger to a job.
+    /// When you run your job with the continuous trigger, Databricks Jobs ensures there is always one active run of the job.
+    /// </summary>
+    /// <param name="continuousTrigger">The continuous trigger settings.</param>
+    /// <returns>The updated JobSettings instance.</returns>
+    public JobSettings WithContinuous(ContinuousTrigger continuousTrigger)
+    {
+        Continuous = continuousTrigger;
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a trigger configuration to a job (for file arrival or table update triggers).
+    /// </summary>
+    /// <param name="triggerSettings">The trigger settings.</param>
+    /// <returns>The updated JobSettings instance.</returns>
+    public JobSettings WithTrigger(TriggerSettings triggerSettings)
+    {
+        Trigger = triggerSettings;
+        return this;
+    }
+
+    /// <summary>
     /// An optional name for the job. The default value is Untitled.
     /// </summary>
     [JsonPropertyName("name")]
@@ -220,6 +243,18 @@ public record JobSettings : JobRunBaseSettings<JobTaskSettings>
     /// </summary>
     [JsonPropertyName("schedule")]
     public CronSchedule Schedule { get; set; }
+
+    /// <summary>
+    /// An optional continuous trigger that ensures there is always one active run of the job.
+    /// </summary>
+    [JsonPropertyName("continuous")]
+    public ContinuousTrigger Continuous { get; set; }
+
+    /// <summary>
+    /// An optional trigger configuration. Use this to set file arrival or table update triggers.
+    /// </summary>
+    [JsonPropertyName("trigger")]
+    public TriggerSettings Trigger { get; set; }
 
     /// <summary>
     /// An optional maximum allowed number of concurrent runs of the job.
