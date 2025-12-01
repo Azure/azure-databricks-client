@@ -248,12 +248,14 @@ public record JobSettings : JobRunBaseSettings<JobTaskSettings>
     /// An optional continuous trigger that ensures there is always one active run of the job.
     /// </summary>
     [JsonPropertyName("continuous")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ContinuousTrigger Continuous { get; set; }
 
     /// <summary>
     /// An optional trigger configuration. Use this to set file arrival or table update triggers.
     /// </summary>
     [JsonPropertyName("trigger")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public TriggerSettings Trigger { get; set; }
 
     /// <summary>
