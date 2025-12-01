@@ -7,6 +7,15 @@ using System.Text.Json.Serialization;
 namespace Microsoft.Azure.Databricks.Client.Models;
 
 /// <summary>
+/// Indicate whether the continuous job is applying task level retries or not. Defaults to NEVER.
+/// </summary>
+public enum TaskRetryMode
+{
+    NEVER,
+    ON_FAILURE
+}
+
+/// <summary>
 /// Continuous trigger settings for a job.
 /// When you run your job with the continuous trigger, Databricks Jobs ensures there is always one active run of the job.
 /// </summary>
@@ -18,6 +27,13 @@ public record ContinuousTrigger
     [JsonPropertyName("pause_status")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public PauseStatus? PauseStatus { get; set; }
+
+    /// <summary>
+    /// Indicate whether the continuous job is applying task level retries or not. Defaults to NEVER.
+    /// </summary>
+    [JsonPropertyName("task_retry_mode")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public TaskRetryMode? TaskRetryMode { get; set; }
 }
 
 /// <summary>

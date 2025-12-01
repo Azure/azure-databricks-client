@@ -326,7 +326,7 @@ public record RunSubmitSettings : JobRunBaseSettings<RunSubmitTaskSettings>
 public record JobParameter
 {
     /// <summary>
-    /// A patameter name.
+    /// A parameter name.
     /// </summary>
     [JsonPropertyName("name")]
     public string Name { get; set; }
