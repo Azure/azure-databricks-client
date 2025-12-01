@@ -26,9 +26,9 @@ public enum ClusterEventType
     FAILED_TO_EXPAND_DISK,
 
     /// <summary>
-    /// The initialize scripts startingIndicates that the cluster scoped init script has started.
+    /// Indicates that the cluster scoped init script has started.
     /// </summary>
-    INIT_SCRIPTS_STARTING,
+    INIT_SCRIPTS_STARTED,
 
     /// <summary>
     /// Indicates that the cluster scoped init script has finished.
