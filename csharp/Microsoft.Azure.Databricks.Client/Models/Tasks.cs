@@ -29,6 +29,14 @@ public record NotebookTask
     /// </summary>
     [JsonPropertyName("source")]
     public NotebookTaskSource Source { get; set; }
+
+    /// <summary>
+    /// Optional warehouse_id to run the notebook on a SQL warehouse. 
+    /// Classic SQL warehouses are NOT supported, please use serverless or pro SQL warehouses.
+    /// Note that SQL warehouses only support SQL cells; if the notebook contains non-SQL cells, the run will fail.
+    /// </summary>
+    [JsonPropertyName("warehouse_id")]
+    public string WarehouseId { get; set; }
 }
 
 public enum NotebookTaskSource
