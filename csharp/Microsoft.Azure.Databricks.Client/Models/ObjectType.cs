@@ -41,6 +41,11 @@ public enum ObjectType
     /// <summary>
     /// Lakeview Dashboard
     /// </summary>
-    DASHBOARD
+    DASHBOARD,
+
+    /// <summary>
+    /// Symbolic Link
+    /// </summary>
+    SYMLINK
 
 }
