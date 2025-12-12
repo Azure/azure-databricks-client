@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.Azure.Databricks.Client.Models;
 
@@ -71,7 +71,7 @@ public record SqlStatement
     public long? RowLimit { get; set; }
 
     /// <summary>
-    /// Applies the given byte limit to the statement's result size. Byte counts are based on internal data representations and might not match the final size in the requested format. If the result was truncated due to the byte limit, then truncated in the response is set to true. When using EXTERNAL_LINKS disposition, a default byte_limit of 100 GiB is applied if byte_limit is not explcitly set.
+    /// Applies the given byte limit to the statement's result size. Byte counts are based on internal data representations and might not match the final size in the requested format. If the result was truncated due to the byte limit, then truncated in the response is set to true. When using EXTERNAL_LINKS disposition, a default byte_limit of 100 GiB is applied if byte_limit is not explicitly set.
     /// </summary>
     [JsonPropertyName("byte_limit")]
     public long? ByteLimit { get; set; }
@@ -139,7 +139,7 @@ public enum SqlStatementDisposition
     /// <remarks>
     /// Statements executed with EXTERNAL_LINKS disposition will return result data as external links: URLs that point to cloud storage internal to the workspace. Using EXTERNAL_LINKS disposition allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The resulting links have two important properties:
     ///   1. They point to resources external to the Databricks compute; therefore any associated authentication information (typically a personal access token, OAuth token, or similar) must be removed when fetching from these links.
-    ///   2. These are presigned URLs with a specific expiration, indicated in the response. The behavior when attempting to use an expired link is cloud specific.
+    ///   2. These are pre-signed URLs with a specific expiration, indicated in the response. The behavior when attempting to use an expired link is cloud specific.
     /// </remarks>
     EXTERNAL_LINKS
 }
@@ -282,11 +282,12 @@ public record StatementExecution
     public StatementExecutionManifest Manifest { get; set; }
 
     /// <summary>
-    /// Contains the result data of a single chunk when using INLINE disposition. When using EXTERNAL_LINKS disposition, the array external_links is used instead to provide presigned URLs to the result data in cloud storage. Exactly one of these alternatives is used. (While the external_links array prepares the API to return multiple links in a single response. Currently only a single link is returned.)
+    /// Contains the result data of a single chunk when using INLINE disposition. When using EXTERNAL_LINKS disposition, the array external_links is used instead to provide pre-signed URLs to the result data in cloud storage. Exactly one of these alternatives is used. (While the external_links array prepares the API to return multiple links in a single response. Currently only a single link is returned.)
     /// </summary>
     [JsonPropertyName("result")]
     public StatementExecutionResultChunk Result { get; set; }
 
+    [RequiresUnreferencedCode("Uses System.Text.Json.Nodes.JsonArray.Add<T>.")]
     public IEnumerable<T> DeserializeResults<T>(Func<JsonArray, StatementExecutionSchema, T> rowFactory)
     {
         if (this.Manifest.Format == StatementFormat.JSON_ARRAY)
@@ -449,6 +450,7 @@ public record StatementExecutionManifest
         {
             hash *= chunk.GetHashCode();
         }
+
         return hash;
     }
 }
@@ -481,6 +483,7 @@ public record StatementExecutionSchema
         {
             hash *= column.GetHashCode();
         }
+
         return hash;
     }
 }
@@ -606,6 +609,7 @@ public record StatementExecutionResultChunk : StatementExecutionResult
     [JsonIgnore]
     public JsonArray DataJsonArray
     {
+        [RequiresUnreferencedCode("Uses System.Text.Json.Nodes.JsonArray.Add<T>().")]
         get
         {
             var jsonArray = new JsonArray();
@@ -654,7 +658,7 @@ public record StatementExecutionResultChunk : StatementExecutionResult
 public record StatementExecutionExternalLink : StatementExecutionResult
 {
     /// <summary>
-    /// A presigned URL pointing to a chunk of result data, hosted by an external service, with a short expiration time (&lt;= 15 minutes). As this URL contains a temporary credential, it should be considered sensitive and the client should not expose this URL in a log.
+    /// A pre-signed URL pointing to a chunk of result data, hosted by an external service, with a short expiration time (&lt;= 15 minutes). As this URL contains a temporary credential, it should be considered sensitive and the client should not expose this URL in a log.
     /// </summary>
     [JsonPropertyName("external_link")]
     public string ExternalLink { get; set; }
