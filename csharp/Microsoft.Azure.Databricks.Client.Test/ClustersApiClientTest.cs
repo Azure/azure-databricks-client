@@ -714,4 +714,38 @@ public class ClustersApiClientTest : ApiClientTest
             Times.Once()
         );
     }
+
+    [TestMethod]
+    public void TestNewClusterEventTypesDeserialization()
+    {
+        // Test that all new ClusterEventType values can be deserialized correctly
+        var newEventTypes = new[]
+        {
+            "NODE_BLACKLISTED",
+            "PINNED",
+            "UNPINNED",
+            "NODE_EXCLUDED_DECOMMISSIONED",
+            "ADD_NODES_FAILED",
+            "AUTOSCALING_BACKOFF",
+            "AUTOMATIC_CLUSTER_UPDATE",
+            "AUTOSCALING_FAILED",
+            "DECOMMISSION_STARTED",
+            "DECOMMISSION_ENDED"
+        };
+
+        foreach (var eventType in newEventTypes)
+        {
+            var json = $@"
+                {{
+                    ""cluster_id"": ""test-cluster"",
+                    ""timestamp"": 1619471498409,
+                    ""type"": ""{eventType}"",
+                    ""details"": {{}}
+                }}";
+
+            var clusterEvent = JsonSerializer.Deserialize<ClusterEvent>(json, Options);
+            Assert.IsNotNull(clusterEvent, $"Failed to deserialize ClusterEvent with type {eventType}");
+            Assert.AreEqual(eventType, clusterEvent.Type.ToString(), $"ClusterEventType {eventType} did not deserialize correctly");
+        }
+    }
 }
