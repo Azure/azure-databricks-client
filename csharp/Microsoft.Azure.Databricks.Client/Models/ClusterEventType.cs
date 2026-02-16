@@ -108,5 +108,55 @@ public enum ClusterEventType
     /// <summary>
     /// Usage report containing the total and unused instance minutes of the autoscaling cluster over the last hour.
     /// </summary>
-    AUTOSCALING_STATS_REPORT
+    AUTOSCALING_STATS_REPORT,
+
+    /// <summary>
+    /// Indicates that a node has been blacklisted.
+    /// </summary>
+    NODE_BLACKLISTED,
+
+    /// <summary>
+    /// Indicates that a cluster has been pinned.
+    /// </summary>
+    PINNED,
+
+    /// <summary>
+    /// Indicates that a cluster has been unpinned.
+    /// </summary>
+    UNPINNED,
+
+    /// <summary>
+    /// Indicates that a node has been excluded or decommissioned.
+    /// </summary>
+    NODE_EXCLUDED_DECOMMISSIONED,
+
+    /// <summary>
+    /// Indicates that adding nodes to the cluster has failed.
+    /// </summary>
+    ADD_NODES_FAILED,
+
+    /// <summary>
+    /// Indicates that autoscaling has been backed off.
+    /// </summary>
+    AUTOSCALING_BACKOFF,
+
+    /// <summary>
+    /// Indicates that the cluster has been automatically updated.
+    /// </summary>
+    AUTOMATIC_CLUSTER_UPDATE,
+
+    /// <summary>
+    /// Indicates that autoscaling has failed.
+    /// </summary>
+    AUTOSCALING_FAILED,
+
+    /// <summary>
+    /// Indicates that node decommissioning has started.
+    /// </summary>
+    DECOMMISSION_STARTED,
+
+    /// <summary>
+    /// Indicates that node decommissioning has ended.
+    /// </summary>
+    DECOMMISSION_ENDED
 }
